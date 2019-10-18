@@ -227,7 +227,10 @@ def allevents(request):
     return render(request, "teacherview/allevents.html", context)
 
 def subevents(request,pk):
+    global logged_in
+
     if not logged_in:
+        return redirect('teacher-homepage')
 
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
