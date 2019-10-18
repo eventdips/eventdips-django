@@ -65,11 +65,12 @@ def date_conversion(date):
         return "{} {}, {}".format(str(date[2]),month[int(mon)],str(date[0]))
 
 def student_check(request):
-    ret = get_object_or_404(Status,user=request.user)
-    if ret.status=="S":
-        return True 
-    else:
-        return False
+    if user.is_authenticated:
+        ret = get_object_or_404(Status,user=request.user)
+        if ret.status=="S":
+            return True 
+        else:
+            return False
 
 @login_required
 def home(request):
