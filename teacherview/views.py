@@ -333,6 +333,10 @@ def view_registrations(request,pk,sub_pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
         return redirect('student-homepage')
+    
+    if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
+        messages.warning(request,'Illegal Action Attempted!')
+        return redirect('teacher-homepage')
 
     registrations = list(Registrations.objects.filter(subevent_id=sub_pk))
     final=[]
@@ -367,6 +371,10 @@ def view_registration(request,pk,sub_pk,r_pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
         return redirect('student-homepage')
+    
+    if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
+        messages.warning(request,'Illegal Action Attempted!')
+        return redirect('teacher-homepage')
 
     registration = Registrations.objects.filter(registration_id=r_pk).first()
     sub = {}
@@ -399,6 +407,10 @@ def accept(request,pk,sub_pk,r_pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
         return redirect('student-homepage')
+    
+    if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
+        messages.warning(request,'Illegal Action Attempted!')
+        return redirect('teacher-homepage')
 
     registration = Registrations.objects.get(registration_id=r_pk)
     partcipated_in = SubEvents.objects.get(subevent_id=sub_pk)
@@ -430,6 +442,10 @@ def reject(request,pk,sub_pk,r_pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
         return redirect('student-homepage')
+    
+    if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
+        messages.warning(request,'Illegal Action Attempted!')
+        return redirect('teacher-homepage')
 
     registration = Registrations.objects.get(registration_id=r_pk)
     partcipated_in = SubEvents.objects.get(subevent_id=sub_pk)
@@ -457,6 +473,10 @@ def view_selected_students(request,pk,sub_pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
         return redirect('student-homepage')
+    
+    if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
+        messages.warning(request,'Illegal Action Attempted!')
+        return redirect('teacher-homepage')
 
     registrations = list(Registrations.objects.filter(subevent_id=sub_pk))
     final=[]
@@ -490,6 +510,10 @@ def view_registered_students(request,pk,sub_pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
         return redirect('student-homepage')
+    
+    if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
+        messages.warning(request,'Illegal Action Attempted!')
+        return redirect('teacher-homepage')
 
     registrations = list(Registrations.objects.filter(subevent_id=sub_pk))
     final=[]
@@ -684,6 +708,10 @@ def edit_event(request,event_id,subevent_id):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
         return redirect('student-homepage')
+    
+    if request.user.id!=SubEvents.objects.get(subevent_id=subevent_id).subevent_teacher_incharge_id:
+        messages.warning(request,'Illegal Action Attempted!')
+        return redirect('teacher-homepage')
 
     sub = SubEvents.objects.get(subevent_id=subevent_id)
     if request.method=="POST":
