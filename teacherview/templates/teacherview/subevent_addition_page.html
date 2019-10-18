@@ -1,0 +1,34 @@
+{% extends 'teacherview/layout.html' %}
+
+<!-- To display all the search results -->
+
+{% block ContentView %}
+
+<div class="container-fluid">
+  <!-- Page Heading -->   
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">{{ title }}</h1>
+  </div>
+  {% for event_data in event %}
+    <div class="row">
+      <div class="container-fluid">
+        <div class="card shadow">
+            <div class="card-header border-left-success">
+              <a href={{ event_redirect }}><h2 class="font-weight-bold text-success">{{ event_data.name }}</h2></a>
+            </div>
+            <div class="card-body">
+                <p><b>Dates Of Event</b>: {{ event_data.dates }}</p>
+                <p><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</p>
+                {% if event_data.event_information != "" %}
+                  <p><b>Additional Info</b>: {{ event_data.event_information }}</p>
+                {% endif %}
+                <br>
+                &emsp;<a href={{ url_redirect }}><button type="button" class="btn btn-outline-primary" style="width:90%; border-radius: 25px">ADD SUB-EVENT</button></a>
+            </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

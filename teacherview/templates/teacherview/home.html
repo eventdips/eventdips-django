@@ -1,0 +1,87 @@
+{% extends 'teacherview/layout.html' %}
+
+{% block ContentView %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->       
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">My Events</h1>
+  </div>
+  <div class="row">
+    {% for event_data in MyEvents %}
+      <div class="col-md-4">
+        <div class="card shadow mb-3" style="border-radius: 25px;">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-success" style="border-radius: 0px 25px 25px 0px;">
+            <div class="row">
+              <a href={{ event_data.url_redirect }} style="text-decoration:none;">
+                <h4 class="m-0 font-weight-bold text-success">&nbsp;{{ event_data.name }}</h4>
+              </a>
+            </div>
+            <div class="dropdown no-arrow">
+              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+              </a>
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+              <div class="dropdown-header">Event Options:</div>
+                {% if not event_data.event_check %}
+                  <a class="dropdown-item" href={{ event_data.event_edit_redirect }}><i class="fas fa-edit" style="color: grey"></i> Edit</a>
+                  <a class="dropdown-item" href={{ event_data.event_delete_redirect }} onclick="return confirm('Are you sure you want to delete this?')"><i class="fas fa-trash" style="color: red"></i> Delete</a>
+                {% else %}
+                  <a class="dropdown-item" href="{% url 'teacher-homepage' %}"><i class="fas fa-exclamation-triangle" style="color: red"></i> Cannot Edit</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }} </li>
+              <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
+              <li><b>Event Description</b>: {{ event_data.event_information }}</li>
+              {% if event_data.category %}
+                <li><b>Category</b>: {{ event_data.category}}</li>
+              {% endif %}
+              {% if event_data.completed_check %}
+                <li><b>Status</b>: Registrations/Acceptions Complete</li>
+              {% else %}
+                <li><b>Status</b>: Registrations/Acceptions Pending</li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">All Events</h1>
+  </div>    
+  <div class="row">
+    <div class="card-columns">
+    {% for event_data in AllEvents %}
+    
+      <div class="card shadow mb-4" style="border-radius: 25px;">
+        <div class="card-header py-3 border-left-success" style="border-radius: 0px 25px 25px 0px;">
+          <a href={{ event_data.url_redirect }} style="text-decoration:none;">
+            <h4 class="m-0 font-weight-bold text-success">{{ event_data.name }}</h4></a>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }} </li>
+            <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
+            <li><b>Event Description</b>: {{ event_data.event_information }}</li>
+          </ul> 
+        </div>
+      </div>
+      <br>
+    {% endfor %}
+  </div>
+  </div>
+</div>
+<!-- End of Main Content -->
+
+{% endblock %}

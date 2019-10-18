@@ -1,0 +1,28 @@
+{% extends 'teacherview/layout.html' %}
+{% load crispy_forms_tags %}
+
+{% block ContentView %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="card shadow mb-4 ">
+			<div class="card-header border-left-success">
+				<h4 class="m-0 font-weight-bold text-success">New Event</h4>
+			</div>
+			<div class="card-body">
+				<form method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					<fieldset class="form-group" id="EventForm">
+						{{ form|crispy }}
+					</fieldset>
+					<div class="form-group">
+						<center>
+							<button class="btn btn-success" type="submit" name="file" >Submit</button>
+						</center>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

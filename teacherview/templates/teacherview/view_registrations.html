@@ -1,0 +1,115 @@
+{% extends 'teacherview/layout.html' %}
+
+{% block ContentView %}
+
+<div class="card" style="box-shadow: none;">
+  <!-- Page Heading -->       
+  {% if subevent_name != event_name %}
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+      <div>
+        <a href={{ header_redirect }}><h1 class="h3 mb-0 text-gray-800">{{ event_name }}- {{ subevent_name }}</h1></a>
+      </div>
+      <div class="dropdown no-arrow">
+        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-cog fa-xl fa-fw text-gray-800"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+          <div class="dropdown-header">View Options:</div>
+            <a class="dropdown-item" href={{ view_selected_students }}><i class="fas fa-users" style="color: rgb(0, 179, 0)"></i> View Selected Students</a>
+            <a class="dropdown-item" href={{ view_registered_students }}><i class="fas fa-users" style="color: maroon;"></i> View Registered Students</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <div>
+          <a href={{ header_redirect }}><h1 class="h3 mb-0 text-gray-800">{{ event_name }}</h1></a>
+        </div>
+        <div class="dropdown no-arrow">
+          <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-cog fa-xl fa-fw text-gray-800"></i>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+            <div class="dropdown-header">View Options:</div>
+              <a class="dropdown-item" href={{ view_selected_students }}><i class="fas fa-users" style="color: rgb(0, 179, 0)"></i> View Selected Students</a>
+              <a class="dropdown-item" href={{ view_registered_students }}><i class="fas fa-users" style="color: maroon;"></i> View Registered Students</a>
+            </div>
+          </div>
+        </div>
+    </div>
+  {% endif %}
+
+  <div class="card-body">
+    <div class="row">
+      {% if Registrations %}
+        {% for student_data in Registrations %}
+          <div class="col-lg-4">
+              {% if student_data.status == 'Accepted' %}
+                <div class="card shadow mb-4 border-success" style="border-radius: 0px 25px 25px 25px;">
+                  <div class="card-header m-0 py-3 border-left-success" style="border-radius: 0px 25px 25px 0px;">  
+                    <h4 class="m-0 font-weight-bold text-success">{{ student_data.name }}</h4> 
+                  </div>
+                  <div class="card-body">
+                    <ul>
+                      <li><b>Class</b>: {{ student_data.class }}</li>
+                      <li><b>Section</b>: {{ student_data.section }}</li>
+                      <li><b>Registration Status</b>: {{ student_data.status }}</li>            
+                    </ul>
+                    <hr class="grey lighten-3">
+                    <a href={{ student_data.url_redirect }} class="card-link">
+                        <h5 align='center' class="text-success"><b>View Registration</b></h5>
+                    </a>   
+                  </div>
+                </div>
+              {% elif student_data.status == 'Rejected' %}
+                <div class="card shadow mb-4" style="border-radius: 25px;">
+                  <div class="card-header m-0 py-3 border-left-danger" style="border-radius: 0px 25px 25px 0px;">  
+                    <h4 class="m-0 font-weight-bold text-danger">{{ student_data.name }}</h4> 
+                  </div>
+                  <div class="card-body">
+                    <ul>
+                      <li><b>Class</b>: {{ student_data.class }}</li>
+                      <li><b>Section</b>: {{ student_data.section }}</li>
+                      <li><b>Registration Status</b>: {{ student_data.status }}</li>            
+                    </ul>
+                    <hr class="grey lighten-3">
+                    <a href={{ student_data.url_redirect }} class="card-link">
+                        <h5 align='center' class="text-danger"><b>View Registration</b></h5>
+                    </a>   
+                  </div>
+                </div>
+              {% else %}
+                <div class="card shadow mb-4" style="border-radius: 25px;">
+                  <div class="card-header m-0 py-3 border-left-primary" style="border-radius: 0px 25px 25px 0px;">  
+                    <h4 class="m-0 font-weight-bold text-primary">{{ student_data.name }}</h4> 
+                  </div>
+                  <div class="card-body">
+                    <ul>
+                      <li><b>Class</b>: {{ student_data.class }}</li>
+                      <li><b>Section</b>: {{ student_data.section }}</li>
+                      <li><b>Registration Status</b>: {{ student_data.status }}</li>            
+                    </ul>
+                    <hr class="grey lighten-3">
+                    <a href={{ student_data.url_redirect }} class="card-link">
+                        <h5 align='center' class="text-primary"><b>View Registration</b></h5>
+                    </a>   
+                  </div>
+                </div>
+              {% endif %}
+
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="card-body">
+          <div class="container-fluid">
+            <p class="display-4">😥 NO REGISTRATIONS YET.</p>
+          </div> 
+      </div>   
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,288 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  {% if title %}
+    <title>Teacher-{{title}}</title>
+  {% else %}
+    <title>Teacher-Events</title>
+  {% endif %}
+
+  <!-- Custom fonts for this template-->
+  <!--<link href="{% static "vendor/fontawesome-free/css/all.min.css" %}" rel="stylesheet" type="text/css">-->
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+   <!-- Bootstrap core CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Material Design Bootstrap -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/css/mdb.min.css" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="{% static 'teacherview/css/sb-admin-2.css' %}" rel="stylesheet">
+</head>
+
+<body id="page-top" class="sidebar-toggled">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav green sidebar sidebar-dark accordion toggled" id="accordionSidebar" style='position: relative'>
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'teacher-homepage' %}">
+        <img src="{% static 'teacherview/EventDipsMedium.png' %}" style="width: 100% ;  filter: drop-shadow(0 0 8px #FFFFFF);" >
+      </a>
+
+      <!-- Divider -->
+      
+      <hr class="sidebar-divider my-0">
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'teacher-homepage' %}" >
+          <i class="fas fa-home"></i>
+          <span>Homepage</span>
+        </a>
+      </li>
+   
+      <hr class="sidebar-divider my-0">
+      <!-- Nav Item - User Information -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          <i class="fas fa-user"></i>
+          <span>My Profile</span>
+        </a>
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Profile</h6>
+            <img class="collapse-item rounded-circle" src="https://source.unsplash.com/random/50x50">
+            <p class="collapse-header"> {{ user.first_name }} {{ user.last_name }}</p>
+            <a class="collapse-item" href='{% url "teacher-homepage" %}'>Edit Profile</a>
+          </div>
+        </div>
+      </li>
+        
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+      <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-fw fa-calendar-alt"></i>
+          <span>Events</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Events:</h6>
+            <a class="collapse-item" href='{% url "teacher-myevents" %}'>My Events</a>
+            <a class="collapse-item" href='{% url "teacher-allevents" %}'>View All</a>
+          </div>
+        </div>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+      <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'add-event' %}" aria-expanded="true">
+          <i class="fas fa-plus"></i>
+          <span>Add Events</span>
+        </a>
+      </li>
+
+    
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand sticky-top navbar-light bg-white topbar mb-4 shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars" style="color: #5cb85c"></i>
+          </button>
+
+          <!-- Topbar Search -->
+          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" action="{% url 'teacher-search' %}">
+            <div class="input-group">
+              <input type="text" name="query" id="searchbar" class="form-control bg-light border-0 small" placeholder="Search and press Enter....." aria-label="Search" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn green" type="button" style="border: 0; shadow:0" onclick="searchFunction()">
+                  <i class="fas fa-search fa-sm" style="color:white" id='searchButton'></i> 
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+            <li class="nav-item dropdown no-arrow d-sm-none">
+              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-search fa-fw"></i>
+              </a>
+              <!-- Dropdown - Messages -->
+              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                <form class="form-inline mr-auto w-100 navbar-search">
+                  <div class="input-group">
+                    <input type="text" class="form-control bg-light border-0 small" id="searchbarXS" placeholder="Search for Events..." aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <button class="btn btn-success" type="button" onclick="searchFunctionXS()">
+                        <i class="fas fa-search fa-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </li>
+
+            <li class="nav-item dropdown no-arrow mx-1">
+              <a class="nav-link dropdown-toggle" href="{% url 'add-event' %}" aria-expanded="false">
+                <i class="fas fa-plus fa-lg"></i>
+              </a>
+            </li>
+
+            <!-- Nav Item - Alerts -->
+            <li class="nav-item dropdown no-arrow mx-1">
+              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-bell fa-fw"></i>
+                <!-- Counter - Alerts -->
+                {% if notifications %}
+                  <span class="badge badge-danger badge-counter">{{ notifications.count }}</span>
+                {% else %}
+                  <span class="badge badge-danger badge-counter">0</span>
+                {% endif %}
+              </a>
+              <!-- Dropdown - Alerts -->
+              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                <h6 class="dropdown-header green">
+                  Notifications
+                </h6>
+                {% if notifications %}
+                  {% for notification_data in notifications.unread %}
+                    <a class="dropdown-item d-flex align-items-center" href="{{notification_data.url_redirect}}">
+                      <div class="mr-3">
+                        <div class="icon-circle bg-primary">
+                          <i class="fas fa-file-alt text-white"></i>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="small text-gray-500">{{notification_data.timestamp}}</div>
+                        <span class="font-weight-bold">{{notification_data.text}}</span>
+                      </div>
+                    </a>
+                  {% endfor %}
+                  {% for notification_data in notifications.read %}
+                  <a class="dropdown-item d-flex align-items-center" href={{notification_data.url_redirect}}>
+                    <div class="mr-3">
+                      <div class="icon-circle bg-success">
+                        <i class="fas fa-user text-white"></i>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="small text-gray-500">{{notification_data.timestamp}}</div>
+                      {{notification_data.text}}
+                    </div>
+                  </a>
+                  {% endfor %}
+                {% else %}
+                <a class="dropdown-item d-flex align-items-center" href={{notification_data.url_redirect}}>
+                    <div class="mr-3">
+                      <div class="icon-circle bg-success">
+                        <i class="fas fa-user text-white"></i>
+                      </div>
+                    </div>
+                    <div>
+                      No notifications to display
+                    </div>
+                  </a>
+                {% endif %}
+                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Notifications</a>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}" aria-expanded="true">
+                <i class="fas fa-power-off fa-lg text-gray-500"></i>
+                <span class="text-gray-600">&nbsp;Logout</span>
+              </a>
+            </li>
+          </ul>
+
+        </nav>
+      <!-- End of Topbar -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      
+      <!-- Begin Page Content -->
+      {% block ContentView %}
+      {% endblock %}
+      <!-- End of Main Content -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top" href="#page-top" style="border-radius: 17px;">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src='{% static "teacherview/vendor/jquery/jquery.min.js" %}'></script>
+  <script src='{% static "teacherview/vendor/bootstrap/js/bootstrap.bundle.min.js" %}'></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src='{% static "teacherview/vendor/jquery-easing/jquery.easing.min.js" %}'></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src='{% static "teacherview/js/sb-admin-2.min.js" %}'></script>
+  
+  <!-- Page level plugins -->
+  <script src='{% static "teacherview/vendor/datatables/jquery.dataTables.min.js" %}'></script>
+  <script src='{% static "teacherview/vendor/datatables/dataTables.bootstrap4.min.js" %}'></script>
+
+  <!-- Page level custom scripts -->
+  <script src='{% static "teacherview/js/demo/datatables-demo.js" %}'></script>
+
+  <script>
+      function searchFunction(){
+        var input = document.getElementById('searchbar').value;
+        location.href='{% url 'teacher-search' %}' + '?query='+input;
+      }
+    </script>
+    <script>
+      function searchFunctionXS(){
+        var input = document.getElementById('searchbarXS').value;
+        location.href='{% url 'teacher-search' %}' + '?query='+input;
+      }
+    </script>
+</body>
+
+</html>
