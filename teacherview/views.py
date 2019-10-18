@@ -73,8 +73,12 @@ def student_check(request):
 
 @login_required
 def home(request):
+    global logged_in
+
     if student_check(request):
         return redirect('student-homepage')
+
+    logged_in = True
 
     events = list(Events.objects.all())
     teacher_id = request.user.id 
@@ -154,7 +158,9 @@ def home(request):
     return render(request, "teacherview/home.html", context)
 
 def myevents(request):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -195,7 +201,9 @@ def myevents(request):
     return render(request, "teacherview/myevents.html", context)
 
 def allevents(request):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -219,8 +227,7 @@ def allevents(request):
     return render(request, "teacherview/allevents.html", context)
 
 def subevents(request,pk):
-    if not request.user:
-        return redirect('teacher-homepage')
+    if not logged_in:
 
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -252,7 +259,9 @@ def subevents(request,pk):
     return render(request, "teacherview/subevents.html", context)
 
 def subevent(request,pk,sub_pk):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -337,7 +346,9 @@ def subevent(request,pk,sub_pk):
     return render(request, "teacherview/subevent.html", context)
 
 def view_registrations(request,pk,sub_pk):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -377,7 +388,9 @@ def view_registrations(request,pk,sub_pk):
     return render(request,'teacherview/view_registrations.html',context)
 
 def view_registration(request,pk,sub_pk,r_pk):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
         
     if student_check(request):
@@ -415,7 +428,9 @@ def view_registration(request,pk,sub_pk,r_pk):
     return render(request,'teacherview/view_registration.html',context)
 
 def accept(request,pk,sub_pk,r_pk):  
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -452,7 +467,9 @@ def accept(request,pk,sub_pk,r_pk):
         return HttpResponseRedirect('/teachers/{}/{}/rview'.format(str(pk),str(sub_pk)))
 
 def reject(request,pk,sub_pk,r_pk):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -485,7 +502,9 @@ def reject(request,pk,sub_pk,r_pk):
     return HttpResponseRedirect('/teachers/{}/{}/rview'.format(str(pk),str(sub_pk)))
 
 def view_selected_students(request,pk,sub_pk):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -524,7 +543,9 @@ def view_selected_students(request,pk,sub_pk):
     return render(request,'teacherview/view_selected_students.html',context)
 
 def view_registered_students(request,pk,sub_pk):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -562,7 +583,9 @@ def view_registered_students(request,pk,sub_pk):
     return render(request,'teacherview/view_registered_students.html',context)
 
 def add_event(request):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -605,7 +628,9 @@ def add_event(request):
     return render(request,'teacherview/add_event.html',context)
 
 def single_event_information(request,event_id):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -651,7 +676,9 @@ def single_event_information(request,event_id):
         return render(request,'teacherview/single_event_information.html',context)
 
 def subevent_addition_page(request,event_id):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -680,7 +707,9 @@ def subevent_addition_page(request,event_id):
         return render(request, "teacherview/subevent_addition_page.html", context)
 
 def add_subevent(request,event_id):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -732,7 +761,9 @@ def add_subevent(request,event_id):
         return render(request,'teacherview/add_subevent.html',context)
 
 def edit_event(request,event_id,subevent_id):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -778,7 +809,9 @@ def edit_event(request,event_id,subevent_id):
     return render(request,'teacherview/add_subevent.html',context)
 
 def delete_event(request,event_id,subevent_id):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
@@ -799,7 +832,9 @@ def delete_event(request,event_id,subevent_id):
     return redirect('teacher-homepage')
 
 def searchpage(request):
-    if not request.user:
+    global logged_in
+
+    if not logged_in:
         return redirect('teacher-homepage')
 
     if student_check(request):
