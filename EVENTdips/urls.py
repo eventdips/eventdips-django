@@ -12,7 +12,7 @@ urlpatterns = [
     path('students/',include('studentview.urls')),
     path('teachers/',include('teacherview.urls')),
     path('login/', teach_view.login_auth, name="login"),
-    path('logout/', auth_view.LogoutView.as_view(template_name="studentview/logout.html"), name="logout")
+    path('logout/', teach_view.logout_auth, name="logout")
 ]
 
 if settings.DEBUG:

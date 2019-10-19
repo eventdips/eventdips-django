@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect
 from .models import Events,SubEvents,Status
 from django.contrib.auth.models import User
-from django.contrib.auth import login,authenticate
+from django.contrib.auth import login,authenticate,logout
 from studentview.models import Registrations
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from .forms import EventCreationForm, SingleEventInformationForm, SubEventCreationForm, LoginForm
-from django.contrib.auth.decorators import login_required
 
 def date_conversion(date):
     date = str(date)
@@ -66,10 +65,17 @@ def date_conversion(date):
         return "{} {}, {}".format(str(date[2]),month[int(mon)],str(date[0]))
 
 def student_check(request):
-    if request.user.is_authenticated:
-        ret = Status.objects.get(user=request.user)
-        if ret.status=="S":
-            return True 
+    ret = Status.objects.get(user=request.user)
+    if ret.status=="S":
+        return True 
+    else:
+        return False
+
+def login_required(request):
+    if not request.user.is_anonymous:
+        obj = Status.objects.get(user=request.user)
+        if obj.log_in_check == "A":
+            return True
         else:
             return False
     else:
@@ -91,6 +97,9 @@ def login_auth(request):
             if user is not None:
                 login(request,user)
                 messages.success(request,"'{}' is successfully logged in!".format(username))
+                change = Status.objects.get(user=user)
+                change.log_in_check = "A"
+                change.save()
                 return redirect('teacher-homepage')
             else:
                 return redirect('login')
@@ -104,8 +113,18 @@ def login_auth(request):
 
     return render(request,'studentview/login.html',context)
 
-@login_required
+def logout_auth(request):
+    change = Status.objects.get(user=request.user)
+    change.log_in_check = "R"
+    change.save()
+    logout(request)
+
+    return render(request,'studentview/logout.html')
+
 def home(request):
+    res = login_required(request)
+    if not res:
+        return redirect('login')
     if student_check(request):
         return redirect('student-homepage')
 
