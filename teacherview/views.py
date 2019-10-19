@@ -65,7 +65,7 @@ def date_conversion(date):
         return "{} {}, {}".format(str(date[2]),month[int(mon)],str(date[0]))
 
 def student_check(request):
-    if user.is_authenticated:
+    if request.user.is_authenticated:
         ret = Status.objects.get(user=request.user)
         if ret.status=="S":
             return True 
