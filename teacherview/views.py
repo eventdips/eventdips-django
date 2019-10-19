@@ -90,7 +90,7 @@ def login_auth(request):
             user = authenticate(request,username=username,password=password)
             if user is not None:
                 login(request,user)
-                messages.success(request,"{} successfully logged in!".format(username))
+                messages.success(request,"'{}' is successfully logged in!".format(username))
                 return redirect('teacher-homepage')
             else:
                 return redirect('login')
