@@ -184,10 +184,6 @@ def home(request):
     return render(request, "teacherview/home.html", context)
  
 def myevents(request):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-
     teacher_id = request.user.id
     subevents = list(SubEvents.objects.all())
     final=[]
@@ -222,10 +218,6 @@ def myevents(request):
     return render(request, "teacherview/myevents.html", context)
  
 def allevents(request):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-
     subevents = list(SubEvents.objects.all())
     final=[]
     for s_event in subevents:        
