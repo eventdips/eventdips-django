@@ -94,11 +94,9 @@ def teacher_event_sort(events):
                 d2 = int(events[i+1]['event_dates'].split(" to ")[0].split()[0][:-2])
 
             if y1>y2:
-                #print(events[i]["name"] + str(y1) + ">" + events[i+1]["name"] + str(y2))
                 events[i],events[i+1]=events[i+1],events[i]
             else:
                 if m1>m2:
-                    #print(events[i]["name"] + str(m1+1) + ">" + events[i+1]["name"] + str(m2+1))
                     events[i],events[i+1]=events[i+1],events[i]
                 else:
                     if d1>d2:
