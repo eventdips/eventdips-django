@@ -371,7 +371,6 @@ def view_registrations(request,pk,sub_pk):
 
     return render(request,'teacherview/view_registrations.html',context)
 
-@login_required
 def view_registration(request,pk,sub_pk,r_pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
