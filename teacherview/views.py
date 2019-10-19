@@ -80,6 +80,7 @@ SORT EVENTS BY DEADLINES- TEACHERVIEW
 SORT EVENTS BY REGISTRATION DEADLINES- STUDENTVIEW
 '''
 
+@login_required
 def home(request):
     if student_check(request):
         return redirect('student-homepage')
