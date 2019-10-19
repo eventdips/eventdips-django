@@ -28,13 +28,13 @@
 
 </head>
 
-<body id="page-top">
+<body id="page-top" class="sidebar-toggled">
 
   <!-- Page Wrapper -->
   <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav blue sidebar sidebar-dark accordion" id="accordionSidebar" >
+    <ul class="navbar-nav blue sidebar sidebar-dark accordion toggled" id="accordionSidebar" >
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'teacher-homepage' %}">
         <img src="{% static "teacherview/EventDipsMedium.png" %}" style="width: 100% ;  filter: drop-shadow(0 0 8px #FFFFFF);" >
@@ -60,7 +60,10 @@
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Profile</h6>
+            <center><img class="collapse-item rounded-circle" src="https://source.unsplash.com/random/50x50"></center>
+            <p class="collapse-header"> {{ user.first_name }} {{ user.last_name }}</p>
             <a class="collapse-item" href='{% url 'teacher-homepage' %}'>View Profile</a>
+            <a class="collapse-item" href='#'>My Achievements</a>
             <a class="collapse-item" href='#'>Logout</a>
           </div>
         </div>
@@ -71,14 +74,13 @@
       <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-calendar-alt"></i>
+          <i class="fas fa-fw fa-calendar"></i>
           <span>Events</span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Events:</h6>
-            <a class="collapse-item" href='{% url 'teacher-myevents' %}'>My Events</a>
-            <a class="collapse-item" href='{% url 'teacher-allevents' %}'>All Events</a>
+            <h6 class="collapse-header">Events Catagories:</h6>
+            <a class="collapse-item" href='#' >All categories will appear here</a>
           </div>
         </div>
       </li>
@@ -88,8 +90,8 @@
       <!-- Nav Item - Pages - Collapse Menu -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'add-event' %}" aria-expanded="true">
-          <i class="fas fa-plus"></i>
-          <span> Add Events</span>
+          <i class="fas fa-calendar-alt"></i>
+          <span>My applications</span>
         </a>
       </li>
 
@@ -115,7 +117,7 @@
 
           <!-- Sidebar Toggle (Topbar) -->
           <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-            <i class="fa fa-bars" style="color: #5cb85c"></i>
+            <i class="fa fa-bars"></i>
           </button>
 
           <!-- Topbar Search -->
@@ -212,6 +214,12 @@
               </div>
             </li>
           </ul>
+
+          <div class="nav-item">
+            <a href="../logout">
+              <i class="fas fa-power-off text-gray-500 fa-md" style="padding: 10px"></i>
+            </a>
+          </div>
         </nav>
       <!-- End of Topbar -->
       {% if messages %}

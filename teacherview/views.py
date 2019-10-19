@@ -9,6 +9,12 @@ from django.contrib import messages
 from .forms import EventCreationForm, SingleEventInformationForm, SubEventCreationForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+import hashlib
+
+'''
+teachers-ff1b4751894e267c4fe3e1c7025670929c15c05b033800e088f9ce931a377912- hashlib.sha256("teachers/".encode('utf-8')).hexdigest()
+student-b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0- hashlib.sha256("students/".encode('utf-8')).hexdigest()
+'''
 
 def date_conversion(date):
     date = str(date)
@@ -139,9 +145,9 @@ def home(request):
         if i.single_check=="True":
             sub_event = SubEvents.objects.filter(event_id=i.event_id)
             subevent_id = sub_event.first().subevent_id
-            sub["url_redirect"] = "/teachers/{}/{}".format(str(i.event_id),str(subevent_id))
+            sub["url_redirect"] = "/{}{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(i.event_id),str(subevent_id))
         else:
-            sub["url_redirect"] = "/teachers/{}".format(str(i.event_id))
+            sub["url_redirect"] = "/{}{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(i.event_id))
         sub["name"] = i.event_name
         sub["teacher_incharge"] = i.teacher_incharge
         sub["event_information"]= i.event_information
@@ -155,25 +161,25 @@ def home(request):
         if s_event.subevent_teacher_incharge_id==teacher_id:
             if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
                 sub = {}
-                sub["url_redirect"] = "/teachers/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
+                sub["url_redirect"] = "/{}{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
                 sub["name"] = s_event.subevent_name
                 sub["teacher_incharge"] = s_event.subevent_teacher_incharge
                 sub["event_information"]= s_event.subevent_information
                 sub["event_dates"] = date_conversion(s_event.subevent_dates)
-                sub["event_edit_redirect"] = "/teachers/edit-event/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
-                sub["event_delete_redirect"] = "/teachers/delete-event/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
+                sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
+                sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
                 sub["category"] = s_event.category
                 sub["completed_check"] = False
                 final2.append(sub)
             else:
                 sub = {}
-                sub["url_redirect"] = "/teachers/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
+                sub["url_redirect"] = "/{}{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
                 sub["name"] = s_event.subevent_name
                 sub["teacher_incharge"] = s_event.subevent_teacher_incharge
                 sub["event_information"]= s_event.subevent_information
                 sub["event_dates"] = date_conversion(s_event.subevent_dates)
-                sub["event_edit_redirect"] = "/teachers/edit-event/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
-                sub["event_delete_redirect"] = "/teachers/delete-event/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
+                sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
+                sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
                 sub["category"] = s_event.category
                 sub["completed_check"] = True
                 final2.append(sub)
@@ -189,9 +195,9 @@ def home(request):
                 if i.single_check=="True":
                     sub_event = SubEvents.objects.filter(event_id=i.event_id)
                     subevent_id = sub_event.first().subevent_id
-                    sub["url_redirect"] = "/teachers/{}/{}".format(str(i.event_id),str(subevent_id))
+                    sub["url_redirect"] = "/{}{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(i.event_id),str(subevent_id))
                 else:
-                    sub["url_redirect"] = "/teachers/{}".format(str(i.event_id))
+                    sub["url_redirect"] = "/{}{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(i.event_id))
                 sub["name"] = i.event_name
                 sub["teacher_incharge"] = i.teacher_incharge
                 sub["event_information"]= i.event_information
@@ -209,10 +215,6 @@ def home(request):
     return render(request, "teacherview/home.html", context)
  
 def myevents(request):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-
     teacher_id = request.user.id
     subevents = list(SubEvents.objects.all())
     final=[]
@@ -220,24 +222,24 @@ def myevents(request):
         if s_event.subevent_teacher_incharge_id==teacher_id:
             if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
                 sub = {}
-                sub["url_redirect"] = "/teachers/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
+                sub["url_redirect"] = "/{}{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
                 sub["name"] = s_event.subevent_name
                 sub["teacher_incharge"] = s_event.subevent_teacher_incharge
                 sub["event_information"]= s_event.subevent_information
                 sub["event_dates"] = date_conversion(s_event.subevent_dates)
-                sub["event_edit_redirect"] = "/teachers/edit-event/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
-                sub["event_delete_redirect"] = "/teachers/delete-event/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
+                sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
+                sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
                 sub["completed_check"] = False
                 final.append(sub)
             else:
                 sub = {}
-                sub["url_redirect"] = "/teachers/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
+                sub["url_redirect"] = "/{}{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
                 sub["name"] = s_event.subevent_name
                 sub["teacher_incharge"] = s_event.subevent_teacher_incharge
                 sub["event_information"]= s_event.subevent_information
                 sub["event_dates"] = date_conversion(s_event.subevent_dates)
-                sub["event_edit_redirect"] = "/teachers/edit-event/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
-                sub["event_delete_redirect"] = "/teachers/delete-event/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
+                sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
+                sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
                 sub["completed_check"] = True
                 final.append(sub)
 
@@ -247,15 +249,11 @@ def myevents(request):
     return render(request, "teacherview/myevents.html", context)
  
 def allevents(request):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-
     subevents = list(SubEvents.objects.all())
     final=[]
     for s_event in subevents:        
         sub = {}
-        sub["url_redirect"] = "/teachers/{}/{}".format(str(s_event.event_id),str(s_event.subevent_id))
+        sub["url_redirect"] = "/{}{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(s_event.event_id),str(s_event.subevent_id))
         sub["name"] = s_event.subevent_name
         sub["teacher_incharge"] = s_event.subevent_teacher_incharge
         sub["event_information"]= s_event.subevent_information
@@ -268,10 +266,6 @@ def allevents(request):
     return render(request, "teacherview/allevents.html", context)
  
 def subevents(request,pk):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-
     event = Events.objects.filter(pk=pk).first()
     e_id = event.event_id
     subevents = list(SubEvents.objects.filter(event_id=e_id))
@@ -285,23 +279,19 @@ def subevents(request,pk):
         sub["available_slots"] = str(i.total_slots-i.total_registrations)
         sub["total_registrations"] = str(i.total_registrations)
         sub["teacher_incharge"] = i.subevent_teacher_incharge   
-        sub["url_redirect"] = "/teachers/{}/{}".format(str(e_id),str(i.subevent_id))
+        sub["url_redirect"] = "/{}{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(e_id),str(i.subevent_id))
         sub["event_attachment"] = i.subevent_attachment
         final.append(sub)
 
     context = {"title":event.event_name,
                 "event_name": event.event_name,
-                "url_redirect2": "/teachers/add-event/{}/sub/add".format(e_id),
+                "url_redirect2": "/{}add-event/{}/sub/add".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),e_id),
                 "myevent":True if event.teacher_incharge_id==teacher_id else False,
                 "subevents":final}
 
     return render(request, "teacherview/subevents.html", context)
  
 def subevent(request,pk,sub_pk):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-    
     event = Events.objects.filter(pk=pk).first()
     subevent = SubEvents.objects.filter(subevent_id=sub_pk).first()
     teacher_id = request.user.id
@@ -310,7 +300,7 @@ def subevent(request,pk,sub_pk):
         if subevent.selected_students<subevent.maximum_students and subevent.total_slots>subevent.total_registrations:
             final = []
             sub = {}
-            sub["url_redirect"] = "/teachers/{}/{}/rview".format(str(pk),str(sub_pk))
+            sub["url_redirect"] = "/{}{}/{}/rview".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk))
             sub["name"] = subevent.subevent_name
             sub["dates"] = date_conversion(subevent.subevent_dates)
             sub["type"] = "Group" if subevent.subevent_type != "I" else "Individual"
@@ -322,8 +312,8 @@ def subevent(request,pk,sub_pk):
             sub["last_date"] = date_conversion(subevent.last_date)
             sub["allowed_grades"] = subevent.allowed_grades  
             sub["event_attachment"] = subevent.subevent_attachment
-            sub["event_edit_redirect"] = "/teachers/edit-event/{}/{}".format(str(subevent.event_id),str(subevent.subevent_id))
-            sub["event_delete_redirect"] = "/teachers/delete-event/{}/{}".format(str(subevent.event_id),str(subevent.subevent_id))
+            sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(subevent.event_id),str(subevent.subevent_id))
+            sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(subevent.event_id),str(subevent.subevent_id))
             sub["my_event"] = True
             sub["maximum_participants"] = str(subevent.maximum_students)
             sub["selected_students"] = str(subevent.selected_students)
@@ -333,7 +323,7 @@ def subevent(request,pk,sub_pk):
         else:
             final = []
             sub = {}
-            sub["url_redirect"] = "/teachers/{}/{}/rview".format(str(pk),str(sub_pk))
+            sub["url_redirect"] = "/{}{}/{}/rview".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk))
             sub["name"] = subevent.subevent_name
             sub["dates"] = date_conversion(subevent.subevent_dates)
             sub["type"] = "Group" if subevent.subevent_type != "I" else "Individual"
@@ -345,8 +335,8 @@ def subevent(request,pk,sub_pk):
             sub["last_date"] = date_conversion(subevent.last_date)
             sub["allowed_grades"] = subevent.allowed_grades  
             sub["event_attachment"] = subevent.subevent_attachment
-            sub["event_edit_redirect"] = "/teachers/edit-event/{}/{}".format(str(subevent.event_id),str(subevent.subevent_id))
-            sub["event_delete_redirect"] = "/teachers/delete-event/{}/{}".format(str(subevent.event_id),str(subevent.subevent_id))
+            sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(subevent.event_id),str(subevent.subevent_id))
+            sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(subevent.event_id),str(subevent.subevent_id))
             sub["my_event"] = True
             sub["maximum_participants"] = str(subevent.maximum_students)
             sub["selected_students"] = str(subevent.selected_students)
@@ -356,7 +346,7 @@ def subevent(request,pk,sub_pk):
     else:
         final = []
         sub = {}
-        sub["url_redirect"] = "/teachers/{}/{}/rview".format(str(pk),str(sub_pk))
+        sub["url_redirect"] = "/{}{}/{}/rview".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk))
         sub["name"] = subevent.subevent_name
         sub["dates"] = date_conversion(subevent.subevent_dates)
         sub["type"] = "Group" if subevent.subevent_type != "I" else "Individual"
@@ -375,15 +365,11 @@ def subevent(request,pk,sub_pk):
     context = {"title":subevent.subevent_name,
                 "event_name": event.event_name,
                 "subevents":final,
-                "header_redirect":"/teachers/{}".format(str(pk))}
+                "header_redirect":"/{}{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk))}
 
     return render(request, "teacherview/subevent.html", context)
  
 def view_registrations(request,pk,sub_pk):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-    
     if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -393,7 +379,7 @@ def view_registrations(request,pk,sub_pk):
 
     for i in registrations:
         sub = {}
-        sub["url_redirect"] = "/teachers/{}/{}/rview/{}".format(str(pk),str(sub_pk),str(i.registration_id))
+        sub["url_redirect"] = "/{}{}/{}/rview/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk),str(i.registration_id))
         sub["name"]=i.student_name
         sub["class"]=str(i.student_class)
         sub["section"]=i.student_section
@@ -409,18 +395,14 @@ def view_registrations(request,pk,sub_pk):
         "event_name":Events.objects.filter(event_id=pk).first().event_name,
         "subevent_name":SubEvents.objects.filter(subevent_id=int(sub_pk)).first().subevent_name,
         "Registrations":final,
-        "header_redirect":"/teachers/{}/{}".format(str(pk),str(sub_pk)),
-        "view_selected_students":"/teachers/{}/{}/rview/view-selected".format(str(pk),str(sub_pk)),
-        "view_registered_students":"/teachers/{}/{}/rview/view-registered".format(str(pk),str(sub_pk))
+        "header_redirect":"/{}{}/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk)),
+        "view_selected_students":"/{}{}/{}/rview/view-selected".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk)),
+        "view_registered_students":"/{}{}/{}/rview/view-registered".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk))
     }
 
     return render(request,'teacherview/view_registrations.html',context)
 
 def view_registration(request,pk,sub_pk,r_pk):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-    
     if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -444,18 +426,14 @@ def view_registration(request,pk,sub_pk,r_pk):
         "event_name":Events.objects.filter(event_id=pk).first().event_name,
         "subevent_name":SubEvents.objects.filter(subevent_id=int(sub_pk)).first().subevent_name,
         "Registration":final,
-        "header_redirect":"/teachers/{}/{}/rview".format(str(pk),str(sub_pk)),
-        "url_redirect_1":"/teachers/{}/{}/rview/{}/accept".format(str(pk),str(sub_pk),str(r_pk)),
-        "url_redirect_2":"/teachers/{}/{}/rview/{}/reject".format(str(pk),str(sub_pk),str(r_pk))
+        "header_redirect":"/{}{}/{}/rview".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk)),
+        "url_redirect_1":"/{}{}/{}/rview/{}/accept".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk),str(r_pk)),
+        "url_redirect_2":"/{}{}/{}/rview/{}/reject".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk),str(r_pk))
     }
 
     return render(request,'teacherview/view_registration.html',context)
  
 def accept(request,pk,sub_pk,r_pk):  
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-    
     if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -465,10 +443,10 @@ def accept(request,pk,sub_pk,r_pk):
     
     if registration.reg_status=="A":
         messages.warning(request,"{} has already been selected for '{}'!".format(str(registration.student_name),partcipated_in.subevent_name))
-        return HttpResponseRedirect('/teachers/{}/{}/rview'.format(str(pk),str(sub_pk)))
+        return HttpResponseRedirect('/{}{}/{}/rview'.format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk)))
     elif partcipated_in.maximum_students == partcipated_in.selected_students:
         messages.warning(request,"Maximum Number of Participants have been selected!")
-        return HttpResponseRedirect('/teachers/{}/{}/rview'.format(str(pk),str(sub_pk)))
+        return HttpResponseRedirect('/{}{}/{}/rview'.format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk)))
     else:
         if registration.reg_status=="R":
             registration.reg_status = "A"
@@ -483,13 +461,9 @@ def accept(request,pk,sub_pk,r_pk):
             partcipated_in.save()
         
         messages.success(request,"{} will participate in '{}'!".format(registration.student_name,partcipated_in.subevent_name))
-        return HttpResponseRedirect('/teachers/{}/{}/rview'.format(str(pk),str(sub_pk)))
+        return HttpResponseRedirect('/{}{}/{}/rview'.format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk)))
  
 def reject(request,pk,sub_pk,r_pk):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-    
     if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -499,7 +473,7 @@ def reject(request,pk,sub_pk,r_pk):
     
     if registration.reg_status=="R":
         messages.warning(request,"{} has already been rejected for '{}'.".format(str(registration.student_name),partcipated_in.subevent_name))
-        return HttpResponseRedirect('/teachers/{}/{}/rview'.format(str(pk),str(sub_pk)))
+        return HttpResponseRedirect('/{}{}/{}/rview'.format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk)))
     elif registration.reg_status=="A":
         registration.reg_status = "R"
         registration.save()
@@ -513,13 +487,9 @@ def reject(request,pk,sub_pk,r_pk):
     
 
     messages.warning(request,"{} will not participate in '{}'.".format(registration.student_name,partcipated_in.subevent_name))
-    return HttpResponseRedirect('/teachers/{}/{}/rview'.format(str(pk),str(sub_pk)))
+    return HttpResponseRedirect('/{}{}/{}/rview'.format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk)))
  
 def view_selected_students(request,pk,sub_pk):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-    
     if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -530,7 +500,7 @@ def view_selected_students(request,pk,sub_pk):
     for i in registrations:
         if i.reg_status=="A":
             sub = {}
-            sub["url_redirect"] = "/teachers/{}/{}/rview/{}".format(str(pk),str(sub_pk),str(i.registration_id))
+            sub["url_redirect"] = "/{}{}/{}/rview/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk),str(i.registration_id))
             sub["name"]=i.student_name
             sub["class"]=str(i.student_class)
             sub["section"]=i.student_section
@@ -546,16 +516,12 @@ def view_selected_students(request,pk,sub_pk):
         "event_name":Events.objects.filter(event_id=pk).first().event_name,
         "subevent_name":SubEvents.objects.filter(subevent_id=int(sub_pk)).first().subevent_name,
         "Registrations":final,
-        "header_redirect":"/teachers/{}/{}/rview".format(str(pk),str(sub_pk))
+        "header_redirect":"/{}{}/{}/rview".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk))
     }
 
     return render(request,'teacherview/view_selected_students.html',context)
  
 def view_registered_students(request,pk,sub_pk):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-    
     if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -565,7 +531,7 @@ def view_registered_students(request,pk,sub_pk):
 
     for i in registrations:
         sub = {}
-        sub["url_redirect"] = "/teachers/{}/{}/rview/{}".format(str(pk),str(sub_pk),str(i.registration_id))
+        sub["url_redirect"] = "/{}{}/{}/rview/{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk),str(i.registration_id))
         sub["name"]=i.student_name
         sub["class"]=str(i.student_class)
         sub["section"]=i.student_section
@@ -581,16 +547,12 @@ def view_registered_students(request,pk,sub_pk):
         "event_name":Events.objects.filter(event_id=pk).first().event_name,
         "subevent_name":SubEvents.objects.filter(subevent_id=int(sub_pk)).first().subevent_name,
         "Registrations":final,
-        "header_redirect":"/teachers/{}/{}/rview".format(str(pk),str(sub_pk))
+        "header_redirect":"/{}{}/{}/rview".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),str(pk),str(sub_pk))
     }
 
     return render(request,'teacherview/view_registered_students.html',context)
  
 def add_event(request):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-
     if request.method == "POST":
         form = EventCreationForm(request.POST, request.FILES)
         if form.is_valid():
@@ -608,7 +570,7 @@ def add_event(request):
                     new_event.event_attachment = request.FILES['add_attachment']
                     new_event.teacher_incharge_id = User.objects.get(user=form.cleaned_data.get("teacher_incharge")).id
                     new_event.save()
-                    return HttpResponseRedirect('/teachers/add-event/{}'.format(new_event.event_id))
+                    return HttpResponseRedirect('/{}add-event/{}'.format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),new_event.event_id))
                 else:
                     new_event.event_dates = "{} to {}".format(start_date,last_date)
                     new_event.single_check = single_check
@@ -616,7 +578,7 @@ def add_event(request):
                     new_event.teacher_incharge_id = User.objects.get(user=form.cleaned_data.get("teacher_incharge")).id
                     new_event.save()
                     messages.success(request,"Event {} has been successfully created!".format(new_event.event_name)) 
-                    return HttpResponseRedirect('/teachers/add-event/{}/sub'.format(new_event.event_id))
+                    return HttpResponseRedirect('/{}add-event/{}/sub'.format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),new_event.event_id))
     else:
         form = EventCreationForm()
 
@@ -627,10 +589,6 @@ def add_event(request):
     return render(request,'teacherview/add_event.html',context)
  
 def single_event_information(request,event_id):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-
     if Events.objects.get(event_id=event_id).single_check=="False":
         messages.warning(request,"Invalid Request.")
         return redirect('teacher-homepage')
@@ -670,10 +628,6 @@ def single_event_information(request,event_id):
         return render(request,'teacherview/single_event_information.html',context)
  
 def subevent_addition_page(request,event_id):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-
     if Events.objects.get(event_id=event_id).single_check=="True":
         messages.warning(request,"Invalid Request.")
         return redirect('teacher-homepage')
@@ -690,16 +644,12 @@ def subevent_addition_page(request,event_id):
 
         context = {"title":event.event_name,
                     "event":final,
-                    "url_redirect":"/teachers/add-event/{}/sub/add".format(event_id),
-                    "event_redirect": "/teachers/{}".format(event_id)}
+                    "url_redirect":"/{}add-event/{}/sub/add".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),event_id),
+                    "event_redirect": "/{}{}".format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),event_id)}
 
         return render(request, "teacherview/subevent_addition_page.html", context)
  
 def add_subevent(request,event_id):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-
     if Events.objects.get(event_id=event_id).single_check=="True":
         messages.warning(request,"Invalid Request.")
         return redirect('teacher-homepage')
@@ -714,7 +664,7 @@ def add_subevent(request,event_id):
                 last_date = form.cleaned_data.get('last_date')
                 if int(total_slots)<int(maximum_students) or start_date>last_date:
                     messages.warning(request,"Error: Invalid Entry.")
-                    return HttpResponseRedirect('/teachers/add-event/{}/sub/add'.format(event_id))
+                    return HttpResponseRedirect('/{}add-event/{}/sub/add'.format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),event_id))
                 else:
                     event = Events.objects.get(event_id=event_id)
                     new_subevent.subevent_teacher_incharge = form.cleaned_data.get('teacher_incharge')
@@ -734,7 +684,7 @@ def add_subevent(request,event_id):
                     new_subevent.save()
 
                     messages.success(request,"Event '{}' has been successfully added to '{}'!".format(form.cleaned_data.get('event_name'),event.event_name))
-                    return HttpResponseRedirect('/teachers/add-event/{}/sub'.format(event_id))
+                    return HttpResponseRedirect('/{}add-event/{}/sub'.format(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),event_id))
         else:
             form = SubEventCreationForm()
 
@@ -745,10 +695,6 @@ def add_subevent(request,event_id):
         return render(request,'teacherview/add_subevent.html',context)
  
 def edit_event(request,event_id,subevent_id):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-    
     if request.user.id!=SubEvents.objects.get(subevent_id=subevent_id).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -788,9 +734,7 @@ def edit_event(request,event_id,subevent_id):
     return render(request,'teacherview/add_subevent.html',context)
  
 def delete_event(request,event_id,subevent_id):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
+     
 
     event = Events.objects.get(event_id=event_id)
 
@@ -806,10 +750,6 @@ def delete_event(request,event_id,subevent_id):
     return redirect('teacher-homepage')
  
 def searchpage(request):
-    if student_check(request):
-        messages.warning(request,"Illegal Action Attempted!")
-        return redirect('teacher-homepage')
-
     query = str(request.GET.get('query'))
     context = {
         "page_title": "Search",
@@ -915,7 +855,7 @@ def get_current_notifications():
             timestamp = ''
             dt = 'Less than a day' if time_diff <= 1 else '{} days'.format(time_diff)
             text = '{} until {}'.format(dt, subevent_data.subevent_name)
-            url = '//{}/teachers/{}/{}'.format(website_url, subevent_data.event_id, subevent_data.subevent_id)
+            url = '//{}/{}{}/{}'.format(website_url,hashlib.sha256("teachers/".encode('utf-8')).hexdigest(), subevent_data.event_id, subevent_data.subevent_id)
             raw_txt = "{}::{}::{}::{}".format(cat, timestamp, text, url)
             txt.append(raw_txt)
         for notification_text in txt:#user_data.notifications:
