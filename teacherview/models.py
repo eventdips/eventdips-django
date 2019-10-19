@@ -41,6 +41,7 @@ class SubEvents(models.Model):
 class Status(models.Model):
 	user = models.OneToOneField(User, on_delete= models.CASCADE)
 	status = models.CharField(default="",max_length=1)
+	acheivements = models.TextField(default="") #stores STUDENT ACHEIVEMENTS
 
 	def __str__(self):
 		return self.user.first_name + " " + self.user.last_name + ": " + self.status

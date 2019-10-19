@@ -121,7 +121,7 @@ SORT EVENTS BY DEADLINES- TEACHERVIEW
 SORT EVENTS BY REGISTRATION DEADLINES- STUDENTVIEW
 CREATE CUSTOM 404-PAGE
 '''
-    
+
 @login_required
 def home(request):
     if student_check(request):
@@ -205,8 +205,7 @@ def home(request):
         "MyEvents":final2
     }
     return render(request, "teacherview/home.html", context)
-
-@login_required
+ 
 def myevents(request):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -244,8 +243,7 @@ def myevents(request):
         "MyEvents":final
     }
     return render(request, "teacherview/myevents.html", context)
-
-@login_required
+ 
 def allevents(request):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -266,8 +264,7 @@ def allevents(request):
         "AllEvents":final
     }
     return render(request, "teacherview/allevents.html", context)
-
-@login_required
+ 
 def subevents(request,pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -297,8 +294,7 @@ def subevents(request,pk):
                 "subevents":final}
 
     return render(request, "teacherview/subevents.html", context)
-
-@login_required
+ 
 def subevent(request,pk,sub_pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -380,8 +376,7 @@ def subevent(request,pk,sub_pk):
                 "header_redirect":"/teachers/{}".format(str(pk))}
 
     return render(request, "teacherview/subevent.html", context)
-
-@login_required
+ 
 def view_registrations(request,pk,sub_pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -453,8 +448,7 @@ def view_registration(request,pk,sub_pk,r_pk):
     }
 
     return render(request,'teacherview/view_registration.html',context)
-
-@login_required
+ 
 def accept(request,pk,sub_pk,r_pk):  
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -488,8 +482,7 @@ def accept(request,pk,sub_pk,r_pk):
         
         messages.success(request,"{} will participate in '{}'!".format(registration.student_name,partcipated_in.subevent_name))
         return HttpResponseRedirect('/teachers/{}/{}/rview'.format(str(pk),str(sub_pk)))
-
-@login_required
+ 
 def reject(request,pk,sub_pk,r_pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -519,8 +512,7 @@ def reject(request,pk,sub_pk,r_pk):
 
     messages.warning(request,"{} will not participate in '{}'.".format(registration.student_name,partcipated_in.subevent_name))
     return HttpResponseRedirect('/teachers/{}/{}/rview'.format(str(pk),str(sub_pk)))
-
-@login_required
+ 
 def view_selected_students(request,pk,sub_pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -556,8 +548,7 @@ def view_selected_students(request,pk,sub_pk):
     }
 
     return render(request,'teacherview/view_selected_students.html',context)
-
-@login_required
+ 
 def view_registered_students(request,pk,sub_pk):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -592,8 +583,7 @@ def view_registered_students(request,pk,sub_pk):
     }
 
     return render(request,'teacherview/view_registered_students.html',context)
-
-@login_required
+ 
 def add_event(request):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -633,8 +623,7 @@ def add_event(request):
         "title":"New Event"
     }
     return render(request,'teacherview/add_event.html',context)
-
-@login_required
+ 
 def single_event_information(request,event_id):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -677,8 +666,7 @@ def single_event_information(request,event_id):
             "title":Events.objects.get(pk=event_id).event_name
         }
         return render(request,'teacherview/single_event_information.html',context)
-
-@login_required
+ 
 def subevent_addition_page(request,event_id):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -704,8 +692,7 @@ def subevent_addition_page(request,event_id):
                     "event_redirect": "/teachers/{}".format(event_id)}
 
         return render(request, "teacherview/subevent_addition_page.html", context)
-
-@login_required
+ 
 def add_subevent(request,event_id):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -754,8 +741,7 @@ def add_subevent(request,event_id):
             "title":Events.objects.get(pk=event_id).event_name
         }
         return render(request,'teacherview/add_subevent.html',context)
-
-@login_required
+ 
 def edit_event(request,event_id,subevent_id):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -798,8 +784,7 @@ def edit_event(request,event_id,subevent_id):
         "title":SubEvents.objects.get(pk=subevent_id).subevent_name
     }
     return render(request,'teacherview/add_subevent.html',context)
-
-@login_required
+ 
 def delete_event(request,event_id,subevent_id):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")
@@ -817,8 +802,7 @@ def delete_event(request,event_id,subevent_id):
         sub.delete()
         messages.success(request,"'{}' has been successfully deleted.".format(sub.subevent_name))
     return redirect('teacher-homepage')
-
-@login_required
+ 
 def searchpage(request):
     if student_check(request):
         messages.warning(request,"Illegal Action Attempted!")

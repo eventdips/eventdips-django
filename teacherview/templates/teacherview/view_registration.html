@@ -18,11 +18,11 @@
     <div class="row">
       <div class="container-fluid">
         {% if student_data.status == "Accepted" %}
-          <div class="card shadow border-success" style="border-radius: 25px;">
+          <div class="card shadow border-success" style="border-radius: 0px 25px 25px 25px;">
         {% elif student_data.status == "Rejected" %}
-          <div class="card shadow border-danger" style="border-radius: 25px;">
+          <div class="card shadow border-danger" style="border-radius: 0px 25px 25px 25px;">
         {% else %}
-          <div class="card shadow border-primary" style="border-radius: 25px;">
+          <div class="card shadow border-primary" style="border-radius: 0px 25px 25px 25px;">
         {% endif %}
             {% if student_data.status == "Accepted" %}
               <div class="card-header m-0 border-left-success" style="border-radius: 0px 25px 25px 0px;">
