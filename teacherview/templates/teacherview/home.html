@@ -6,7 +6,7 @@
 <div class="container-fluid">
   <!-- Page Heading -->       
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">My Events</h1>
+    <a href="{% url 'teacher-myevents' %}"><h1 class="h3 mb-0 text-gray-800">My Events</h1></a>
   </div>
   <div class="row">
     {% for event_data in MyEvents %}
@@ -58,7 +58,7 @@
 <div class="container-fluid">
   <!-- Page Heading -->
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">All Events</h1>
+    <a href="{% url 'teacher-allevents' %}"><h1 class="h3 mb-0 text-gray-800">All Events</h1></a>
   </div>    
   <div class="row">
     <div class="card-columns">

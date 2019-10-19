@@ -65,6 +65,49 @@ def date_conversion(date):
             date[2] = str(date[2]) + "th"
         return "{} {}, {}".format(str(date[2]),month[int(mon)],str(date[0]))
 
+def teacher_event_sort(events):
+    #By Event Deadline- Teachers
+    #By Registration Deadline- Students
+
+    months = ["January","February","March","April","May","June","July","August","Septemeber","October","November","December"]
+    j = 0
+    while j<=(10000):
+        for i in range(0,len(events)-1):
+            base1 = events[i]['event_dates'].split(" to ")
+            base2 = events[i+1]['event_dates'].split(" to ")
+            if len(base1)>1:
+                y1 = int(events[i]['event_dates'].split(" to ")[1].split(", ")[1])
+                m1 = months.index(events[i]['event_dates'].split(" to ")[1].split()[1].split(",")[0])
+                d1 = int(events[i]['event_dates'].split(" to ")[1].split()[0][:-2])
+            else:
+                y1 = int(events[i]['event_dates'].split(" to ")[0].split(", ")[1])
+                m1 = months.index(events[i]['event_dates'].split(" to ")[0].split()[1].split(",")[0])
+                d1 = int(events[i]['event_dates'].split(" to ")[0].split()[0][:-2])
+
+            if len(base2)>1:
+                y2 = int(events[i+1]['event_dates'].split(" to ")[1].split(", ")[1])
+                m2 = months.index(events[i+1]['event_dates'].split(" to ")[1].split()[1].split(",")[0])
+                d2 = int(events[i+1]['event_dates'].split(" to ")[1].split()[0][:-2])
+            else:
+                y2 = int(events[i+1]['event_dates'].split(" to ")[0].split(", ")[1])
+                m2 = months.index(events[i+1]['event_dates'].split(" to ")[0].split()[1].split(",")[0])
+                d2 = int(events[i+1]['event_dates'].split(" to ")[0].split()[0][:-2])
+
+            if y1>y2:
+                #print(events[i]["name"] + str(y1) + ">" + events[i+1]["name"] + str(y2))
+                events[i],events[i+1]=events[i+1],events[i]
+            else:
+                if m1>m2:
+                    #print(events[i]["name"] + str(m1+1) + ">" + events[i+1]["name"] + str(m2+1))
+                    events[i],events[i+1]=events[i+1],events[i]
+                else:
+                    if d1>d2:
+                        events[i],events[i+1]=events[i+1],events[i]
+
+        j+=1
+
+    return events
+
 def student_check(request):
     if not request.user.is_anonymous:
         ret = Status.objects.get(user=request.user)
@@ -155,7 +198,9 @@ def home(request):
                 sub["event_dates"] = date_conversion(i.event_dates)
                 sub["event_check"] = True
                 final2.append(sub)
-
+    
+    final = teacher_event_sort(final)
+    final2 = teacher_event_sort(final2)
 
     context = {"title":"Home",
         "AllEvents": final,
