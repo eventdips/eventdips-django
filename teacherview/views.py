@@ -81,9 +81,6 @@ SORT EVENTS BY REGISTRATION DEADLINES- STUDENTVIEW
 '''
 
 def home(request):
-    user = authenticate(request.user)
-    login(request,user)
-
     if student_check(request):
         return redirect('student-homepage')
 
