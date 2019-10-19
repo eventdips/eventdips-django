@@ -26,3 +26,22 @@
 </div>
 
 {% endblock %}
+
+{% block scripts %}
+	<script>
+		$(document).ready(function(){
+			$('#form_swap').on('change',function(event){
+				event.preventDefault();
+				var res = $(this).val();
+				$.ajax({
+					url:"{% url 'server-response' %}",
+					method:'GET',
+					data : {'switch_value' : res}, 
+					success: function(data) {
+						location.href=data["url"];
+					}
+				});
+			});
+		});
+	</script>
+{% endblock %}

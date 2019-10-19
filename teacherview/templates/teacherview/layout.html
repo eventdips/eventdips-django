@@ -282,6 +282,8 @@
         location.href='{% url 'teacher-search' %}' + '?query='+input;
       }
     </script>
-</body>
+    {% block Scripts %}
+    {% endblock %}
+  </body>
 
 </html>

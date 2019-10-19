@@ -21,3 +21,9 @@ urlpatterns = [
 	path('delete-event/<int:event_id>/<int:subevent_id>',views.delete_event,name="delete-event"),
 	path('search/', views.searchpage, name='teacher-search')
 ]
+
+'''
+ADD HASHING
+MAKE SINGLE EVENT FORM CHANGING THING
+PROFILE PAGE- TEACHERS
+'''

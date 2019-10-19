@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from .models import Events,SubEvents,Status
 from django.contrib.auth.models import User
 from django.contrib.auth import login,authenticate
 from studentview.models import Registrations
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from .forms import EventCreationForm, SingleEventInformationForm, SubEventCreationForm, LoginForm
+from .forms import EventCreationForm, SingleEventInformationForm, SubEventCreationForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 def date_conversion(date):
     date = str(date)
@@ -930,3 +932,21 @@ def get_current_notifications():
     res["count"] = str(cnt)
     return res
 
+'''
+@csrf_exempt
+def on_server_response(request):
+    if request.method=="GET":
+        user_choice = request.GET.get('switch_value')
+        if user_choice:
+            if user_choice == '1':
+                result = {"url": reverse('add-event')}
+            elif user_choice == '2':
+                result = {"url": reverse('add-event')+'1/add-subevent'}
+            elif user_choice == '3':
+                val = str(request.GET.get('new_value'))
+                obj = Registrations.objects.get(registration_id=int(str(request.GET.get('reg_id'))))
+                obj.registration_status = 'A' if val == '1' else ('R' if val == '0' else '')
+                obj.save()
+                result = {"url": "#"}
+            return JsonResponse(result)
+'''
