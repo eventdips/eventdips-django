@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
 from .models import Events,SubEvents,Status
 from django.contrib.auth.models import User
-from django.contrib.auth import login,authenticate
+from django.contrib.auth import logout,login,authenticate
 from studentview.models import Registrations
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from .forms import EventCreationForm, SingleEventInformationForm, SubEventCreationForm
+from .forms import EventCreationForm, SingleEventInformationForm, SubEventCreationForm, LoginForm
 from django.views.decorators.csrf import csrf_exempt
 import hashlib
 
@@ -126,29 +126,54 @@ def student_check(request):
 
 def login_check(request):
     ret = request.COOKIES.get("logged_in")
-    if ret:
-        messages.success(request,"'{}' is logged in- {}!".format(User.objects.get(pk=int(request.COOKIES.get("id"))).username, str(ret)))
-    else:
+    if not ret:
         return redirect('login')
+
+def login_auth(request):
+    if request.method=='POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username,password=password)
+            if user is not None:
+                response = redirect('teacher-homepage')
+                response.set_cookie('logged_in',True)
+                response.set_cookie('id',User.objects.get(username=username).pk)
+                return response
+            else:
+                return redirect('login')
+    else:
+        form = LoginForm()
+    
+    context = {
+        "form":form
+    }
+
+    return render(request,'studentview/login.html',context)    
+    
+
+def logout_auth(request):
+    logout(request)
+    response = render(request,"studentview/logout.html")
+    response.delete_cookie('logged_in')
+    response.delete_cookie('id')
+    return response
 '''
 SORT EVENTS BY DEADLINES- TEACHERVIEW
 SORT EVENTS BY REGISTRATION DEADLINES- STUDENTVIEW
 CREATE CUSTOM 404-PAGE
 '''
 
-'''
-request.session["logged_in"] = False
-if "logged_in" in request.session:
-    request.session["logged_in"] = True
-    request.session["id"] = request.user.pk        
-'''
-
 def home(request):
     login_check(request)
 
-    if student_check(request):
-        return redirect('student-homepage')
-    
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
+        
     events = list(Events.objects.all())
     teacher_id = int(request.COOKIES.get("id"))
     final = []
@@ -227,18 +252,16 @@ def home(request):
         "MyEvents":final2
     }
 
-    response = render_to_response("teacherview/home.html", context)
-
-    response.set_cookie("logged_in",True)
-    response.set_cookie("id",request.user.pk)
-    return response
-    #return render(request, "teacherview/home.html", context)
+    return render(request, "teacherview/home.html", context)
  
 def myevents(request):
     login_check(request)
 
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     teacher_id = int(request.COOKIES.get("id"))
     subevents = list(SubEvents.objects.all())
@@ -276,8 +299,11 @@ def myevents(request):
 def allevents(request):
     login_check(request)
 
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
         
     subevents = list(SubEvents.objects.all())
     final=[]
@@ -298,8 +324,11 @@ def allevents(request):
 def subevents(request,pk):
     login_check(request)
 
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     event = Events.objects.filter(pk=pk).first()
     e_id = event.event_id
@@ -329,8 +358,11 @@ def subevents(request,pk):
 def subevent(request,pk,sub_pk):
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     event = Events.objects.filter(pk=pk).first()
     subevent = SubEvents.objects.filter(subevent_id=sub_pk).first()
@@ -412,8 +444,11 @@ def subevent(request,pk,sub_pk):
 def view_registrations(request,pk,sub_pk):
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -450,8 +485,11 @@ def view_registrations(request,pk,sub_pk):
 def view_registration(request,pk,sub_pk,r_pk):
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -486,8 +524,11 @@ def view_registration(request,pk,sub_pk,r_pk):
 def accept(request,pk,sub_pk,r_pk):  
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -521,8 +562,11 @@ def accept(request,pk,sub_pk,r_pk):
 def reject(request,pk,sub_pk,r_pk):
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -552,8 +596,11 @@ def reject(request,pk,sub_pk,r_pk):
 def view_selected_students(request,pk,sub_pk):
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -589,8 +636,11 @@ def view_selected_students(request,pk,sub_pk):
 def view_registered_students(request,pk,sub_pk):
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -625,8 +675,11 @@ def view_registered_students(request,pk,sub_pk):
 def add_event(request):
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     if request.method == "POST":
         form = EventCreationForm(request.POST, request.FILES)
@@ -666,8 +719,11 @@ def add_event(request):
 def single_event_information(request,event_id):
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     if Events.objects.get(event_id=event_id).single_check=="False":
         messages.warning(request,"Invalid Request.")
@@ -710,8 +766,11 @@ def single_event_information(request,event_id):
 def subevent_addition_page(request,event_id):
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     if Events.objects.get(event_id=event_id).single_check=="True":
         messages.warning(request,"Invalid Request.")
@@ -737,8 +796,11 @@ def subevent_addition_page(request,event_id):
 def add_subevent(request,event_id):
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     if Events.objects.get(event_id=event_id).single_check=="True":
         messages.warning(request,"Invalid Request.")
@@ -787,8 +849,11 @@ def add_subevent(request,event_id):
 def edit_event(request,event_id,subevent_id):
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=subevent_id).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -831,8 +896,11 @@ def edit_event(request,event_id,subevent_id):
 def delete_event(request,event_id,subevent_id):
     login_check(request)
 
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
 
     event = Events.objects.get(event_id=event_id)
     if event.single_check=="True":
@@ -849,8 +917,11 @@ def delete_event(request,event_id,subevent_id):
 def searchpage(request):
     login_check(request)
     
-    if student_check(request):
-        return redirect('student-homepage')
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
         
     query = str(request.GET.get('query'))
     context = {

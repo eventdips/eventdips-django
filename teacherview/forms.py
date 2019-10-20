@@ -3,6 +3,10 @@ from .models import Events,SubEvents
 from studentview.models import Registrations
 from django.forms.widgets import SelectDateWidget
 
+class LoginForm(forms.Form):
+	username = forms.CharField(widget=forms.TextInput())
+	password = forms.CharField(widget=forms.PasswordInput())
+
 class EventCreationForm(forms.ModelForm):
 	event_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Invictus'}))
 	teacher_incharge = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Vikranti Ashtikar'}))
