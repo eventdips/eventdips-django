@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
 from .models import Events,SubEvents,Status
 from django.contrib.auth.models import User
@@ -125,17 +125,22 @@ def student_check(request):
         return False
 
 def login_check(request):
-    ret = request.session["logged_in"]
-
-    if not ret:
-        return redirect('login')
+    ret = request.COOKIES.get("logged_in")
+    if ret:
+        messages.success(request,"'{}' is logged in- {}!".format(User.objects.get(pk=request.COOKIES.get("id")).username, str(ret)))
     else:
-        messages.success(request,"'{}' is logged in- {}!".format(User.objects.get(pk=request.session["id"]).username, str(ret)))
-
+        return redirect('login')
 '''
 SORT EVENTS BY DEADLINES- TEACHERVIEW
 SORT EVENTS BY REGISTRATION DEADLINES- STUDENTVIEW
 CREATE CUSTOM 404-PAGE
+'''
+
+'''
+    request.session["logged_in"] = False
+    if "logged_in" in request.session:
+        request.session["logged_in"] = True
+        request.session["id"] = request.user.pk        
 '''
 
 @login_required
@@ -143,11 +148,6 @@ def home(request):
     if student_check(request):
         return redirect('student-homepage')
     
-    request.session["logged_in"] = False
-    if "logged_in" in request.session:
-        request.session["logged_in"] = True
-        request.session["id"] = request.user.pk
-
     events = list(Events.objects.all())
     teacher_id = request.user.id 
     final = []
@@ -225,7 +225,13 @@ def home(request):
         "AllEvents": final,
         "MyEvents":final2
     }
-    return render(request, "teacherview/home.html", context)
+
+    response = render_to_response("teacherview/home.html", context)
+
+    response.set_cookie("logged_in",True)
+    response.set_cookie("id",request.user.pk)
+    return response
+    #return render(request, "teacherview/home.html", context)
  
 def myevents(request):
     login_check(request)
@@ -264,6 +270,8 @@ def myevents(request):
     return render(request, "teacherview/myevents.html", context)
  
 def allevents(request):
+    login_check(request)
+
     subevents = list(SubEvents.objects.all())
     final=[]
     for s_event in subevents:        
