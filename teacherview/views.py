@@ -137,10 +137,10 @@ CREATE CUSTOM 404-PAGE
 '''
 
 '''
-    request.session["logged_in"] = False
-    if "logged_in" in request.session:
-        request.session["logged_in"] = True
-        request.session["id"] = request.user.pk        
+request.session["logged_in"] = False
+if "logged_in" in request.session:
+    request.session["logged_in"] = True
+    request.session["id"] = request.user.pk        
 '''
 
 @login_required
