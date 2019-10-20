@@ -12,12 +12,12 @@ from django.views.decorators.csrf import csrf_exempt
 import hashlib
 
 '''
-teachers-ff1b4751894e267c4fe3e1c7025670929c15c05b033800e088f9ce931a377912- hashlib.sha512("teachers/".encode('utf-8')).hexdigest()
-student-b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0- hashlib.sha512("students/".encode('utf-8')).hexdigest()
+teachers-ff1b4751894e267c4fe3e1c7025670929c15c05b033800e088f9ce931a377912- hashlib.sha256("teachers/".encode('utf-8')).hexdigest()
+student-b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0- hashlib.sha256("students/".encode('utf-8')).hexdigest()
 '''
 
-teacher_hash = hashlib.sha512("teachers/".encode('utf-8')).hexdigest()
-student_hash = hashlib.sha512("students/".encode('utf-8')).hexdigest()
+teacher_hash = hashlib.sha256("teachers/".encode('utf-8')).hexdigest()
+student_hash = hashlib.sha256("students/".encode('utf-8')).hexdigest()
 
 def date_conversion(date):
     date = str(date)
@@ -118,14 +118,19 @@ def teacher_event_sort(events):
     return events
 
 def student_check(request):
-    if not request.user.is_anonymous:
-        ret = Status.objects.get(user=request.user)
-        if ret.status=="S":
-            return True 
-        else:
-            return False
+    ret = Status.objects.get(user=request.user)
+    if ret.status=="S":
+        return True 
     else:
         return False
+
+def login_check(request):
+    ret = request.session["logged_in"]
+
+    if not ret:
+        return redirect('login')
+    else:
+        messages.success(request,"'{}' is logged in- {}!".format(User.objects.get(pk=request.session["id"]).username, str(ret)))
 
 '''
 SORT EVENTS BY DEADLINES- TEACHERVIEW
@@ -137,6 +142,11 @@ CREATE CUSTOM 404-PAGE
 def home(request):
     if student_check(request):
         return redirect('student-homepage')
+    
+    request.session["logged_in"] = False
+    if "logged_in" in request.session:
+        request.session["logged_in"] = True
+        request.session["id"] = request.user.pk
 
     events = list(Events.objects.all())
     teacher_id = request.user.id 
@@ -218,6 +228,8 @@ def home(request):
     return render(request, "teacherview/home.html", context)
  
 def myevents(request):
+    login_check(request)
+
     teacher_id = request.user.id
     subevents = list(SubEvents.objects.all())
     final=[]
@@ -269,6 +281,8 @@ def allevents(request):
     return render(request, "teacherview/allevents.html", context)
  
 def subevents(request,pk):
+    login_check(request)
+
     event = Events.objects.filter(pk=pk).first()
     e_id = event.event_id
     subevents = list(SubEvents.objects.filter(event_id=e_id))
@@ -295,6 +309,8 @@ def subevents(request,pk):
     return render(request, "teacherview/subevents.html", context)
  
 def subevent(request,pk,sub_pk):
+    login_check(request)
+    
     event = Events.objects.filter(pk=pk).first()
     subevent = SubEvents.objects.filter(subevent_id=sub_pk).first()
     teacher_id = request.user.id
@@ -373,6 +389,8 @@ def subevent(request,pk,sub_pk):
     return render(request, "teacherview/subevent.html", context)
  
 def view_registrations(request,pk,sub_pk):
+    login_check(request)
+    
     if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -406,6 +424,8 @@ def view_registrations(request,pk,sub_pk):
     return render(request,'teacherview/view_registrations.html',context)
 
 def view_registration(request,pk,sub_pk,r_pk):
+    login_check(request)
+    
     if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -437,6 +457,8 @@ def view_registration(request,pk,sub_pk,r_pk):
     return render(request,'teacherview/view_registration.html',context)
  
 def accept(request,pk,sub_pk,r_pk):  
+    login_check(request)
+    
     if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -467,6 +489,8 @@ def accept(request,pk,sub_pk,r_pk):
         return HttpResponseRedirect('/{}{}/{}/rview'.format(teacher_hash,str(pk),str(sub_pk)))
  
 def reject(request,pk,sub_pk,r_pk):
+    login_check(request)
+    
     if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -493,6 +517,8 @@ def reject(request,pk,sub_pk,r_pk):
     return HttpResponseRedirect('/{}{}/{}/rview'.format(teacher_hash,str(pk),str(sub_pk)))
  
 def view_selected_students(request,pk,sub_pk):
+    login_check(request)
+    
     if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -525,6 +551,8 @@ def view_selected_students(request,pk,sub_pk):
     return render(request,'teacherview/view_selected_students.html',context)
  
 def view_registered_students(request,pk,sub_pk):
+    login_check(request)
+    
     if request.user.id!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -556,6 +584,8 @@ def view_registered_students(request,pk,sub_pk):
     return render(request,'teacherview/view_registered_students.html',context)
  
 def add_event(request):
+    login_check(request)
+    
     if request.method == "POST":
         form = EventCreationForm(request.POST, request.FILES)
         if form.is_valid():
@@ -592,6 +622,8 @@ def add_event(request):
     return render(request,'teacherview/add_event.html',context)
  
 def single_event_information(request,event_id):
+    login_check(request)
+    
     if Events.objects.get(event_id=event_id).single_check=="False":
         messages.warning(request,"Invalid Request.")
         return redirect('teacher-homepage')
@@ -631,6 +663,8 @@ def single_event_information(request,event_id):
         return render(request,'teacherview/single_event_information.html',context)
  
 def subevent_addition_page(request,event_id):
+    login_check(request)
+    
     if Events.objects.get(event_id=event_id).single_check=="True":
         messages.warning(request,"Invalid Request.")
         return redirect('teacher-homepage')
@@ -653,6 +687,8 @@ def subevent_addition_page(request,event_id):
         return render(request, "teacherview/subevent_addition_page.html", context)
  
 def add_subevent(request,event_id):
+    login_check(request)
+    
     if Events.objects.get(event_id=event_id).single_check=="True":
         messages.warning(request,"Invalid Request.")
         return redirect('teacher-homepage')
@@ -698,6 +734,8 @@ def add_subevent(request,event_id):
         return render(request,'teacherview/add_subevent.html',context)
  
 def edit_event(request,event_id,subevent_id):
+    login_check(request)
+    
     if request.user.id!=SubEvents.objects.get(subevent_id=subevent_id).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')
@@ -753,6 +791,8 @@ def delete_event(request,event_id,subevent_id):
     return redirect('teacher-homepage')
  
 def searchpage(request):
+    login_check(request)
+    
     query = str(request.GET.get('query'))
     context = {
         "page_title": "Search",
