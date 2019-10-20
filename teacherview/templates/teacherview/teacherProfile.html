@@ -1,0 +1,51 @@
+{% extends 'studentview/layout.html' %}
+
+{% block ContentView %}
+
+<!--Beginning of Content-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <!--Card Started-->
+            <div class="card">
+                <!--Header of Card-->
+                <div class="card-header">
+                    <img class="collapse-item rounded-circle" src="https://source.unsplash.com/random/80x80" />
+                    <br>
+                    <br>
+                    <h4 class="m-0 font-weight-bold text-primary">USER_NAME</h4>
+                </div>
+                <!--Body of Card-->
+                <div class="card-body">
+                    A lot of teacher info
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="card-columns">
+            {% for event_data in AllEvents %}
+    
+                <div class="card shadow mb-4" style="border-radius: 25px;">
+                    <div class="card-header py-3 border-left-success" style="border-radius: 0px 25px 25px 0px;">
+                        <a href={{ event_data.url_redirect }} style="text-decoration:none;">
+                            <h4 class="m-0 font-weight-bold text-success">{{ event_data.name }}</h4>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }} </li>
+                            <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
+                            <li><b>Event Description</b>: {{ event_data.event_information }}</li>
+                        </ul> 
+                    </div>
+                </div>
+                <br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!--End of Content-->
+
+{% endblock %}
