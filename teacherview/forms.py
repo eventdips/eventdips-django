@@ -54,8 +54,6 @@ class SingleEventInformationForm(forms.ModelForm):
 		("Science",'Science')
 	)
 	category = forms.CharField(help_text='Event Category',widget=forms.Select(choices=cat_options))
-	add_attachment = forms.FileField(widget=forms.ClearableFileInput())
-
 
 	class Meta:
 		model = SubEvents
