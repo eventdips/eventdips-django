@@ -320,7 +320,53 @@ def allevents(request):
         "AllEvents":final
     }
     return render(request, "teacherview/allevents.html", context)
- 
+
+def profile(request):
+    login_check(request)
+    
+    try:
+        if student_check(request):
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
+
+    user = User.objects.get(pk=int(request.COOKIES.get('id')))
+    status = Status.objects.get(user=user)
+    
+    final = []
+    for s_event in list(SubEvents.objects.filter(subevent_teacher_incharge_id=user.pk)):
+        sub = {}
+        if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
+            sub = {}
+            sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+            sub["name"] = s_event.subevent_name
+            sub["event_dates"] = date_conversion(s_event.subevent_dates)
+            sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+            sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+            sub["category"] = s_event.category
+            sub["completed_check"] = False
+            final.append(sub)
+        else:
+            sub = {}
+            sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+            sub["name"] = s_event.subevent_name
+            sub["event_dates"] = date_conversion(s_event.subevent_dates)
+            sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+            sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+            sub["category"] = s_event.category
+            sub["completed_check"] = True
+            final.append(sub)
+
+    context = {
+        "username": user.username,
+        "name": user.first_name + " " + user.last_name,
+        "email": user.email,
+        "department": status.department,
+        "MyEvents": final
+    }
+
+    return render(request,"teacherview/teacherProfile.html",context)
+    
 def subevents(request,pk):
     login_check(request)
 
@@ -1044,52 +1090,6 @@ def get_current_notifications():
         cnt = "9+"
     res["count"] = str(cnt)
     return res
-
-def profile(request):
-    login_check(request)
-    
-    try:
-        if student_check(request):
-            return redirect('student-homepage')
-    except:
-        return redirect('login')
-
-    user = User.objects.get(pk=int(request.COOKIES.get('id')))
-    status = Status.objects.get(user=user)
-    
-    final = []
-    for s_event in list(SubEvents.objects.filter(subevent_teacher_incharge_id=user.pk)):
-        sub = {}
-        if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
-            sub = {}
-            sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-            sub["name"] = s_event.subevent_name
-            sub["event_dates"] = date_conversion(s_event.subevent_dates)
-            sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-            sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-            sub["category"] = s_event.category
-            sub["completed_check"] = False
-            final.append(sub)
-        else:
-            sub = {}
-            sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-            sub["name"] = s_event.subevent_name
-            sub["event_dates"] = date_conversion(s_event.subevent_dates)
-            sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-            sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-            sub["category"] = s_event.category
-            sub["completed_check"] = True
-            final.append(sub)
-
-    context = {
-        "username": user.username,
-        "name": user.first_name + " " + user.last_name,
-        "email": user.email,
-        "department": status.department,
-        "MyEvents": final
-    }
-
-    return render(request,"teacherview/teacherProfile.html",context)
 
 
 '''
