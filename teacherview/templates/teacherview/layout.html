@@ -62,8 +62,9 @@
         <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Profile</h6>
-            <img class="collapse-item rounded-circle" src="https://source.unsplash.com/random/50x50">
-            <p class="collapse-header"> {{ user.first_name }} {{ user.last_name }}</p>
+            <center><img class="collapse-item rounded-circle" src="https://source.unsplash.com/random/50x50"></center>
+            {% load tags %}
+              <p class="collapse-header"> {% teacher_name request %}</p>
             <a class="collapse-item" href='{% url "teacher-profile" %}'>View Profile</a>
           </div>
         </div>
