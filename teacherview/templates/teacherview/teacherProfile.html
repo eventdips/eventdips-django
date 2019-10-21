@@ -1,4 +1,4 @@
-{% extends 'studentview/layout.html' %}
+{% extends 'teacherview/layout.html' %}
 
 {% block ContentView %}
 
@@ -9,40 +9,53 @@
             <!--Card Started-->
             <div class="card">
                 <!--Header of Card-->
-                <div class="card-header">
+                <div class="card-header border-left-success">
                     <img class="collapse-item rounded-circle" src="https://source.unsplash.com/random/80x80" />
                     <br>
                     <br>
-                    <h4 class="m-0 font-weight-bold text-primary">USER_NAME</h4>
+                    <h4 class="m-0 font-weight-bold text-success">{{ name }}</h4>
                 </div>
                 <!--Body of Card-->
                 <div class="card-body">
-                    A lot of teacher info
+                    <ul>
+                        <li><b>Username</b>: {{ username }} </li>
+                        <li><b>Email ID</b>: {{ email }}</li>
+                        <li><b>Department</b>: {{ department }}</li>
+                    </ul> 
                 </div>
             </div>
         </div>
     </div>
     <br><br>
-    <div class="row">
-        <div class="card-columns">
-            {% for event_data in AllEvents %}
-    
-                <div class="card shadow mb-4" style="border-radius: 25px;">
-                    <div class="card-header py-3 border-left-success" style="border-radius: 0px 25px 25px 0px;">
-                        <a href={{ event_data.url_redirect }} style="text-decoration:none;">
-                            <h4 class="m-0 font-weight-bold text-success">{{ event_data.name }}</h4>
-                        </a>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="card-columns">
+                {% for event_data in MyEvents %}
+                    <div class="card shadow mb-4" style="border-radius: 25px;">
+                        <div class="card-header py-3 border-left-success" style="border-radius: 0px 25px 25px 0px;">
+                            <a href={{ event_data.url_redirect }} style="text-decoration:none;">
+                                <h4 class="m-0 font-weight-bold text-success">{{ event_data.name }}</h4>
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }} </li>
+                                <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
+                                <li><b>Event Description</b>: {{ event_data.event_information }}</li>
+                                {% if event_data.category %}
+                                    <li><b>Category</b>: {{ event_data.category}}</li>
+                                {% endif %}
+                                {% if event_data.completed_check %}
+                                    <li><b>Status</b>: Registrations/Acceptions Complete</li>
+                                {% else %}
+                                    <li><b>Status</b>: Registrations/Acceptions Pending</li>
+                                {% endif %}
+                            </ul> 
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <ul>
-                            <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }} </li>
-                            <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
-                            <li><b>Event Description</b>: {{ event_data.event_information }}</li>
-                        </ul> 
-                    </div>
-                </div>
-                <br>
-            {% endfor %}
+                    <br>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

@@ -5,6 +5,7 @@ urlpatterns = [
 	path('',views.home,name='teacher-homepage'),
 	path('myevents',views.myevents,name='teacher-myevents'),
 	path('allevents',views.allevents,name='teacher-allevents'),
+	path('profile',views.profile,name='teacher-profile'),
 	path('<int:pk>',views.subevents,name='teacher-subevents'),
 	path('<int:pk>/<int:sub_pk>',views.subevent,name='teacher-subevent'),
 	path('<int:pk>/<int:sub_pk>/rview',views.view_registrations,name='teacher-registers'),
@@ -29,5 +30,4 @@ student-b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0
 
 '''
 MAKE SINGLE EVENT FORM CHANGING THING
-PROFILE PAGE- TEACHERS
 '''
