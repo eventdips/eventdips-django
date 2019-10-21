@@ -197,7 +197,7 @@ def home(request):
     subevents = list(SubEvents.objects.all())
     final2=[]
     for s_event in subevents:
-        if s_event.subevent_teacher_incharge_id==teacher_id:
+        if s_event.subevent_teacher_incharge_id==teacher_id or Status.objects.get(user=User.objects.get(pk=teacher_id)).status=="M":
             if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
                 sub = {}
                 sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
@@ -225,7 +225,7 @@ def home(request):
    
     for i in events:
         c=0
-        if i.teacher_incharge_id==teacher_id:
+        if i.teacher_incharge_id==teacher_id or Status.objects.get(user=User.objects.get(pk=teacher_id)).status=="M":
             for s in final2:
                 if s["name"]==i.event_name:
                     c+=1
@@ -249,11 +249,12 @@ def home(request):
 
     context = {"title":"Home",
         "AllEvents": final,
-        "MyEvents":final2
+        "MyEvents":final2,
+        "status": "M" if Status.objects.get(user=User.objects.get(pk=teacher_id)).status=="M" else ""
     }
 
     return render(request, "teacherview/home.html", context)
- 
+
 def myevents(request):
     login_check(request)
 
@@ -265,9 +266,10 @@ def myevents(request):
 
     teacher_id = int(request.COOKIES.get("id"))
     subevents = list(SubEvents.objects.all())
+    status = Status.objects.get(user=User.objects.get(pk=teacher_id))
     final=[]
     for s_event in subevents:
-        if s_event.subevent_teacher_incharge_id==teacher_id:
+        if s_event.subevent_teacher_incharge_id==teacher_id or status.status=="M":
             if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
                 sub = {}
                 sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
@@ -334,35 +336,43 @@ def profile(request):
     status = Status.objects.get(user=user)
     
     final = []
-    for s_event in list(SubEvents.objects.filter(subevent_teacher_incharge_id=user.pk)):
-        sub = {}
-        if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
+    for s_event in list(SubEvents.objects.all()):
+        if s_event.subevent_teacher_incharge_id==user.pk or status.status=="M":
             sub = {}
-            sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-            sub["name"] = s_event.subevent_name
-            sub["event_dates"] = date_conversion(s_event.subevent_dates)
-            sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-            sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-            sub["category"] = s_event.category
-            sub["event_information"] = s_event.subevent_information
-            sub["completed_check"] = False
-            final.append(sub)
-        else:
-            sub = {}
-            sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-            sub["name"] = s_event.subevent_name
-            sub["event_dates"] = date_conversion(s_event.subevent_dates)
-            sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-            sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-            sub["category"] = s_event.category
-            sub["completed_check"] = True
-            sub["event_information"] = s_event.subevent_information
-            final.append(sub)
+            if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
+                sub = {}
+                sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                sub["name"] = s_event.subevent_name
+                sub["event_dates"] = date_conversion(s_event.subevent_dates)
+                sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                sub["category"] = s_event.category
+                sub["event_information"] = s_event.subevent_information
+                sub["completed_check"] = False
+                
+                final.append(sub)
+            else:
+                sub = {}
+                sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                sub["name"] = s_event.subevent_name
+                sub["event_dates"] = date_conversion(s_event.subevent_dates)
+                sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                sub["category"] = s_event.category
+                sub["completed_check"] = True
+                sub["event_information"] = s_event.subevent_information
+                final.append(sub)
+
+    if status.status=="M":
+        stat = "Admin"
+    else:
+        stat = ""
 
     context = {
         "username": user.username,
         "name": user.first_name + " " + user.last_name,
         "email": user.email,
+        "status": stat,
         "department": status.department,
         "MyEvents": final
     }
@@ -416,7 +426,7 @@ def subevent(request,pk,sub_pk):
     subevent = SubEvents.objects.filter(subevent_id=sub_pk).first()
     teacher_id = int(request.COOKIES.get("id"))
 
-    if subevent.subevent_teacher_incharge_id==teacher_id:
+    if subevent.subevent_teacher_incharge_id==teacher_id or Status.objects.get(user=User.objects.get(pk=teacher_id)).status=="M":
         if subevent.selected_students<subevent.maximum_students and subevent.total_slots>subevent.total_registrations:
             final = []
             sub = {}
@@ -498,9 +508,9 @@ def view_registrations(request,pk,sub_pk):
     except:
         return redirect('login')
 
-    if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
+    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')
+        return redirect('teacher-homepage')'''
 
     registrations = list(Registrations.objects.filter(subevent_id=sub_pk))
     final=[]
@@ -539,9 +549,9 @@ def view_registration(request,pk,sub_pk,r_pk):
     except:
         return redirect('login')
 
-    if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
+    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')
+        return redirect('teacher-homepage')'''
 
     registration = Registrations.objects.filter(registration_id=r_pk).first()
     sub = {}
@@ -578,9 +588,9 @@ def accept(request,pk,sub_pk,r_pk):
     except:
         return redirect('login')
 
-    if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
+    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')
+        return redirect('teacher-homepage')'''
 
     registration = Registrations.objects.get(registration_id=r_pk)
     partcipated_in = SubEvents.objects.get(subevent_id=sub_pk)
@@ -616,9 +626,9 @@ def reject(request,pk,sub_pk,r_pk):
     except:
         return redirect('login')
 
-    if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
+    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')
+        return redirect('teacher-homepage')'''
 
     registration = Registrations.objects.get(registration_id=r_pk)
     partcipated_in = SubEvents.objects.get(subevent_id=sub_pk)
@@ -650,9 +660,9 @@ def view_selected_students(request,pk,sub_pk):
     except:
         return redirect('login')
 
-    if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
+    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')
+        return redirect('teacher-homepage')'''
 
     registrations = list(Registrations.objects.filter(subevent_id=sub_pk))
     final=[]
@@ -690,9 +700,9 @@ def view_registered_students(request,pk,sub_pk):
     except:
         return redirect('login')
 
-    if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
+    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')
+        return redirect('teacher-homepage')'''
 
     registrations = list(Registrations.objects.filter(subevent_id=sub_pk))
     final=[]
@@ -903,9 +913,9 @@ def edit_event(request,event_id,subevent_id):
     except:
         return redirect('login')
 
-    if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=subevent_id).subevent_teacher_incharge_id:
+    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=subevent_id).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')
+        return redirect('teacher-homepage')'''
 
     sub = SubEvents.objects.get(subevent_id=subevent_id)
     if request.method=="POST":

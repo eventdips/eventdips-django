@@ -21,6 +21,9 @@
                         <li><b>Username</b>: {{ username }} </li>
                         <li><b>Email ID</b>: {{ email }}</li>
                         <li><b>Department</b>: {{ department }}</li>
+                        {% if status %}
+                            <li><b>Status</b>: {{ status }}</li>
+                        {% endif %}
                     </ul> 
                 </div>
             </div>

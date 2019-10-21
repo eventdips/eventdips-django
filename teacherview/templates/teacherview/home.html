@@ -5,8 +5,12 @@
 <!-- Begin Page Content -->
 <div class="container-fluid">
   <!-- Page Heading -->       
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <a href="{% url 'teacher-myevents' %}"><h1 class="h3 mb-0 text-gray-800">My Events</h1></a>
+  <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
+    {% if status %}
+      <a href="{% url 'teacher-myevents' %}"><h1 class="h3 mb-0 text-gray-800">Admin View</h1></a>
+    {% else %}
+      <a href="{% url 'teacher-myevents' %}"><h1 class="h3 mb-0 text-gray-800">My Events</h1></a>
+    {% endif %}
   </div>
   <div class="row">
     {% if MyEvents %}
@@ -64,33 +68,34 @@
 
 <br>
 
-<div class="container-fluid">
-  <!-- Page Heading -->
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <a href="{% url 'teacher-allevents' %}"><h1 class="h3 mb-0 text-gray-800">All Events</h1></a>
-  </div>    
-  <div class="row">
-    <div class="card-columns">
-    {% for event_data in AllEvents %}
-    
-      <div class="card shadow mb-4" style="border-radius: 25px;">
-        <div class="card-header py-3 border-left-success" style="border-radius: 0px 25px 25px 0px;">
-          <a href={{ event_data.url_redirect }} style="text-decoration:none;">
-            <h4 class="m-0 font-weight-bold text-success">{{ event_data.name }}</h4></a>
+{% if not status %}
+  <div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <a href="{% url 'teacher-allevents' %}"><h1 class="h3 mb-0 text-gray-800">All Events</h1></a>
+    </div>    
+    <div class="row">
+      <div class="card-columns">
+      {% for event_data in AllEvents %}
+      
+        <div class="card shadow mb-4" style="border-radius: 25px;">
+          <div class="card-header py-3 border-left-success" style="border-radius: 0px 25px 25px 0px;">
+            <a href={{ event_data.url_redirect }} style="text-decoration:none;">
+              <h4 class="m-0 font-weight-bold text-success">{{ event_data.name }}</h4></a>
+          </div>
+          <div class="card-body">
+            <ul>
+              <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }} </li>
+              <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
+              <li><b>Event Description</b>: {{ event_data.event_information }}</li>
+            </ul> 
+          </div>
         </div>
-        <div class="card-body">
-          <ul>
-            <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }} </li>
-            <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
-            <li><b>Event Description</b>: {{ event_data.event_information }}</li>
-          </ul> 
-        </div>
-      </div>
-      <br>
-    {% endfor %}
+        <br>
+      {% endfor %}
+    </div>
+    </div>
   </div>
-  </div>
-</div>
-<!-- End of Main Content -->
+{% endif %}
 
 {% endblock %}
