@@ -37,7 +37,7 @@ class SingleEventInformationForm(forms.ModelForm):
 	maximum_applicants = forms.CharField(help_text='Maximum Number Of Applications',widget=forms.TextInput(attrs={'placeholder': '50'}))
 	maximum_participants = forms.CharField(help_text='Maximum Number Of Students Who Can Participate In An Event',widget=forms.TextInput(attrs={'placeholder': '5'}))
 	#subevent_information = event_information
-	requirements = forms.CharField(help_text='Requirements or Selection Criteria.',widget=forms.Textarea(attrs={'rows':5, 'cols':50,'placeholder': '''Must Be From Class 10 \n Must have attended atleast 2 debate competetions... '''}))
+	requirements = forms.CharField(help_text='Requirements or Selection Criteria.',widget=forms.Textarea(attrs={'rows':5, 'cols':50,'placeholder': '''Must Be From Class 10 \nMust have attended atleast 2 debate competetions... '''}))
 	#subevent_teacher_incharge=event_incharge
 	registration_deadline = forms.DateField(help_text="Last Date Of Registration (eg: 03/12/2019)",widget=SelectDateWidget())
 	allowed_grades = forms.CharField(help_text='Grades Allowed. (Eg: 9th,10th)',widget=forms.TextInput(attrs={'placeholder': '9th,10th,11th'}))

@@ -696,14 +696,14 @@ def add_event(request):
                     new_event.event_dates = "{} to {}".format(start_date,last_date)
                     new_event.single_check = single_check
                     new_event.event_attachment = request.FILES['add_attachment']
-                    new_event.teacher_incharge_id = User.objects.get(first_name=form.cleaned_data.get("teacher_incharge").split[0],last_name=form.cleaned_data.get("teacher_incharge").split[1]).id
+                    new_event.teacher_incharge_id = int(User.objects.filter(first_name=form.cleaned_data.get('teacher_incharge').split()[0],last_name=form.cleaned_data.get('teacher_incharge').split()[1]).first().pk)
                     new_event.save()
                     return HttpResponseRedirect('/{}add-event/{}'.format(teacher_hash,new_event.event_id))
                 else:
                     new_event.event_dates = "{} to {}".format(start_date,last_date)
                     new_event.single_check = single_check
                     new_event.event_attachment = request.FILES['add_attachment']
-                    new_event.teacher_incharge_id = User.objects.get(first_name=form.cleaned_data.get("teacher_incharge").split[0],last_name=form.cleaned_data.get("teacher_incharge").split[1]).id
+                    new_event.teacher_incharge_id = int(User.objects.filter(first_name=form.cleaned_data.get('teacher_incharge').split()[0],last_name=form.cleaned_data.get('teacher_incharge').split()[1]).first().pk)
                     new_event.save()
                     messages.success(request,"Event {} has been successfully created!".format(new_event.event_name)) 
                     return HttpResponseRedirect('/{}add-event/{}/sub'.format(teacher_hash,new_event.event_id))
@@ -820,7 +820,7 @@ def add_subevent(request,event_id):
                 else:
                     event = Events.objects.get(event_id=event_id)
                     new_subevent.subevent_teacher_incharge = form.cleaned_data.get('teacher_incharge')
-                    new_subevent.subevent_teacher_incharge_id = User.objects.get(first_name=form.cleaned_data.get('teacher_incharge').split()[0],last_name=form.cleaned_data.get('teacher_incharge').split()[1]).id
+                    new_subevent.subevent_teacher_incharge_id = int(User.objects.filter(first_name=form.cleaned_data.get('teacher_incharge').split()[0],last_name=form.cleaned_data.get('teacher_incharge').split()[1]).first().pk)
                     new_subevent.subevent_name = form.cleaned_data.get('event_name')
                     new_subevent.subevent_dates = form.cleaned_data.get('start_date') +" to " + form.cleaned_data.get("last_date")
                     new_subevent.event_id = event.event_id
