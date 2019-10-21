@@ -27,6 +27,7 @@
 
 {% endblock %}
 
+<!--
 {% block scripts %}
 	<script>
 		$(document).ready(function(){
@@ -34,7 +35,7 @@
 				event.preventDefault();
 				var res = $(this).val();
 				$.ajax({
-					url:"{% url 'server-response' %}",
+					url:"{% url 'add-subevent' %}",
 					method:'GET',
 					data : {'switch_value' : res}, 
 					success: function(data) {
@@ -44,4 +45,4 @@
 			});
 		});
 	</script>
-{% endblock %}
+{% endblock %} -->
