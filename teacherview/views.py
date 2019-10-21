@@ -344,6 +344,7 @@ def profile(request):
             sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
             sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
             sub["category"] = s_event.category
+            sub["event_information"] = s_event.subevent_information
             sub["completed_check"] = False
             final.append(sub)
         else:
@@ -355,6 +356,7 @@ def profile(request):
             sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
             sub["category"] = s_event.category
             sub["completed_check"] = True
+            sub["event_information"] = s_event.subevent_information
             final.append(sub)
 
     context = {
