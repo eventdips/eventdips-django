@@ -55,10 +55,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    
 ]
 
 
 ROOT_URLCONF = 'EVENTdips.urls'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': '/tmp/memcached.sock',
+    }
+}
 
 TEMPLATES = [
     {
@@ -145,3 +153,4 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'support@eventdips.ga'
 EMAIL_HOST_PASSWORD = 'password'
 EMAIL_USE_TLS = True
+
