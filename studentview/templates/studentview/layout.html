@@ -64,7 +64,7 @@
             <h6 class="collapse-header">Profile</h6>
             <center><img class="collapse-item rounded-circle" src="https://source.unsplash.com/random/50x50"></center>
             <p class="collapse-header"> {{ user.first_name }} {{ user.last_name }}</p>
-            <a class="collapse-item" href='{% url 'teacher-homepage' %}'>View Profile</a>
+            <a class="collapse-item" href="{% url 'student-profile' %}">View Profile</a>
             <a class="collapse-item" href='#'>My Achievements</a>
             <a class="collapse-item" href='#'>Logout</a>
           </div>
@@ -93,7 +93,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'add-event' %}" aria-expanded="true">
           <i class="fas fa-calendar-alt"></i>
-          <span>My applications</span>
+          <span>My Applications</span>
         </a>
       </li>
 

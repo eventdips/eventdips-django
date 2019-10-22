@@ -438,11 +438,7 @@ def profile(request):
                 sub["event_information"] = s_event.subevent_information
                 final.append(sub)
 
-    if status.status=="M":
-        stat = "Admin"
-    else:
-        stat = ""
-
+    status = "Admin" if status.status=="M" else ""
     context = {
         "username": user.username,
         "name": user.first_name + " " + user.last_name,
@@ -633,12 +629,14 @@ def view_registration(request,pk,sub_pk,r_pk):
         return redirect('teacher-homepage')'''
 
     registration = Registrations.objects.filter(registration_id=r_pk).first()
+    student = User.objects.get(user=registration.user) 
+
     sub = {}
     sub["name"]=registration.student_name
     sub["class"]=str(registration.student_class)
     sub["section"]=registration.student_section
     sub["info"]=registration.reg_info
-    sub["ego_flex"]=registration.acheivements
+    sub["ego_flex"]=Status.objects.get(user=student).acheivements
     if registration.reg_status=="R":
         sub["status"]="Rejected" 
     elif registration.reg_status=="A":
