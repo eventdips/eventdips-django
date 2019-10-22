@@ -7,6 +7,13 @@ class LoginForm(forms.Form):
 	username = forms.CharField(widget=forms.TextInput())
 	password = forms.CharField(widget=forms.PasswordInput())
 
+class ForgotPassword(forms.Form):
+	email = forms.CharField(widget=forms.TextInput())
+
+class ResetPassword(forms.Form):
+	password = forms.CharField(widget=forms.PasswordInput())
+	confirm_password = forms.CharField(widget=forms.PasswordInput())
+	
 class EventCreationForm(forms.ModelForm):
 	event_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Invictus'}))
 	teacher_incharge = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Vikranti Ashtikar'}))
