@@ -7,7 +7,9 @@ from studentview.models import Registrations
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from .forms import EventCreationForm, SingleEventInformationForm, SubEventCreationForm, LoginForm, ForgotPassword, ResetPassword
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+from django.template import Context
+from django.template.loader import get_template
 import hashlib
 
 '''
@@ -188,31 +190,12 @@ def forgot_password(request):
         if form.is_valid():
             email = form.cleaned_data.get('email')
             email_crypt = encrypt(email)
-            message = '''
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <title>Reset Pasword- EventDips</title>
-                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0 " />
-                </head>
-
-                <body>
-                {}
-                </body>
-            </html>'''.format('''
-                <p>Kindly use the link provided below to reset your password.</p>
-                   <a href="http://eventdips.ga:8081/{}{}">Reset Password</a> 
-                '''.format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),str(email_crypt)))
-
-            send_mail(
-                'Forgot Password- EventDips',
-                message,
-                'no-reply@eventdips.ga',
-                [email],
-                fail_silently=False,
-            )
+            
+            template = get_template('email/forgotPassword.html')
+            content = template.render({'email': "http://localhost:8000/{}{}".format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),email_crypt)})
+            msg = EmailMessage('Forgot Password- EventDips',content,'no-reply@eventdips.ga',to=[email])
+            msg.content_subtype = "html" 
+            msg.send()               
             messages.success(request,"Email has been sent to '{}'!".format(email))
     else:
         form = ForgotPassword()
@@ -235,8 +218,8 @@ def reset_password(request,email):
                 email_decrypt = decrypt(email)
                 user = User.objects.get(email=email_decrypt)
                 if user.password == password:
-                    messages.warning("Entered Password Is Already In Use!")
-                    return HttpResponseRedirect("{}{}".format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),email))
+                    messages.warning(request,"Entered Password Is Already In Use!")
+                    return HttpResponseRedirect("{}{}".format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),email_decrypt))
                 else:
                     user.set_password(password)
                     user.save()
