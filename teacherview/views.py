@@ -116,6 +116,22 @@ def teacher_event_sort(events):
 
     return events
 
+def encrypt(string):
+    string = string.upper()
+    final = ""
+    for i in string:
+        final += str(ord(i))
+    
+    return final
+
+def decrypt(string):
+    final = ""
+    for i in range(0,len(string),2):
+        char = chr(int(string[i]+string[i+1]))
+        final += char.lower()
+
+    return final
+
 def student_check(request):
     user = User.objects.get(pk=int(request.COOKIES.get("id")))
     ret = Status.objects.get(user=user)
@@ -171,6 +187,7 @@ def forgot_password(request):
         form = ForgotPassword(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
+            email_crypt = encrypt(email)
             message = '''
             <!DOCTYPE html>
             <html>
@@ -187,7 +204,7 @@ def forgot_password(request):
             </html>'''.format('''
                 <p>Kindly use the link provided below to reset your password.</p>
                    <a href="http://eventdips.ga:8081/{}{}">Reset Password</a> 
-                '''.format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),str(email)))
+                '''.format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),str(email_crypt)))
 
             send_mail(
                 'Forgot Password- EventDips',
@@ -215,11 +232,16 @@ def reset_password(request,email):
             confirm_pass = form.cleaned_data.get('confirm_password')
             
             if password==confirm_pass:
-                user = User.objects.get(email=email)
-                user.set_password(password)
-                user.save()
-                messages.success(request,"Your Password Has Been Changed!")
-                return redirect('teacher-homepage')
+                email_decrypt = decrypt(email)
+                user = User.objects.get(email=email_decrypt)
+                if user.password == password:
+                    messages.warning("Entered Password Is Already In Use!")
+                    return HttpResponseRedirect("{}{}".format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),email))
+                else:
+                    user.set_password(password)
+                    user.save()
+                    messages.success(request,"Your Password Has Been Changed!")
+                    return redirect('teacher-homepage')
             else:
                 messages.warning(request,'Entered Passwords Do Not Match!')
                 return HttpResponseRedirect("{}{}".format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),email))
