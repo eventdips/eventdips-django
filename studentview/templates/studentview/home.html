@@ -5,30 +5,115 @@
 <!--Beginning of content-->
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <a href="#"><h1 class="h3 mb-0 text-gray-800">My Registered Events</h1></a>
+    </div>    
+    <div class="row">
+        {% for event_data in MyEvents %}
+            {% if not event_data.completed_check %}
+                <div class="col-md-4">
+                    <div class="card shadow mb-4" style="border-radius: 25px;">
+                        <div class="card-header py-3 border-left-primary" style="border-radius: 0px 25px 25px 0px;">
+                            <a href={{ event_data.url_redirect }} style="text-decoration:none;">
+                            <h4 class="m-0 font-weight-bold text-primary">{{ event_data.name }}</h4></a>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</li>
+                                <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
+                                <li><b>Registration Deadline</b>: {{ event_data.registration_deadline }}</li>
+                                {% if event_data.completed_check %}
+                                    <li><b>Event Status</b>: Registrations Completed</li>
+                                {% else %}
+                                    <li><b>Event Status</b>: Registrations Open</li>
+                                {% endif %}
+                            </ul> 
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-md-4">
+                    <div class="card shadow mb-4" style="border-radius: 25px;">
+                        <div class="card-header py-3 border-left-secondary" style="border-radius: 0px 25px 25px 0px;">
+                            <h4 class="m-0 font-weight-bold text-secondary">{{ event_data.name }}</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</li>
+                                <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
+                                <li><b>Registration Deadline</b>: {{ event_data.registration_deadline }}</li>
+                                {% if event_data.completed_check %}
+                                    <li><b>Event Status</b>: Registrations Completed</li>
+                                {% else %}
+                                    <li><b>Event Status</b>: Registrations Open</li>
+                                {% endif %}
+                            </ul> 
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <br>
+        {% endfor %}
+    </div>
+</div>
+<br>
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <a href="#"><h1 class="h3 mb-0 text-gray-800">Ongoing Events</h1></a>
     </div>    
     <div class="row">
         <div class="card-columns">
-            {% for event_data in AllEvents %}
-    
-                <div class="card shadow mb-4" style="border-radius: 25px;">
-                    <div class="card-header py-3 border-left-success" style="border-radius: 0px 25px 25px 0px;">
-                        <a href={{ event_data.url_redirect }} style="text-decoration:none;">
-                        <h4 class="m-0 font-weight-bold text-success">{{ event_data.name }}</h4></a>
+            {% for event_data in OngoingEvents %}
+                {% if not event_data.completed_check %}
+                    <div class="card shadow mb-4" style="border-radius: 25px;">
+                        <div class="card-header py-3 border-left-primary" style="border-radius: 0px 25px 25px 0px;">
+                            <a href={{ event_data.url_redirect }} style="text-decoration:none;">
+                            <h4 class="m-0 font-weight-bold text-primary">{{ event_data.name }}</h4></a>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</li>
+                                <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
+                                {% if event_data.registration_deadline %}
+                                    <li><b>Registration Deadline</b>: {{ event_data.registration_deadline }}</li>
+                                {% else %}
+                                    <li><b>Event Description</b>: {{ event_data.event_information }}</li>
+                                {% endif %}
+                                {% if event_data.completed_check %}
+                                    <li><b>Event Status</b>: Registrations Completed</li>
+                                {% else %}
+                                    <li><b>Event Status</b>: Registrations Open</li>
+                                {% endif %}
+                            </ul> 
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <ul>
-                        <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }} </li>
-                        <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
-                        <li><b>Event Description</b>: {{ event_data.event_information }}</li>
-                        </ul> 
+                {% else %}
+                    <div class="card shadow mb-4" style="border-radius: 25px;">
+                        <div class="card-header py-3 border-left-secondary" style="border-radius: 0px 25px 25px 0px;">
+                            <h4 class="m-0 font-weight-bold text-secondary">{{ event_data.name }}</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</li>
+                                <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
+                                {% if event_data.registration_deadline %}
+                                    <li><b>Registration Deadline</b>: {{ event_data.registration_deadline }}</li>
+                                {% else %}
+                                    <li><b>Event Description</b>: {{ event_data.event_information }}</li>
+                                {% endif %}
+                                {% if event_data.completed_check %}
+                                    <li><b>Event Status</b>: Registrations Completed</li>
+                                {% else %}
+                                    <li><b>Event Status</b>: Registrations Open</li>
+                                {% endif %}
+                            </ul> 
+                        </div>
                     </div>
-                </div>
+                {% endif %}
                 <br>
             {% endfor %}
         </div>
     </div>
 </div>
-<!--End of content-->
 
 {% endblock %}
