@@ -192,8 +192,8 @@ def forgot_password(request):
             email_crypt = encrypt(email)
             
             template = get_template('email/forgotPassword.html')
-            content = template.render({'email': "http://localhost:8000/{}{}".format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),email_crypt)})
-            msg = EmailMessage('Forgot Password- EventDips',content,'no-reply@eventdips.ga',to=[email])
+            content = template.render({'email': "http://eventdips.ga:8081/{}{}".format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),email_crypt)})
+            msg = EmailMessage('Forgot Password - EventDips',content,'no-reply@eventdips.ga',to=[email])
             msg.content_subtype = "html" 
             msg.send()               
             messages.success(request,"Email has been sent to '{}'!".format(email))
