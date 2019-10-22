@@ -6,8 +6,8 @@ from django.contrib.auth import logout,login,authenticate
 from studentview.models import Registrations
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from .forms import EventCreationForm, SingleEventInformationForm, SubEventCreationForm, LoginForm
-from django.views.decorators.csrf import csrf_exempt
+from .forms import EventCreationForm, SingleEventInformationForm, SubEventCreationForm, LoginForm, ForgotPassword, ResetPassword
+from django.core.mail import send_mail
 import hashlib
 
 '''
@@ -142,6 +142,7 @@ def login_auth(request):
                 response.set_cookie('id',User.objects.get(username=username).pk)
                 return response
             else:
+                messages.warning(request,"Entered Username Or Password Is Incorrect!")
                 return redirect('login')
     else:
         form = LoginForm()
@@ -164,6 +165,72 @@ SORT EVENTS BY DEADLINES- TEACHERVIEW
 SORT EVENTS BY REGISTRATION DEADLINES- STUDENTVIEW
 CREATE CUSTOM 404-PAGE
 '''
+
+def forgot_password(request):
+    if request.method=='POST':
+        form = ForgotPassword(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            message = '''
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <title>Reset Pasword- EventDips</title>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0 " />
+                </head>
+
+                <body>
+                {}
+                </body>
+            </html>'''.format('''
+                <p>Kindly use the link provided below to reset your password.</p>
+                   <a href="http://eventdips.ga:8081/{}{}">Reset Password</a> 
+                '''.format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),str(email)))
+
+            send_mail(
+                'Forgot Password- EventDips',
+                message,
+                'no-reply@eventdips.ga',
+                [email],
+                fail_silently=False,
+            )
+            messages.success(request,"Email has been sent to '{}'!".format(email))
+    else:
+        form = ForgotPassword()
+    
+    context = {
+        "form":form
+    }
+
+    return render(request,'studentview/forgot_password.html',context)
+
+
+def reset_password(request,email):
+    if request.method=='POST':
+        form = ResetPassword(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data.get('password')
+            confirm_pass = form.cleaned_data.get('confirm_password')
+            
+            if password==confirm_pass:
+                user = User.objects.get(email=email)
+                user.set_password(password)
+                user.save()
+                messages.success(request,"Your Password Has Been Changed!")
+                return redirect('teacher-homepage')
+            else:
+                messages.warning(request,'Entered Passwords Do Not Match!')
+                return HttpResponseRedirect("{}{}".format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),email))
+    else:
+        form = ResetPassword()
+    
+    context = {
+        "form":form
+    }
+
+    return render(request,'studentview/reset_password.html',context) 
 
 def home(request):
     login_check(request)
