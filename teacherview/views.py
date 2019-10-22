@@ -332,6 +332,7 @@ def myevents(request):
 
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -375,6 +376,7 @@ def allevents(request):
 
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -400,6 +402,7 @@ def profile(request):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -456,6 +459,7 @@ def subevents(request,pk):
 
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -490,6 +494,7 @@ def subevent(request,pk,sub_pk):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -576,6 +581,7 @@ def view_registrations(request,pk,sub_pk):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -617,6 +623,7 @@ def view_registration(request,pk,sub_pk,r_pk):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -656,6 +663,7 @@ def accept(request,pk,sub_pk,r_pk):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -694,6 +702,7 @@ def reject(request,pk,sub_pk,r_pk):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -728,6 +737,7 @@ def view_selected_students(request,pk,sub_pk):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -768,6 +778,7 @@ def view_registered_students(request,pk,sub_pk):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -807,6 +818,7 @@ def add_event(request):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -851,6 +863,7 @@ def single_event_information(request,event_id):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -898,6 +911,7 @@ def subevent_addition_page(request,event_id):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -928,6 +942,7 @@ def add_subevent(request,event_id):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -981,6 +996,7 @@ def edit_event(request,event_id,subevent_id):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -1028,6 +1044,7 @@ def delete_event(request,event_id,subevent_id):
 
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
@@ -1049,6 +1066,7 @@ def searchpage(request):
     
     try:
         if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
