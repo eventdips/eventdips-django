@@ -178,6 +178,7 @@ def logout_auth(request):
     response.delete_cookie('logged_in')
     response.delete_cookie('id')
     return response
+    
 '''
 SORT EVENTS BY DEADLINES- TEACHERVIEW
 SORT EVENTS BY REGISTRATION DEADLINES- STUDENTVIEW
@@ -438,7 +439,7 @@ def profile(request):
                 sub["event_information"] = s_event.subevent_information
                 final.append(sub)
 
-    status = "Admin" if status.status=="M" else ""
+    stat = "Admin" if status.status=="M" else ""
     context = {
         "username": user.username,
         "name": user.first_name + " " + user.last_name,
@@ -629,14 +630,17 @@ def view_registration(request,pk,sub_pk,r_pk):
         return redirect('teacher-homepage')'''
 
     registration = Registrations.objects.filter(registration_id=r_pk).first()
-    student = User.objects.get(user=registration.user) 
+    student = User.objects.get(pk=registration.user.pk) 
 
     sub = {}
     sub["name"]=registration.student_name
     sub["class"]=str(registration.student_class)
     sub["section"]=registration.student_section
     sub["info"]=registration.reg_info
-    sub["ego_flex"]=Status.objects.get(user=student).acheivements
+    try:
+        sub["ego_flex"]=Status.objects.get(user=student).acheivements
+    except:
+        sub["ego_flex"] = "None"
     if registration.reg_status=="R":
         sub["status"]="Rejected" 
     elif registration.reg_status=="A":

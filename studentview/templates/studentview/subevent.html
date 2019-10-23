@@ -48,7 +48,7 @@
                   {% if event_data.event_requirements != "" %}
                     <p><b>Requirements</b>: {{ event_data.event_requirements }}</p>
                   {% endif %}
-				  {% if event_data.event_attachment != '' %}
+				          {% if event_data.event_attachment != '' %}
                   	<p><b>Attachment</b>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file"></i></a></p>
                   {% endif %}
                 </div>
@@ -67,15 +67,23 @@
                   </div>
                 </div>
               </div>
-              <a href={{ event_data.url_redirect }} style="text-decoration:none">
-                {% if not event_data.completed_check %}
+              {% if not event_data.completed_check %}
+                {% if event_data.my_registered_event %}
                   <div class="card-footer blue lighten-1">
                     <h4 style="vertical-align: middle;color:white;" align='center'>
-                      REGISTER
+                      REGISTRATION SENT
                     </h4>
                   </div>
+                {% else %}
+                  <a href={{ event_data.url_redirect }} style="text-decoration:none">
+                    <div class="card-footer blue lighten-1">
+                      <h4 style="vertical-align: middle;color:white;" align='center'>
+                        REGISTER
+                      </h4>
+                    </div>
+                  </a>
                 {% endif %}
-              </a>
+              {% endif %}
             </div>
         </div>
       </div>
