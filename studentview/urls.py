@@ -9,3 +9,9 @@ urlpatterns = [
 	path('<int:event_id>/<int:subevent_id>',views.subevent,name="student-subevent"),
 	path('<int:event_id>/<int:subevent_id>/registration',views.registration,name="student-registration")
 ]
+
+'''
+ADD REMOVING OF EVENTS IF LAST_DATE OF EVENT PASSES 
+USE MAIL SERVICE AND NOTIFICATIONS TO INFORM TEACHERS ABOUT NEW APPLICATIONS
+USE MAIL SERVICE AND NOTIFICATIONS TO INFORM STUDENTS ABOUT NEW EVENTS
+'''
