@@ -142,6 +142,12 @@ def student_check(request):
     else:
         return False
 
+def finalize_check(request,pk,sub_pk):
+    if SubEvents.objects.get(pk=sub_pk).confirmation_status=="Y":
+        return True
+    else:
+        return False
+
 def login_check(request):
     ret = request.COOKIES.get("logged_in")
     if not ret:
@@ -257,6 +263,7 @@ def home(request):
         if i.single_check=="True":
             sub_event = SubEvents.objects.filter(event_id=i.event_id)
             subevent_id = sub_event.first().subevent_id
+            sub["confirmation_status"] = sub_event.first().confirmation_status
             sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(i.event_id),str(subevent_id))
         else:
             sub["url_redirect"] = "/{}{}".format(teacher_hash,str(i.event_id))
@@ -281,6 +288,7 @@ def home(request):
                 sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
                 sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
                 sub["category"] = s_event.category
+                sub["confirmation_status"] = s_event.confirmation_status
                 sub["completed_check"] = False
                 final2.append(sub)
             else:
@@ -293,6 +301,7 @@ def home(request):
                 sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
                 sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
                 sub["category"] = s_event.category
+                sub["confirmation_status"] = s_event.confirmation_status
                 sub["completed_check"] = True
                 final2.append(sub)
    
@@ -354,6 +363,7 @@ def myevents(request):
                 sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
                 sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
                 sub["completed_check"] = False
+                sub["confirmation_status"] = s_event.confirmation_status
                 final.append(sub)
             else:
                 sub = {}
@@ -365,6 +375,7 @@ def myevents(request):
                 sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
                 sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
                 sub["completed_check"] = True
+                sub["confirmation_status"] = s_event.confirmation_status
                 final.append(sub)
 
     context = {"title":"MyEvents",
@@ -391,6 +402,7 @@ def allevents(request):
         sub["teacher_incharge"] = s_event.subevent_teacher_incharge
         sub["event_information"]= s_event.subevent_information
         sub["event_dates"] = date_conversion(s_event.subevent_dates)
+        sub["confirmation_status"] = s_event.confirmation_status
         final.append(sub)
 
     context = {"title":"AllEvents",
@@ -424,6 +436,7 @@ def profile(request):
                 sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
                 sub["category"] = s_event.category
                 sub["event_information"] = s_event.subevent_information
+                sub["confirmation_status"] = s_event.confirmation_status
                 sub["completed_check"] = False
                 
                 final.append(sub)
@@ -437,6 +450,7 @@ def profile(request):
                 sub["category"] = s_event.category
                 sub["completed_check"] = True
                 sub["event_information"] = s_event.subevent_information
+                sub["confirmation_status"] = s_event.confirmation_status
                 final.append(sub)
 
     stat = "Admin" if status.status=="M" else ""
@@ -446,7 +460,8 @@ def profile(request):
         "email": user.email,
         "status": stat,
         "department": status.department,
-        "MyEvents": final
+        "MyEvents": final,
+        "title": user.first_name + " " + user.last_name
     }
 
     return render(request,"teacherview/teacherProfile.html",context)
@@ -476,6 +491,7 @@ def subevents(request,pk):
         sub["teacher_incharge"] = i.subevent_teacher_incharge   
         sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(e_id),str(i.subevent_id))
         sub["event_attachment"] = i.subevent_attachment
+        sub["confirmation_status"] = i.confirmation_status
         final.append(sub)
 
     context = {"title":event.event_name,
@@ -488,13 +504,17 @@ def subevents(request,pk):
  
 def subevent(request,pk,sub_pk):
     login_check(request)
-    
+
     try:
         if student_check(request):
             messages.warning(request,'Illegal Action Attempted!')
             return redirect('student-homepage')
     except:
         return redirect('login')
+
+    if finalize_check(request,pk,sub_pk):
+        messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
 
     event = Events.objects.filter(pk=pk).first()
     subevent = SubEvents.objects.filter(subevent_id=sub_pk).first()
@@ -583,6 +603,10 @@ def view_registrations(request,pk,sub_pk):
     except:
         return redirect('login')
 
+    if finalize_check(request,pk,sub_pk):
+        messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
+
     '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
         return redirect('teacher-homepage')'''
@@ -610,10 +634,33 @@ def view_registrations(request,pk,sub_pk):
         "Registrations":final,
         "header_redirect":"/{}{}/{}".format(teacher_hash,str(pk),str(sub_pk)),
         "view_selected_students":"/{}{}/{}/rview/view-selected".format(teacher_hash,str(pk),str(sub_pk)),
-        "view_registered_students":"/{}{}/{}/rview/view-registered".format(teacher_hash,str(pk),str(sub_pk))
+        "view_registered_students":"/{}{}/{}/rview/view-registered".format(teacher_hash,str(pk),str(sub_pk)),
+        "confirmation":"/{}{}/{}/rview/confirmation".format(teacher_hash,str(pk),str(sub_pk)),
+        "title":"Registrations"
     }
 
     return render(request,'teacherview/view_registrations.html',context)
+
+
+def confirmation(request,pk,sub_pk):
+    login_check(request)
+
+    try:
+        if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
+
+    sub = SubEvents.objects.get(pk=sub_pk)
+    if sub.confirmation_status=="N":
+        sub.confirmation_status = "Y"
+        sub.save()
+        messages.success(request,"Decisions for '{}' have been finalized!".format(sub.subevent_name))
+        return redirect('teacher-homepage')
+    else:
+        messages.warning(request,"Decisions for '{}' have been already been finalized.".format(sub.subevent_name))
+        return redirect('teacher-homepage')
 
 def view_registration(request,pk,sub_pk,r_pk):
     login_check(request)
@@ -624,6 +671,10 @@ def view_registration(request,pk,sub_pk,r_pk):
             return redirect('student-homepage')
     except:
         return redirect('login')
+    
+    if finalize_check(request,pk,sub_pk):
+        messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
 
     '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -655,11 +706,12 @@ def view_registration(request,pk,sub_pk,r_pk):
         "Registration":final,
         "header_redirect":"/{}{}/{}/rview".format(teacher_hash,str(pk),str(sub_pk)),
         "url_redirect_1":"/{}{}/{}/rview/{}/accept".format(teacher_hash,str(pk),str(sub_pk),str(r_pk)),
-        "url_redirect_2":"/{}{}/{}/rview/{}/reject".format(teacher_hash,str(pk),str(sub_pk),str(r_pk))
+        "url_redirect_2":"/{}{}/{}/rview/{}/reject".format(teacher_hash,str(pk),str(sub_pk),str(r_pk)),
+        "title": student.first_name + " " + student.last_name
     }
 
     return render(request,'teacherview/view_registration.html',context)
- 
+
 def accept(request,pk,sub_pk,r_pk):  
     login_check(request)
     
@@ -669,6 +721,10 @@ def accept(request,pk,sub_pk,r_pk):
             return redirect('student-homepage')
     except:
         return redirect('login')
+
+    if finalize_check(request,pk,sub_pk):
+        messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
 
     '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -708,6 +764,10 @@ def reject(request,pk,sub_pk,r_pk):
             return redirect('student-homepage')
     except:
         return redirect('login')
+    
+    if finalize_check(request,pk,sub_pk):
+        messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
 
     '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -743,6 +803,10 @@ def view_selected_students(request,pk,sub_pk):
             return redirect('student-homepage')
     except:
         return redirect('login')
+    
+    if finalize_check(request,pk,sub_pk):
+        messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
 
     '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -784,6 +848,10 @@ def view_registered_students(request,pk,sub_pk):
             return redirect('student-homepage')
     except:
         return redirect('login')
+
+    if finalize_check(request,pk,sub_pk):
+        messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
 
     '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -1002,6 +1070,10 @@ def edit_event(request,event_id,subevent_id):
             return redirect('student-homepage')
     except:
         return redirect('login')
+    
+    if finalize_check(request,event_id,subevent_id):
+        messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed!".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
+        return redirect('teacher-homepage')
 
     '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=subevent_id).subevent_teacher_incharge_id:
         messages.warning(request,'Illegal Action Attempted!')
@@ -1050,6 +1122,10 @@ def delete_event(request,event_id,subevent_id):
             return redirect('student-homepage')
     except:
         return redirect('login')
+    
+    if finalize_check(request,pk,sub_pk):
+        messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
 
     event = Events.objects.get(event_id=event_id)
     if event.single_check=="True":
@@ -1096,6 +1172,7 @@ def searchpage(request):
                     "available_slots": subevent_data.total_slots - subevent_data.total_registrations,
                     "occupied_slots": subevent_data.total_registrations,
                     "publish_date": subevent_data.published_date,
+                    "confirmation_status": subevent_data.confirmation_status,
                     "last_date": subevent_data.last_date,
                     "additional_information": subevent_data.subevent_information
                 }

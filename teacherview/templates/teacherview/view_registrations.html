@@ -5,9 +5,18 @@
 <div class="card" style="box-shadow: none;">
   <!-- Page Heading -->       
   {% if subevent_name != event_name %}
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-      <div>
-        <a href={{ header_redirect }}><h1 class="h3 mb-0 text-gray-800">{{ event_name }}- {{ subevent_name }}</h1></a>
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="width: 100%;">
+      <div style="width: 60%">
+        <a href={{ header_redirect }} style="text-decoration: none;">
+          <h1 class="h3 mb-0 text-gray-800">{{ event_name }}- {{ subevent_name }}</h1>
+        </a>
+      </div>
+      <div align="right" style="width: 30%;">
+        <a href={{ confirmation }} style="text-decoration: none;" onclick="return confirm('Are you sure you want to confirm your decisions? Students will be iniformed, and NO FURTHER CHANGES will be permitted.')">
+          <li class="list-group-item green btn text-white" style="border-radius: 25px;">
+            CONFIRM DECISION
+          </li>
+        </a>
       </div>
       <div class="dropdown no-arrow">
         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -23,9 +32,16 @@
     </div>
   {% else %}
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <div>
+        <div style="width: 60%">
           <a href={{ header_redirect }}><h1 class="h3 mb-0 text-gray-800">{{ event_name }}</h1></a>
         </div>
+        <div align="right" style="width: 30%;">
+            <a href={{ confirmation }} style="text-decoration: none;" onclick="return confirm('Are you sure you want to confirm your decisions? Students will be iniformed, and NO FURTHER CHANGES will be permitted.')">
+              <li class="list-group-item green btn text-white" style="border-radius: 25px;">
+                CONFIRM DECISION
+              </li>
+            </a>
+          </div>
         <div class="dropdown no-arrow">
           <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-cog fa-xl fa-fw text-gray-800"></i>

@@ -34,6 +34,7 @@ class SubEvents(models.Model):
 	allowed_grades = models.CharField(default="ALL", max_length=32)
 	subevent_attachment = models.FileField(default='',upload_to='Attachments')
 	category = models.CharField(max_length=32)
+	confirmation_status = models.CharField(default="N",max_length=1) #"Y"-Yes
 
 	def __str__(self):
 		return self.subevent_name + " " + str("Event Id: {}".format(str(self.event_id))) + " " + self.subevent_teacher_incharge
