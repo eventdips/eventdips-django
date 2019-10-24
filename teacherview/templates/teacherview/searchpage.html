@@ -8,24 +8,43 @@
         </div>    
         <div class="row">
             {% for event_data in search_results %}
-            <div class="col-lg-4">
-                <div class="card shadow mb-4" style="border-radius: 25px;">
-                    <div class="card-header py-3 border-left-success" style="border-radius: 0px 25px 25px 0px;">
-                        <a href={{ event_data.url_redirect }} style="text-decoration:none;">
-                        <h4 class="m-0 font-weight-bold text-success">{{ event_data.subevent_name }}</h4>
-                        </a>
+                {% if event_data.confirmation_status == "N" %}
+                    <div class="col-lg-4">
+                        <div class="card shadow mb-4" style="border-radius: 25px;">
+                            <div class="card-header py-3 border-left-success" style="border-radius: 0px 25px 25px 0px;">
+                                <a href={{ event_data.url_redirect }} style="text-decoration:none;">
+                                    <h4 class="m-0 font-weight-bold text-success">{{ event_data.subevent_name }}</h4>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Number Of Applications: {{ event_data.occupied_slots }} </li>
+                                    <li>Registrations Close: {{ event_data.last_date }} </li>
+                                    <li>Teacher Incharge: {{ event_data.teacher_incharge }}</li>
+                                    <li>Available Slots: {{ event_data.available_slots }}</li>
+                                    <li>Event Type: {{ event_data.subevent_type}}</li>                  
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <ul>
-                            <li>Number Of Applications: {{ event_data.occupied_slots }} </li>
-                            <li>Registrations Close: {{ event_data.last_date }} </li>
-                            <li>Teacher Incharge: {{ event_data.teacher_incharge }}</li>
-                            <li>Available Slots: {{ event_data.available_slots }}</li>
-                            <li>Event Type: {{ event_data.subevent_type}}</li>                  
-                        </ul>
+                {% else %}
+                    <div class="col-lg-4">
+                        <div class="card shadow mb-4" style="border-radius: 25px;">
+                            <div class="card-header py-3 border-left-secondary" style="border-radius: 0px 25px 25px 0px;">
+                                <h4 class="m-0 font-weight-bold text-secondary">{{ event_data.subevent_name }}<small> (FINALIZED)</small></h4>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Number Of Applications: {{ event_data.occupied_slots }} </li>
+                                    <li>Registrations Close: {{ event_data.last_date }} </li>
+                                    <li>Teacher Incharge: {{ event_data.teacher_incharge }}</li>
+                                    <li>Available Slots: {{ event_data.available_slots }}</li>
+                                    <li>Event Type: {{ event_data.subevent_type}}</li>                  
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>

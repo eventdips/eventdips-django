@@ -22,26 +22,47 @@
 
   <div class="row">
     {% for event_data in subevents %}
-      <div class="col-lg-4">
-        <div class="card shadow mb-4" style="border-radius: 25px;">
-          <div class="card-header m-0 py-3 border-left-success" style="border-radius: 0px 25px 25px 0px;">
-            <a href={{ event_data.url_redirect }} style="text-decoration:none;">
-              <h4 class="m-0 font-weight-bold text-success">{{ event_data.name }}</h4>
-            </a>
-          </div>
-          <div class="card-body">
-            <ul>
-              <li><b>Dates Of Event</b>: {{ event_data.dates }}</li>
-              <li><b>Registered</b>: {{ event_data.total_registrations }}</li>
-              <li><b>Available Slots</b>: {{ event_data.available_slots }}</li>
-              <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</li>
-              {% if event_data.event_attachment != '' %}
-                <li><b>Attachment</b>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file-pdf" style='color:red'></i></a></li>
-              {% endif %}
-            </ul>
+      {% if event_data.confirmation_status == "N" %}
+        <div class="col-lg-4">
+          <div class="card shadow mb-4" style="border-radius: 25px;">
+            <div class="card-header m-0 py-3 border-left-success" style="border-radius: 0px 25px 25px 0px;">
+              <a href={{ event_data.url_redirect }} style="text-decoration:none;">
+                <h4 class="m-0 font-weight-bold text-success">{{ event_data.name }}</h4>
+              </a>
+            </div>
+            <div class="card-body">
+              <ul>
+                <li><b>Dates Of Event</b>: {{ event_data.dates }}</li>
+                <li><b>Registered</b>: {{ event_data.total_registrations }}</li>
+                <li><b>Available Slots</b>: {{ event_data.available_slots }}</li>
+                <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</li>
+                {% if event_data.event_attachment != '' %}
+                  <li><b>Attachment</b>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file-pdf" style='color:red'></i></a></li>
+                {% endif %}
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      {% else %}
+        <div class="col-lg-4">
+          <div class="card shadow mb-4" style="border-radius: 25px;">
+            <div class="card-header m-0 py-3 border-left-secondary" style="border-radius: 0px 25px 25px 0px;">
+              <h4 class="m-0 font-weight-bold text-secondary">{{ event_data.name }}<small> (FINALIZED)</small></h4>
+            </div>
+            <div class="card-body">
+              <ul>
+                <li><b>Dates Of Event</b>: {{ event_data.dates }}</li>
+                <li><b>Registered</b>: {{ event_data.total_registrations }}</li>
+                <li><b>Available Slots</b>: {{ event_data.available_slots }}</li>
+                <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</li>
+                {% if event_data.event_attachment != '' %}
+                  <li><b>Attachment</b>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file-pdf" style='color:red'></i></a></li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      {% endif %}
     {% endfor %}
   </div>
 </div>

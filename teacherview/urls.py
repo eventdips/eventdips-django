@@ -9,6 +9,7 @@ urlpatterns = [
 	path('<int:pk>',views.subevents,name='teacher-subevents'),
 	path('<int:pk>/<int:sub_pk>',views.subevent,name='teacher-subevent'),
 	path('<int:pk>/<int:sub_pk>/rview',views.view_registrations,name='teacher-registers'),
+	path('<int:pk>/<int:sub_pk>/rview/confirmation',views.confirmation,name='teacher-confirmation'),
 	path('<int:pk>/<int:sub_pk>/rview/<int:r_pk>',views.view_registration,name='teacher-register'),
 	path('<int:pk>/<int:sub_pk>/rview/view-selected',views.view_selected_students,name='selected-students'),
 	path('<int:pk>/<int:sub_pk>/rview/view-registered',views.view_registered_students,name='registered-students'),
