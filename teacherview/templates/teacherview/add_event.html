@@ -2,29 +2,76 @@
 {% load crispy_forms_tags %}
 
 {% block ContentView %}
+<style>
+	input{
+		border-width:0px;
+		border:none;
+		color: #52c456;
+	}
+	input::placeholder{color:#4acf50}
+</style>
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
 <div class="container-fluid">
-	<div class="row">
-		<div class="card shadow mb-4 ">
+	
+	<div class="card shadow mb-4 ">
+		<form method="POST" enctype="multipart/form-data">
+		{% csrf_token %}
 			<div class="card-header border-left-success">
-				<h4 class="m-0 font-weight-bold text-success">New Event</h4>
+				<h4 class="m-0 font-weight-bold text-success" style="input{border-width:0px;border:none;color: #4caf50;::placeholder{color:#4acf50}}">{{ form.event_name }}</h4>	
 			</div>
 			<div class="card-body">
-				<form method="POST" enctype="multipart/form-data">
-					{% csrf_token %}
-					<fieldset class="form-group" id="EventForm">
-						{{ form|crispy }}
-					</fieldset>
-					<div class="form-group">
-						<center>
-							<button class="btn btn-success" type="submit" name="file" >Submit</button>
-						</center>
-					</div>
-				</form>
+				<div class="form-group" id="EventForm">
+					<div class="row">
+						<div class="col">
+							<label for="teacher_incharge">Teacher Incharge: </label>
+							{{ form.teacher_incharge }}
+							<br><br>
+							<label for="single_event">Is it an Individual Event? </label>
+							{{ form.single_event }}
+							<small class="text-disabled">Enter True If The Event Does Not Have Any Events Under It. <br>Example: Invictus- False, Debate Competition-True</small>
+							<br>
+							<br>
+							<br>
+							<label for="add_attachment">Attachment:</label>
+							{{ form.add_attachment }}
+							</div>
+						<br>
+						<div class="col">
+							<label for="event_information">Event information: </label>
+							{{ form.event_information }}
+							<small class="text-disabled">Information About the Event (eg: Website Links)</small>		
+							<br><br>
+							<div class="row">
+								<div class="col">
+									<label for="start_date">Start Date:</label>
+									{{ form.start_date }}
+									<small class="text-disabled">Start Date Of The Event (eg: 01/01/2020)</small>	
+								</div>
+								<div class="col">
+									<label for="last_date">End Date:</label>
+									{{ form.last_date }}
+									<small class="text-disabled">Last Date Of The Event (eg: 03/01/2020)</small>
+								</div>
+							</div>
+						</div>
+					</div>						
+				</div>
+				<div class="form-group">
+					<center>
+						<button class="btn btn-success" type="submit" name="file" style="width:100%; border-radius:25px; padding:15px;">Submit</button>
+					</center>
+				</div>
 			</div>
-		</div>
+		</form>
 	</div>
 </div>
-
+<script>
+        $('#datepicker').datepicker({
+            uiLibrary: 'bootstrap4'
+        });
+    </script>
 {% endblock %}
 
 <!--

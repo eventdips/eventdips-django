@@ -15,19 +15,20 @@ class ResetPassword(forms.Form):
 	confirm_password = forms.CharField(widget=forms.PasswordInput())
 	
 class EventCreationForm(forms.ModelForm):
-	event_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Invictus'}))
-	teacher_incharge = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Vikranti Ashtikar'}))
-	event_information = forms.CharField(help_text="Information About the Event (eg: Website Links)",widget=forms.Textarea(attrs={'rows':5, 'cols':50, 'placeholder':'Enter The Information Here...'}))
-	start_date = forms.CharField(help_text="Start Date Of The Event (eg: 01/01/2020)",widget=SelectDateWidget())
-	last_date = forms.CharField(help_text="Last Date Of The Event (eg: 03/01/2020)",widget=SelectDateWidget())
+
+	event_name = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Event Name Here'}))
+	teacher_incharge = forms.CharField(widget= forms.TextInput(attrs={'class':'form-control'}))
+	event_information = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control','rows':5, 'cols':50, 'placeholder':'Enter The Information Here...'}))
+	start_date = forms.CharField(widget=SelectDateWidget(attrs={'class':'form-control'}))
+	last_date = forms.CharField(widget=SelectDateWidget(attrs={'class':'form-control'}))
 	options = (
 		("True",'True'),
 		("False",'False')
 	)
 	single_event = forms.CharField(help_text='''Enter True If The Event Does Not Have Any Events Under It.
-												Example: Invictus- False, Debate Competition-True''',widget=forms.Select(choices=options)) 
+												Example: Invictus- False, Debate Competition-True''',widget=forms.Select(choices=options,attrs={'class':'form-control'})) 
 
-	add_attachment = forms.FileField(widget=forms.ClearableFileInput())
+	add_attachment = forms.FileField(widget=forms.ClearableFileInput(attrs={'class':'btn btn-success'}))
 
 	class Meta:
 		model = Events
