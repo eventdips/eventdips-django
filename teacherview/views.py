@@ -476,9 +476,8 @@ def subevents(request,pk):
     except:
         return redirect('login')
 
-    event = Events.objects.filter(pk=pk).first()
-    e_id = event.event_id
-    subevents = list(SubEvents.objects.filter(event_id=e_id))
+    event = Events.objects.get(pk=pk)
+    subevents = list(SubEvents.objects.filter(event_id=event.event_id))
     teacher_id = int(request.COOKIES.get("id"))
 
     final = []
@@ -489,15 +488,15 @@ def subevents(request,pk):
         sub["available_slots"] = str(i.total_slots-i.total_registrations)
         sub["total_registrations"] = str(i.total_registrations)
         sub["teacher_incharge"] = i.subevent_teacher_incharge   
-        sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(e_id),str(i.subevent_id))
+        sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(event.event_id),str(i.subevent_id))
         sub["event_attachment"] = i.subevent_attachment
         sub["confirmation_status"] = i.confirmation_status
         final.append(sub)
 
     context = {"title":event.event_name,
                 "event_name": event.event_name,
-                "url_redirect2": "/{}add-event/{}/sub/add".format(teacher_hash,e_id),
-                "myevent":True if event.teacher_incharge_id==teacher_id else False,
+                "url_redirect2": "/{}add-event/{}/sub/add".format(teacher_hash,event.event_id),
+                "my_event":True if event.teacher_incharge_id==teacher_id else False,
                 "subevents":final}
 
     return render(request, "teacherview/subevents.html", context)

@@ -12,12 +12,14 @@
         <h1 class="h3 mb-0 text-gray-800">{{ event_name }}</h1>
       </div>
     </div>
-    <div style="float: right; margin: 0 1%; width: 31% ">
-      <a href={{ url_redirect2 }} aria-expanded="true">
-        <i class="fas fa-plus"></i>
-          <span>Add Sub-Event</span>
-      </a>
-    </div>
+    {% if my_event %}
+      <div style="float: right; margin: 0 1%; width: 31% ">
+        <a href={{ url_redirect2 }} aria-expanded="true">
+          <i class="fas fa-plus"></i>
+            <span>Add Sub-Event</span>
+        </a>
+      </div>
+    {% endif %}
   </div>
 
   <div class="row">
