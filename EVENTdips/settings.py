@@ -26,7 +26,7 @@ SECRET_KEY = 'm*%76=j*mk3g--bh!jdmzjjs)j959=ck_1l)i#as)rnv$$(!q5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['eventdips.ga','13.233.203.164','172.31.12.159','localhost','192.168.29.18']
+ALLOWED_HOSTS = ['eventdips.ga','13.233.203.164','172.31.12.159','172.31.3.68','localhost','192.168.29.18','13.232.63.141']
 
 
 # Application definition
