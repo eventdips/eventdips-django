@@ -16,7 +16,7 @@ class ResetPassword(forms.Form):
 	
 class EventCreationForm(forms.ModelForm):
 
-	event_name = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Event Name Here'}))
+	event_name = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Event Name Here','class':'form-control'}))
 	teacher_incharge = forms.CharField(widget= forms.TextInput(attrs={'class':'form-control'}))
 	event_information = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control','rows':5, 'cols':50, 'placeholder':'Enter The Information Here...'}))
 	start_date = forms.CharField(widget=SelectDateWidget(attrs={'class':'form-control'}))
@@ -28,7 +28,7 @@ class EventCreationForm(forms.ModelForm):
 	single_event = forms.CharField(help_text='''Enter True If The Event Does Not Have Any Events Under It.
 												Example: Invictus- False, Debate Competition-True''',widget=forms.Select(choices=options,attrs={'class':'form-control'})) 
 
-	add_attachment = forms.FileField(widget=forms.ClearableFileInput(attrs={'class':'btn btn-success'}))
+	add_attachment = forms.FileField(widget=forms.ClearableFileInput(attrs={'class':'card-link'}))
 
 	class Meta:
 		model = Events
@@ -96,7 +96,7 @@ class SubEventCreationForm(forms.ModelForm):
 		("Science",'Science')
 	)
 	category = forms.CharField(help_text='Event Category',widget=forms.Select(choices=cat_options))
-	add_attachment = forms.FileField(widget=forms.ClearableFileInput())
+	add_attachment = forms.FileField(widget=forms.ClearableFileInput(attrs={'class':'btn btn-success green'}))
 
 	class Meta:
 		model = SubEvents
