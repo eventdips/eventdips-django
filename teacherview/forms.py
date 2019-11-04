@@ -27,7 +27,7 @@ class EventCreationForm(forms.ModelForm):
 	single_event = forms.CharField(help_text='''Enter True If The Event Does Not Have Any Events Under It.
 												Example: Invictus- False, Debate Competition-True''',widget=forms.Select(choices=options,attrs={'class':'form-control'})) 
 
-	add_attachment = forms.FileField(widget=forms.ClearableFileInput(attrs={'class':'btn btn-success'}))
+	add_attachment = forms.FileField(widget=forms.ClearableFileInput(attrs={'class':'card-link'}))
 
 	class Meta:
 		model = Events
@@ -97,7 +97,7 @@ class SubEventCreationForm(forms.ModelForm):
 		("Science",'Science')
 	)
 	category = forms.CharField(help_text='Event Category',widget=forms.Select(choices=cat_options))
-	add_attachment = forms.FileField(widget=forms.ClearableFileInput())
+	add_attachment = forms.FileField(widget=forms.ClearableFileInput(attrs={'class':'btn btn-success green'}))
 
 	class Meta:
 		model = SubEvents
