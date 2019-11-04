@@ -168,6 +168,9 @@ def login_auth(request):
             else:
                 messages.warning(request,"Entered Username Or Password Is Incorrect!")
                 return redirect('login')
+        else:
+            messages.warning("Invalid Entries!")
+            return redirect('login')
     else:
         form = LoginForm()
     
