@@ -11,7 +11,6 @@ from django.core.mail import EmailMessage
 from django.template import Context
 from django.template.loader import get_template
 import hashlib
-from reportlab.pdfgen import canvas
 
 '''
 teachers-ff1b4751894e267c4fe3e1c7025670929c15c05b033800e088f9ce931a377912- hashlib.sha256("teachers/".encode('utf-8')).hexdigest()
