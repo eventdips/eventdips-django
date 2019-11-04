@@ -65,8 +65,8 @@
             <center><img class="collapse-item rounded-circle" src="https://source.unsplash.com/random/50x50"></center>
             <p class="collapse-header"> {{ user.first_name }} {{ user.last_name }}</p>
             <a class="collapse-item" href="{% url 'student-profile' %}">View Profile</a>
-            <a class="collapse-item" href='#'>My Achievements</a>
-            <a class="collapse-item" href='#'>Logout</a>
+            <a class="collapse-item" href="{% url 'student-achievements' %}">My Achievements</a>
+            <a class="collapse-item" href="{% url 'logout' %}">Logout</a>
           </div>
         </div>
       </li>
@@ -82,7 +82,14 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Events Catagories:</h6>
-            <a class="collapse-item" href='#' >All categories will appear here</a>
+            <a class="collapse-item" href='http://localhost:8000/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//IT'>IT</a>
+            <a class="collapse-item" href='http://localhost:8000/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Sport'>Sport</a>
+            <a class="collapse-item" href='http://localhost:8000/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Debate'>Debate</a>
+            <a class="collapse-item" href='http://localhost:8000/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Public%20Speaking'>Public Speaking</a>
+            <a class="collapse-item" href='http://localhost:8000/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Education'>Educational</a>
+            <a class="collapse-item" href='http://localhost:8000/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Literature'>Literature</a>
+            <a class="collapse-item" href='http://localhost:8000/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Design'>Design</a>
+            <a class="collapse-item" href='http://localhost:8000/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Science'>Science</a>
           </div>
         </div>
       </li>
@@ -91,7 +98,7 @@
       <hr class="sidebar-divider my-0">
       <!-- Nav Item - Pages - Collapse Menu -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{% url 'add-event' %}" aria-expanded="true">
+        <a class="nav-link collapsed" href="http://localhost:8000/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0/applications" aria-expanded="true">
           <i class="fas fa-calendar-alt"></i>
           <span>My Applications</span>
         </a>

@@ -11,6 +11,7 @@ from django.core.mail import EmailMessage
 from django.template import Context
 from django.template.loader import get_template
 import hashlib
+from reportlab.pdfgen import canvas
 
 '''
 teachers-ff1b4751894e267c4fe3e1c7025670929c15c05b033800e088f9ce931a377912- hashlib.sha256("teachers/".encode('utf-8')).hexdigest()
@@ -527,6 +528,7 @@ def subevent(request,pk,sub_pk):
             sub["name"] = subevent.subevent_name
             sub["dates"] = date_conversion(subevent.subevent_dates)
             sub["type"] = "Group" if subevent.subevent_type != "I" else "Individual"
+            sub["size"] = str(subevent.group_size)
             sub["available_slots"] = str(subevent.total_slots-subevent.total_registrations)
             sub["total_registrations"] = str(subevent.total_registrations)
             sub["event_information"] = subevent.subevent_information
@@ -655,6 +657,8 @@ def confirmation(request,pk,sub_pk):
     if sub.confirmation_status=="N":
         sub.confirmation_status = "Y"
         sub.save()
+        #REPORTLAB PDF GEN
+
         messages.success(request,"Decisions for '{}' have been finalized!".format(sub.subevent_name))
         return redirect('teacher-homepage')
     else:
@@ -956,6 +960,10 @@ def single_event_information(request,event_id):
                 new_subevent.event_id = event.event_id
                 new_subevent.subevent_information = event.event_information
                 new_subevent.subevent_type = "I" if form.cleaned_data.get('event_type')=="Individual" else "G"
+                if form.cleaned_data.get('group_size'):
+                    new_subevent.group_size = form.cleaned_data.get('group_size')
+                else:
+                    new_subevent.group_size = 1
                 new_subevent.total_slots = int(total_slots)
                 new_subevent.maximum_students = int(maximum_students)
                 new_subevent.subevent_requirements = form.cleaned_data.get('requirements')
@@ -1040,6 +1048,10 @@ def add_subevent(request,event_id):
                     new_subevent.event_id = event.event_id
                     new_subevent.subevent_information = form.cleaned_data.get('event_description')
                     new_subevent.subevent_type = "I" if form.cleaned_data.get('event_type')=="Individual" else "G"
+                    if form.cleaned_data.get('group_size'):
+                        new_subevent.group_size = form.cleaned_data.get('group_size')
+                    else:
+                        new_subevent.group_size = 1
                     new_subevent.total_slots = int(total_slots)
                     new_subevent.maximum_students = int(maximum_students)
                     new_subevent.subevent_requirements = form.cleaned_data.get('requirements')
@@ -1091,6 +1103,10 @@ def edit_event(request,event_id,subevent_id):
             sub.subevent_dates = form.cleaned_data.get('start_date') +" to " + form.cleaned_data.get("last_date")
             sub.subevent_information = form.cleaned_data.get('event_description')
             sub.subevent_type = "I" if form.cleaned_data.get('event_type')=="Individual" else "G"
+            if form.cleaned_data.get('group_size'):
+                sub.group_size = form.cleaned_data.get('group_size')
+            else:
+                sub.group_size = 1
             sub.total_slots = int(total_slots)
             sub.event_id = event_id
             sub.maximum_students = int(maximum_students)

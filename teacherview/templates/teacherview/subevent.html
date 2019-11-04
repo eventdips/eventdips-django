@@ -33,6 +33,9 @@
                     <p><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</p>
                     <p><b>Deadline</b>: {{ event_data.last_date }}</p>
                     <p><b>Event type</b>: {{ event_data.type }}</p>
+                    {% if event_data.type == "Group" %}
+                      <p><b>Group Size</b>: {{ event_data.size }}</p>
+                    {% endif %}
                     {% if event_data.allowed_grades != "ALL" %}
                      <p><b>Grades</b>: {{ event_data.allowed_grades }}</p>
                     {% endif %}

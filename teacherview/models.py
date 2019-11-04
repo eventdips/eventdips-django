@@ -20,6 +20,7 @@ class SubEvents(models.Model):
 	subevent_name = models.CharField(max_length=64)
 	subevent_dates = models.CharField(max_length=64)
 	subevent_type = models.CharField(max_length=1, default='I')
+	group_size = models.IntegerField(null=True)
 	event_id = models.IntegerField(null=False)
 	total_slots = models.IntegerField(default=0) #MAX ALLOWED SLOTS
 	total_registrations = models.IntegerField(default=0)
@@ -42,7 +43,7 @@ class SubEvents(models.Model):
 class Status(models.Model):
 	user = models.OneToOneField(User, on_delete= models.CASCADE)
 	status = models.CharField(default="",max_length=1)
-	acheivements = models.TextField(default="") #stores STUDENT ACHEIVEMENTS- Teahcer=="None"
+	achievements = models.TextField(default="") #stores STUDENT ACHEIVEMENTS- Teahcer=="None"
 	department = models.CharField(max_length=64) #stored TEACHER DEPT- Student=="None"
 
 	def __str__(self):

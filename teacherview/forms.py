@@ -15,7 +15,6 @@ class ResetPassword(forms.Form):
 	confirm_password = forms.CharField(widget=forms.PasswordInput())
 	
 class EventCreationForm(forms.ModelForm):
-
 	event_name = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Event Name Here'}))
 	teacher_incharge = forms.CharField(widget= forms.TextInput(attrs={'class':'form-control'}))
 	event_information = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control','rows':5, 'cols':50, 'placeholder':'Enter The Information Here...'}))
@@ -42,6 +41,7 @@ class SingleEventInformationForm(forms.ModelForm):
 		("Group",'Group')
 	)
 	event_type = forms.CharField(help_text='Individual Event or Group Event',widget=forms.Select(choices=options))
+	group_size = forms.IntegerField(required=False,help_text="Number Of Students Per Group (If Individual Participation: Leave Blank)",widget=forms.NumberInput(attrs={'size': '20'}))
 	maximum_applicants = forms.CharField(help_text='Maximum Number Of Applications',widget=forms.TextInput(attrs={'placeholder': '50'}))
 	maximum_participants = forms.CharField(help_text='Maximum Number Of Students Who Can Participate In An Event',widget=forms.TextInput(attrs={'placeholder': '5'}))
 	#subevent_information = event_information
@@ -65,7 +65,7 @@ class SingleEventInformationForm(forms.ModelForm):
 
 	class Meta:
 		model = SubEvents
-		fields = ['event_type','maximum_applicants','maximum_participants','requirements','registration_deadline','allowed_grades']
+		fields = ['event_type','group_size','maximum_applicants','maximum_participants','requirements','registration_deadline','allowed_grades']
 
 class SubEventCreationForm(forms.ModelForm):
 	event_name = forms.CharField(help_text='Name Of The Event',widget=forms.TextInput(attrs={'placeholder': 'Debate'}))
@@ -74,6 +74,7 @@ class SubEventCreationForm(forms.ModelForm):
 		("Group",'Group')
 	)
 	event_type = forms.CharField(help_text='Individual Event or Group Event',widget=forms.Select(choices=options))
+	group_size = forms.IntegerField(required=False,help_text="Number Of Students Per Group (If Individual Participation: Leave Blank)",widget=forms.NumberInput(attrs={'size': '20'}))
 	start_date = forms.CharField(help_text="Start Date Of The Event (eg: 01/01/2020)",widget=SelectDateWidget())
 	last_date = forms.CharField(help_text="Last Date Of The Event (eg: 03/01/2020)",widget=SelectDateWidget())
 	maximum_applicants = forms.CharField(help_text='Maximum Number Of Applications',widget=forms.TextInput(attrs={'placeholder': '50'}))
@@ -100,4 +101,4 @@ class SubEventCreationForm(forms.ModelForm):
 
 	class Meta:
 		model = SubEvents
-		fields = ['event_name','event_type','start_date','last_date','maximum_applicants','maximum_participants','requirements','teacher_incharge','registration_deadline','allowed_grades']
+		fields = ['event_name','event_type','group_size','start_date','last_date','maximum_applicants','maximum_participants','requirements','teacher_incharge','registration_deadline','allowed_grades']

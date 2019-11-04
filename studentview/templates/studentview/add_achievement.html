@@ -1,0 +1,91 @@
+{% extends 'studentview/layout.html' %}
+{% load crispy_forms_tags %}
+
+{% block ContentView %}
+
+<!--
+<div class="container-fluid">
+	<div clas="card shadow mb-4" style="border-radius: 25px;">
+		<div class="card-header border-left-primary" style="border-radius: 0px 25px 25px 0px;">
+			<h4 class="m-0 font-weight-bold text-primary">New Achievement</h4>
+		</div>
+		<div class="card-body">
+			<form method="POST" enctype="multipart/form-data">
+				{% csrf_token %}
+				<fieldset class="form-group" id="EventForm" >
+						{{ form|crispy }}
+				</fieldset>
+				<div class="form-group">
+						<button class="btn green text-white" type="submit" name="file" style="width:100%">Submit</button>
+					</div>
+			</form>	
+		</div>
+	</div>
+</div>
+
+-->
+
+<style>
+	input{
+		border-width:0px;
+		border:none;
+		color: #2d00ce;
+	}
+	input::placeholder{color:#2d00ce}
+</style>
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
+<div class="container-fluid">
+	
+	<div class="card shadow mb-4 ">
+		<form method="POST" enctype="multipart/form-data">
+		{% csrf_token %}
+			<div class="card-header border-left-primary">
+				<b><h4 class="m-0 font-weight-bold text-primary" style="input{border-width:0px;border:none;color: #4caf50;::placeholder{color:#2b11bd}}">{{ form.achievement_title }}</h4></b>
+			</div>
+			<div class="card-body">
+				<div class="form-group" id="EventForm">
+					<div class="row">
+						<div class="col">
+							<b><label for="achievement_info">Achievement Information:</label></b>
+							{{ form.achievement_info }}
+							<small class="text-disabled">Information About the Achievement</small>		
+							</div>
+						<br>
+						<div class="col">
+							<b><label for="achievement_type">Category  Of Achievement: </label></b>
+							{{ form.achievement_type }}
+							<small class="text-disabled">Category Of the Achievement (Eg: IT)</small>		
+							<br><br>
+							<div class="row">
+								<div class="col">
+									<b><label for="start_date_of_achievement">Start Date Of Activity:</label></b>
+									{{ form.start_date_of_achievement }}
+									<small class="text-disabled">Start Date Of The Activity (eg: 01/01/2020)</small>	
+								</div>
+								<div class="col">
+									<b><label for="last_date_of_achievement">End Date Of The Activity:</label></b>
+									{{ form.last_date_of_achievement }}
+									<small class="text-disabled">Last Date Of The Activity (eg: 03/01/2020)</small>
+								</div>
+							</div>
+						</div>
+					</div>						
+				</div>
+				<div class="form-group">
+					<center>
+						<button class="btn btn-primary" type="submit" name="file" style="width:100%; border-radius:25px; padding:15px;">Submit</button>
+					</center>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script>
+	$('#datepicker').datepicker({
+		uiLibrary: 'bootstrap4'
+	});
+</script>
+
+{% endblock %}

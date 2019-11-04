@@ -1,0 +1,44 @@
+{% extends 'studentview/layout.html' %}
+
+{% block ContentView %}
+
+<div class="container-fluid">
+  <div class="card shadow mb-4 border-primary" style="border-radius: 25px;">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="border-radius: 0px 25px 25px 0px;">
+        <div>
+          <h1 class="m-0 font-weight-bold text-primary">My Applications</h1>
+        </div>
+        <div align="right">
+          <a href="{% url 'student-homepage' %}">
+            <i class="fas fa-arrow-left fa-2x"></i>
+          </a>
+        </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th><h3><b>Event</b></h3></th>
+              <th><h3><b>Teacher Incharge</b></h3></th>
+              <th><h3><b>Date Submitted</b></h3></th>
+              <th><h3><b>Current Status</b></h3></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student_data in Registrations %}
+              <tr>
+                <td><h5>{{ student_data.event_name }}</td>
+                <td><h5>{{ student_data.teacher_incharge }}</h5></td>
+                <td><h5>{{ student_data.date_applied }}</h5></td>
+                <td><h5>{{ student_data.status }}</h5></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -156,6 +156,6 @@ MEDIA_URL = '/media/'
 EMAIL_HOST = 'mail.eventdips.ga'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'support@eventdips.ga'
-EMAIL_HOST_PASSWORD = 'password'
+EMAIL_HOST_PASSWORD = 'SupportPassEventdips123'
 EMAIL_USE_TLS = True
 
