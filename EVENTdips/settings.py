@@ -26,7 +26,7 @@ SECRET_KEY = 'm*%76=j*mk3g--bh!jdmzjjs)j959=ck_1l)i#as)rnv$$(!q5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['eventdips.ga','localhost','127.0.0.1']
+ALLOWED_HOSTS = ['eventdips.ml','localhost','127.0.0.1']
 
 SILENCED_SYSTEM_CHECKS = ["auth.W004"]
 
