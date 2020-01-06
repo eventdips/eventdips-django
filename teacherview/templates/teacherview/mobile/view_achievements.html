@@ -1,0 +1,58 @@
+{% extends 'teacherview/mobile/layout.html' %}
+
+{% block ContentView %}
+
+<!--Beginning of Content-->
+<div class="container-fluid">
+    <div class="row">
+        <div style="float: left; margin: 0 2%; width: 75%">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">&nbsp;{{ student_name }} Achievements</h1>
+            </div>
+        </div> 
+        <div style="float: right; margin: 0 1%; width: 15% ">
+            <a href={{ return_redirect }} aria-expanded="true">
+                <i class="fas fa-arrow-left fa-2x" style="color: rgb(51, 177, 51);"></i>
+            </a>
+        </div>
+    </div>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                {% if achievements %}
+                    {% for ach in achievements %}
+                        <div class="card shadow mb-4" style="border-radius: 25px;">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-success" style="border-radius: 0px 25px 25px 0px;">
+                                <div class="row">
+                                    <h4 class="m-0 font-weight-bold text-success">&nbsp;{{ ach.name }}</h4>  
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li><b>Date Of Achievement</b>: {{ ach.date }}</li>
+                                    {% if ach.category %}
+                                        <li><b>Category</b>: {{ ach.category}}</li>
+                                    {% endif %}
+                                    <li><b>Achievement Description</b>: </li>
+                                    {{ ach.info }}
+                                </ul> 
+                            </div>
+                        </div>             
+                        <br>
+                    {% endfor %}
+                {% else %}
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="container-fluid">
+                                <p class="display-4">😥 NO ACHIEVEMENTS REGISTERED YET.</p>
+                            </div>
+                        </div> 
+                    </div>
+                {% endif %}  
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

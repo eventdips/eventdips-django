@@ -1,0 +1,137 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="theme-color" content="#4caf50">
+    <link rel="shortcut icon" type="image/png" href="{% static 'teacherview/EventDipsMini.png' %}"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+
+    {% if page_title %}
+      <title>{{page_title}}</title>
+    {% else %}
+      <title>EventDiPS</title>
+    {% endif %}
+
+    <!-- Custom fonts for this template-->
+    <link href="https://fonts.googleapis.com/css?family=Prompt:400,600&display=swap" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      .card{
+        border-radius: 2rem 0rem 2rem 2rem;
+      }
+      .card-header{
+          border-radius: 2rem 0rem 2rem 2rem;
+        }
+    </style>
+  </head>
+  <body style="font-family: 'Montserrat', sans-serif;">
+    <div class="">
+      <!--navbar-->
+      <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow" style="background-color: #4caf50;border-radius:0rem 0rem 1.5rem 1.5rem;">
+        <div class="container">
+          <a class="navbar-brand" href="/ff1b4751894e267c4fe3e1c7025670929c15c05b033800e088f9ce931a377912"><img src="{% static 'teacherview/EventDipsLarge.webp' %}" style="height:2.5rem;  filter: drop-shadow(0 0 8px #FFFFFF);"></a>
+          <button class="navbar-toggler border-0 text-dark" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+          </button>
+        
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+              <li class="nav-item">
+                <a class="nav-link text-white" href="/ff1b4751894e267c4fe3e1c7025670929c15c05b033800e088f9ce931a377912"><i class="fas fa-home"></i> Home</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-calendar"></i> Events
+                </a>
+                <div class="dropdown-menu mr-auto mt-2 mt-lg-0 shadow" aria-labelledby="navbarDropdown" style="animation-duration: 0.7s;animation-name: jackInTheBox;border-radius:1rem">
+                  <a class="dropdown-item" href='{% url "teacher-myevents" %}'>My Events</a>
+                  <a class="dropdown-item" href='{% url "teacher-allevents" %}'>View All</a>
+                </div>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'add-event' %}">
+                  <i class="fas fa-plus"></i> Add Events
+                </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-user"></i> My Profile
+                </a>
+                <div class="dropdown-menu mr-auto mt-2 mt-lg-0 shadow" aria-labelledby="navbarDropdown" style="animation-duration: 0.7s;animation-name: jackInTheBox;border-radius:1rem;">
+                  <div class="dropdown-item">
+                    <img class="rounded-circle d-inline" src="https://source.unsplash.com/random/50x50" style="">
+                    {% load teach_tags %}
+                    <span class="disabled d-inline"> {% teacher_name request %}</span>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'teacher-profile' %}">Profile</a>
+                  <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                </div>
+              </li>
+            </ul>
+            <hr class="d-block d-sm-none">
+            
+            <form class="form-inline">
+              <div class="container-fluid">
+                <div class="input-group" style="padding-bottom:0.5rem">
+                  <input class="form-control d-inline" type="search" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-success d-inline" type="submit"><i class="fas fa-search"></i></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <br><br><br>
+      <!-- Begin Page Content -->
+      <div class="container">
+        <div class="row">
+          {% if messages %}
+            {% for message in messages %}
+              <div>
+                <span class="alert alert-" class="badge badge-pill badge-{{ message.tags }}" style="display: inline-block;">
+                  {{ message }}
+                </span>
+              </div>
+            {% endfor %}
+          {% endif %}
+          &nbsp;
+          {% if notifications_days_left or notifications_applications %}
+            {% for notification_data in notifications_days_left %}
+              <div>
+                <span class="badge badge-pill badge-dark" style="display: inline-block; background-color: #4caf50;">
+                  {{ notification_data.event_name }}{{ notification_data.days_left }} Days Left
+                </span>
+              </div>
+              &nbsp;
+            {% endfor %}
+            {% for notification_data in notifications_applications %}
+                <a href={{ notification_data.url_redirect }}>
+                    <span class="badge badge-pill badge-dark" style="display: inline-block; background-color: #4caf50;">{{ notification_data.student_name }} for {{ notification_data.event_name }}</span>
+                </a>
+                &nbsp;
+            {% endfor %}
+          {% endif %}
+        </div>
+        <br>
+        {% block ContentView %}
+        {% endblock %}
+      </div>
+      <!-- End of Page Content -->
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </div>
+  </body>
+</html>

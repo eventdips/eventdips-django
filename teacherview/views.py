@@ -10,7 +10,10 @@ from .forms import EventCreationForm, SingleEventInformationForm, SubEventCreati
 from django.core.mail import EmailMessage
 from django.template import Context
 from django.template.loader import get_template
-import hashlib
+from studentview.views import get_device
+import hashlib  
+from datetime import date
+from random import shuffle
 
 '''
 teachers-ff1b4751894e267c4fe3e1c7025670929c15c05b033800e088f9ce931a377912- hashlib.sha256("teachers/".encode('utf-8')).hexdigest()
@@ -178,12 +181,12 @@ def login_auth(request):
         "form":form
     }
 
-    return render(request,'studentview/login.html',context)    
+    return render(request,'studentview/desktop/login.html',context)    
     
 
 def logout_auth(request):
     logout(request)
-    response = render(request,"studentview/logout.html")
+    response = render(request,"studentview/desktop/logout.html")
     response.delete_cookie('logged_in')
     response.delete_cookie('id')
     return response
@@ -214,7 +217,7 @@ def forgot_password(request):
         "form":form
     }
 
-    return render(request,'studentview/forgot_password.html',context)
+    return render(request,'studentview/desktop/forgot_password.html',context)
 
 
 def reset_password(request,email):
@@ -245,7 +248,21 @@ def reset_password(request,email):
         "form":form
     }
 
-    return render(request,'studentview/reset_password.html',context) 
+    return render(request,'studentview/desktop/reset_password.html',context) 
+
+def event_over_check(event_id,subevent_id):
+    if not subevent_id:
+        event = Events.objects.get(pk=event_id)
+        if event.event_dates.split(" to ")[1]>=str(date.today()):
+            return True
+        else:
+            return False
+    else:
+        subevent = SubEvents.objects.get(pk=subevent_id)
+        if subevent.subevent_dates.split(" to ")[1]>=str(date.today()):
+            return True
+        else:
+            return False
 
 def home(request):
     login_check(request)
@@ -262,72 +279,79 @@ def home(request):
 
     #There is also data available regarding: Total Slots, Date Posted, Time Posted, Event Type, Event Information.
     for i in events:
-        sub = {}
-        if i.single_check=="True":
-            sub_event = SubEvents.objects.filter(event_id=i.event_id)
-            subevent_id = sub_event.first().subevent_id
-            sub["confirmation_status"] = sub_event.first().confirmation_status
-            sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(i.event_id),str(subevent_id))
-        else:
-            sub["url_redirect"] = "/{}{}".format(teacher_hash,str(i.event_id))
-        sub["name"] = i.event_name
-        sub["teacher_incharge"] = i.teacher_incharge
-        sub["event_information"]= i.event_information
-        sub["event_dates"] = date_conversion(i.event_dates)
+        if event_over_check(i.event_id,False):
+            sub = {}
+            if i.single_check=="True":
+                sub_event = SubEvents.objects.filter(event_id=i.event_id)
+                subevent_id = sub_event.first().subevent_id
+                sub["confirmation_status"] = sub_event.first().confirmation_status
+                sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(i.event_id),str(subevent_id))
+            else:
+                sub["url_redirect"] = "/{}{}".format(teacher_hash,str(i.event_id))
+            sub["name"] = i.event_name
+            sub["teacher_incharge"] = i.teacher_incharge
+            sub["event_information"]= i.event_information
+            #sub["valid"] = event_over_check(i.event_id,False)
+            sub["event_dates"] = date_conversion(i.event_dates)
 
-        final.append(sub)
+            final.append(sub)
 
     subevents = list(SubEvents.objects.all())
     final2=[]
     for s_event in subevents:
-        if s_event.subevent_teacher_incharge_id==teacher_id or Status.objects.get(user=User.objects.get(pk=teacher_id)).status=="M":
-            if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
-                sub = {}
-                sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["name"] = s_event.subevent_name
-                sub["teacher_incharge"] = s_event.subevent_teacher_incharge
-                sub["event_information"]= s_event.subevent_information
-                sub["event_dates"] = date_conversion(s_event.subevent_dates)
-                sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["category"] = s_event.category
-                sub["confirmation_status"] = s_event.confirmation_status
-                sub["completed_check"] = False
-                final2.append(sub)
-            else:
-                sub = {}
-                sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["name"] = s_event.subevent_name
-                sub["teacher_incharge"] = s_event.subevent_teacher_incharge
-                sub["event_information"]= s_event.subevent_information
-                sub["event_dates"] = date_conversion(s_event.subevent_dates)
-                sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["category"] = s_event.category
-                sub["confirmation_status"] = s_event.confirmation_status
-                sub["completed_check"] = True
-                final2.append(sub)
+        if event_over_check(s_event.event_id,s_event.subevent_id):
+            if s_event.subevent_teacher_incharge_id==teacher_id or Status.objects.get(user=User.objects.get(pk=teacher_id)).status=="M":
+                if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
+                    sub = {}
+                    sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["name"] = s_event.subevent_name
+                    sub["teacher_incharge"] = s_event.subevent_teacher_incharge
+                    sub["event_information"]= s_event.subevent_information
+                    sub["event_dates"] = date_conversion(s_event.subevent_dates)
+                    sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["category"] = s_event.category
+                    sub["valid"] = event_over_check(s_event.event_id,s_event.subevent_id)
+                    sub["confirmation_status"] = s_event.confirmation_status
+                    sub["completed_check"] = False
+                    final2.append(sub)
+                else:
+                    sub = {}
+                    sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["name"] = s_event.subevent_name
+                    sub["teacher_incharge"] = s_event.subevent_teacher_incharge
+                    sub["event_information"]= s_event.subevent_information
+                    sub["event_dates"] = date_conversion(s_event.subevent_dates)
+                    sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["category"] = s_event.category
+                    #sub["valid"] = event_over_check(s_event.event_id,s_event.subevent_id)
+                    sub["confirmation_status"] = s_event.confirmation_status
+                    sub["completed_check"] = True
+                    final2.append(sub)
    
     for i in events:
-        c=0
-        if i.teacher_incharge_id==teacher_id or Status.objects.get(user=User.objects.get(pk=teacher_id)).status=="M":
-            for s in final2:
-                if s["name"]==i.event_name:
-                    c+=1
-            if c==0:
-                sub = {}
-                if i.single_check=="True":
-                    sub_event = SubEvents.objects.filter(event_id=i.event_id)
-                    subevent_id = sub_event.first().subevent_id
-                    sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(i.event_id),str(subevent_id))
-                else:
-                    sub["url_redirect"] = "/{}{}".format(teacher_hash,str(i.event_id))
-                sub["name"] = i.event_name
-                sub["teacher_incharge"] = i.teacher_incharge
-                sub["event_information"]= i.event_information
-                sub["event_dates"] = date_conversion(i.event_dates)
-                sub["event_check"] = True
-                final2.append(sub)
+        if event_over_check(i.event_id,False):
+            c=0
+            if i.teacher_incharge_id==teacher_id or Status.objects.get(user=User.objects.get(pk=teacher_id)).status=="M":
+                for s in final2:
+                    if s["name"]==i.event_name:
+                        c+=1
+                if c==0:
+                    sub = {}
+                    if i.single_check=="True":
+                        sub_event = SubEvents.objects.filter(event_id=i.event_id)
+                        subevent_id = sub_event.first().subevent_id
+                        sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(i.event_id),str(subevent_id))
+                    else:
+                        sub["url_redirect"] = "/{}{}".format(teacher_hash,str(i.event_id))
+                    sub["name"] = i.event_name
+                    sub["teacher_incharge"] = i.teacher_incharge
+                    sub["event_information"]= i.event_information
+                    #sub["valid"] = event_over_check(i.event_id,False)
+                    sub["event_dates"] = date_conversion(i.event_dates)
+                    sub["event_check"] = True
+                    final2.append(sub)
     
     final = teacher_event_sort(final)
     final2 = teacher_event_sort(final2)
@@ -335,10 +359,16 @@ def home(request):
     context = {"title":"Home",
         "AllEvents": final,
         "MyEvents":final2,
-        "status": "M" if Status.objects.get(user=User.objects.get(pk=teacher_id)).status=="M" else ""
+        "status": "M" if Status.objects.get(user=User.objects.get(pk=teacher_id)).status=="M" else "",
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count": "3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
     }
 
-    return render(request, "teacherview/home.html", context)
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/home.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/home.html',context)
 
 def myevents(request):
     login_check(request)
@@ -355,37 +385,45 @@ def myevents(request):
     status = Status.objects.get(user=User.objects.get(pk=teacher_id))
     final=[]
     for s_event in subevents:
-        if s_event.subevent_teacher_incharge_id==teacher_id or status.status=="M":
-            if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
-                sub = {}
-                sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["name"] = s_event.subevent_name
-                sub["teacher_incharge"] = s_event.subevent_teacher_incharge
-                sub["event_information"]= s_event.subevent_information
-                sub["event_dates"] = date_conversion(s_event.subevent_dates)
-                sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["completed_check"] = False
-                sub["confirmation_status"] = s_event.confirmation_status
-                final.append(sub)
-            else:
-                sub = {}
-                sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["name"] = s_event.subevent_name
-                sub["teacher_incharge"] = s_event.subevent_teacher_incharge
-                sub["event_information"]= s_event.subevent_information
-                sub["event_dates"] = date_conversion(s_event.subevent_dates)
-                sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["completed_check"] = True
-                sub["confirmation_status"] = s_event.confirmation_status
-                final.append(sub)
+        if event_over_check(s_event.event_id,s_event.subevent_id):
+            if s_event.subevent_teacher_incharge_id==teacher_id or status.status=="M":
+                if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
+                    sub = {}
+                    sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["name"] = s_event.subevent_name
+                    sub["teacher_incharge"] = s_event.subevent_teacher_incharge
+                    sub["event_information"]= s_event.subevent_information
+                    sub["event_dates"] = date_conversion(s_event.subevent_dates)
+                    sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["completed_check"] = False
+                    sub["confirmation_status"] = s_event.confirmation_status
+                    final.append(sub)
+                else:
+                    sub = {}
+                    sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["name"] = s_event.subevent_name
+                    sub["teacher_incharge"] = s_event.subevent_teacher_incharge
+                    sub["event_information"]= s_event.subevent_information
+                    sub["event_dates"] = date_conversion(s_event.subevent_dates)
+                    sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["completed_check"] = True
+                    sub["confirmation_status"] = s_event.confirmation_status
+                    final.append(sub)
 
     context = {"title":"MyEvents",
-        "MyEvents":final
+        "MyEvents":final,
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
     }
-    return render(request, "teacherview/myevents.html", context)
- 
+    
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/myevents.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/myevents.html',context)
+
 def allevents(request):
     login_check(request)
 
@@ -398,20 +436,28 @@ def allevents(request):
         
     subevents = list(SubEvents.objects.all())
     final=[]
-    for s_event in subevents:        
-        sub = {}
-        sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-        sub["name"] = s_event.subevent_name
-        sub["teacher_incharge"] = s_event.subevent_teacher_incharge
-        sub["event_information"]= s_event.subevent_information
-        sub["event_dates"] = date_conversion(s_event.subevent_dates)
-        sub["confirmation_status"] = s_event.confirmation_status
-        final.append(sub)
+    for s_event in subevents:   
+        if event_over_check(s_event.event_id,s_event.subevent_id):     
+            sub = {}
+            sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+            sub["name"] = s_event.subevent_name
+            sub["teacher_incharge"] = s_event.subevent_teacher_incharge
+            sub["event_information"]= s_event.subevent_information
+            sub["event_dates"] = date_conversion(s_event.subevent_dates)
+            sub["confirmation_status"] = s_event.confirmation_status
+            final.append(sub)
 
     context = {"title":"AllEvents",
-        "AllEvents":final
+        "AllEvents":final,
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
     }
-    return render(request, "teacherview/allevents.html", context)
+
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/allevents.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/allevents.html',context)
 
 def profile(request):
     login_check(request)
@@ -428,33 +474,34 @@ def profile(request):
     
     final = []
     for s_event in list(SubEvents.objects.all()):
-        if s_event.subevent_teacher_incharge_id==user.pk or status.status=="M":
-            sub = {}
-            if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
+        if event_over_check(s_event.event_id,s_event.subevent_id):
+            if s_event.subevent_teacher_incharge_id==user.pk or status.status=="M":
                 sub = {}
-                sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["name"] = s_event.subevent_name
-                sub["event_dates"] = date_conversion(s_event.subevent_dates)
-                sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["category"] = s_event.category
-                sub["event_information"] = s_event.subevent_information
-                sub["confirmation_status"] = s_event.confirmation_status
-                sub["completed_check"] = False
-                
-                final.append(sub)
-            else:
-                sub = {}
-                sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["name"] = s_event.subevent_name
-                sub["event_dates"] = date_conversion(s_event.subevent_dates)
-                sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
-                sub["category"] = s_event.category
-                sub["completed_check"] = True
-                sub["event_information"] = s_event.subevent_information
-                sub["confirmation_status"] = s_event.confirmation_status
-                final.append(sub)
+                if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
+                    sub = {}
+                    sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["name"] = s_event.subevent_name
+                    sub["event_dates"] = date_conversion(s_event.subevent_dates)
+                    sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["category"] = s_event.category
+                    sub["event_information"] = s_event.subevent_information
+                    sub["confirmation_status"] = s_event.confirmation_status
+                    sub["completed_check"] = False
+                    
+                    final.append(sub)
+                else:
+                    sub = {}
+                    sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["name"] = s_event.subevent_name
+                    sub["event_dates"] = date_conversion(s_event.subevent_dates)
+                    sub["event_edit_redirect"] = "/{}edit-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["event_delete_redirect"] = "/{}delete-event/{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
+                    sub["category"] = s_event.category
+                    sub["completed_check"] = True
+                    sub["event_information"] = s_event.subevent_information
+                    sub["confirmation_status"] = s_event.confirmation_status
+                    final.append(sub)
 
     stat = "Admin" if status.status=="M" else ""
     context = {
@@ -464,11 +511,17 @@ def profile(request):
         "status": stat,
         "department": status.department,
         "MyEvents": final,
-        "title": user.first_name + " " + user.last_name
+        "title": user.first_name + " " + user.last_name,
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
     }
 
-    return render(request,"teacherview/teacherProfile.html",context)
-    
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/teacherProfile.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/teacherProfile.html',context)
+
 def subevents(request,pk):
     login_check(request)
 
@@ -485,25 +538,32 @@ def subevents(request,pk):
 
     final = []
     for i in subevents:
-        sub = {}
-        sub["name"] = i.subevent_name
-        sub["dates"] = date_conversion(i.subevent_dates)
-        sub["available_slots"] = str(i.total_slots-i.total_registrations)
-        sub["total_registrations"] = str(i.total_registrations)
-        sub["teacher_incharge"] = i.subevent_teacher_incharge   
-        sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(event.event_id),str(i.subevent_id))
-        sub["event_attachment"] = i.subevent_attachment
-        sub["confirmation_status"] = i.confirmation_status
-        final.append(sub)
+        if event_over_check(i.event_id,i.subevent_id):
+            sub = {}
+            sub["name"] = i.subevent_name
+            sub["dates"] = date_conversion(i.subevent_dates)
+            sub["available_slots"] = str(i.total_slots-i.total_registrations)
+            sub["total_registrations"] = str(i.total_registrations)
+            sub["teacher_incharge"] = i.subevent_teacher_incharge   
+            sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(event.event_id),str(i.subevent_id))
+            sub["event_attachment"] = i.subevent_attachment
+            sub["confirmation_status"] = i.confirmation_status
+            final.append(sub)
 
     context = {"title":event.event_name,
                 "event_name": event.event_name,
                 "url_redirect2": "/{}add-event/{}/sub/add".format(teacher_hash,event.event_id),
                 "my_event":True if event.teacher_incharge_id==teacher_id else False,
-                "subevents":final}
+                "subevents":final,
+                "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+                "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+                "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]}
 
-    return render(request, "teacherview/subevents.html", context)
- 
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/subevents.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/subevents.html',context)
+
 def subevent(request,pk,sub_pk):
     login_check(request)
 
@@ -513,6 +573,10 @@ def subevent(request,pk,sub_pk):
             return redirect('student-homepage')
     except:
         return redirect('login')
+
+    if not event_over_check(pk,sub_pk):
+        messages.warning(request,"Event '{}' Is Already Complete!".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
 
     if finalize_check(request,pk,sub_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
@@ -592,10 +656,16 @@ def subevent(request,pk,sub_pk):
     context = {"title":subevent.subevent_name,
                 "event_name": event.event_name,
                 "subevents":final,
-                "header_redirect":"/{}{}".format(teacher_hash,str(pk))}
+                "header_redirect":"/{}{}".format(teacher_hash,str(pk)),
+                "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+                "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+                "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]}
 
-    return render(request, "teacherview/subevent.html", context)
- 
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/subevent.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/subevent.html',context)
+
 def view_registrations(request,pk,sub_pk):
     login_check(request)
     
@@ -605,6 +675,10 @@ def view_registrations(request,pk,sub_pk):
             return redirect('student-homepage')
     except:
         return redirect('login')
+    
+    if not event_over_check(pk,sub_pk):
+        messages.warning(request,"Event '{}' Is Already Complete!".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
 
     if finalize_check(request,pk,sub_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
@@ -639,11 +713,16 @@ def view_registrations(request,pk,sub_pk):
         "view_selected_students":"/{}{}/{}/rview/view-selected".format(teacher_hash,str(pk),str(sub_pk)),
         "view_registered_students":"/{}{}/{}/rview/view-registered".format(teacher_hash,str(pk),str(sub_pk)),
         "confirmation":"/{}{}/{}/rview/confirmation".format(teacher_hash,str(pk),str(sub_pk)),
-        "title":"Registrations"
+        "title":"Registrations",
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
     }
 
-    return render(request,'teacherview/view_registrations.html',context)
-
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/view_registrations.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/view_registrations.html',context)
 
 def confirmation(request,pk,sub_pk):
     login_check(request)
@@ -654,6 +733,10 @@ def confirmation(request,pk,sub_pk):
             return redirect('student-homepage')
     except:
         return redirect('login')
+    
+    if not event_over_check(pk,sub_pk):
+        messages.warning(request,"Event '{}' Is Already Complete!".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
 
     sub = SubEvents.objects.get(pk=sub_pk)
     if sub.confirmation_status=="N":
@@ -677,6 +760,10 @@ def view_registration(request,pk,sub_pk,r_pk):
     except:
         return redirect('login')
     
+    if not event_over_check(pk,sub_pk):
+        messages.warning(request,"Event '{}' Is Already Complete!".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
+    
     if finalize_check(request,pk,sub_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
         return redirect('teacher-homepage')
@@ -693,10 +780,16 @@ def view_registration(request,pk,sub_pk,r_pk):
     sub["class"]=str(registration.student_class)
     sub["section"]=registration.student_section
     sub["info"]=registration.reg_info
-    try:
-        sub["ego_flex"]=Status.objects.get(user=student).acheivements
-    except:
-        sub["ego_flex"] = "None"
+    if registration.event_type=="G":
+        sub["group_type"] = True
+        regs = list(Registrations.objects.filter(subevent_id=sub_pk))
+        members = ""
+        for reg in regs:
+            if reg.group_id==registration.group_id:
+                members += (reg.user.first_name+" "+reg.user.last_name+"; ")
+        sub["team_members"] = members
+    else:
+        sub["group_type"] = False
     if registration.reg_status=="R":
         sub["status"]="Rejected" 
     elif registration.reg_status=="A":
@@ -712,10 +805,105 @@ def view_registration(request,pk,sub_pk,r_pk):
         "header_redirect":"/{}{}/{}/rview".format(teacher_hash,str(pk),str(sub_pk)),
         "url_redirect_1":"/{}{}/{}/rview/{}/accept".format(teacher_hash,str(pk),str(sub_pk),str(r_pk)),
         "url_redirect_2":"/{}{}/{}/rview/{}/reject".format(teacher_hash,str(pk),str(sub_pk),str(r_pk)),
-        "title": student.first_name + " " + student.last_name
+        "view_achievement_redirect":"/{}{}/{}/rview/{}/view-achievement".format(teacher_hash,str(pk),str(sub_pk),str(r_pk)),
+        "view_previous_redirect":"/{}{}/{}/rview/{}/view-previous".format(teacher_hash,str(pk),str(sub_pk),str(r_pk)),   
+        "title": student.first_name + " " + student.last_name,
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
     }
 
-    return render(request,'teacherview/view_registration.html',context)
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/view_registration.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/view_registration.html',context)
+
+def view_achievement(request,pk,sub_pk,r_pk):
+    login_check(request)
+
+    try:
+        if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
+            return redirect('student-homepage')
+    except:
+        pass
+    
+    user = Registrations.objects.get(registration_id=r_pk).user
+    status = Status.objects.get(user=user)
+
+    final=[]
+    pre_achievements = status.achievements #will be all the acheivements in a list stored as a string
+    list_achievements = pre_achievements[1:-1].split("666")
+    
+    for i in range(list_achievements.count("")):
+        list_achievements.remove("")
+
+    if pre_achievements!="None":
+        for pre in list_achievements:
+            pre = pre[1:-1]
+            ach = pre.split(":")
+            sub = {}
+            sub["name"] = ach[1]
+            sub["info"] = ach[3]
+            sub["date"] = date_conversion(ach[5])
+            sub["category"] = ach[7]
+            sub["event_edit_redirect"] = "achievements/edit/{}".format(ach[9])
+            sub["event_delete_redirect"] = "achievements/delete/{}".format(ach[9])
+            final.append(sub)
+    else:
+        final = []
+
+    context ={
+        "achievements":final,
+        "student_name":user.first_name +" "+ user.last_name + "'s",
+        "return_redirect":'/{}{}/{}/rview/{}'.format(teacher_hash,str(pk),str(sub_pk),str(r_pk)),
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
+        }
+    
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/view_achievements.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/view_achievements.html',context)
+
+def view_previous_events(request,pk,sub_pk,r_pk):
+    login_check(request)
+
+    try:
+        if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
+            return redirect('student-homepage')
+    except:
+        pass
+
+    user = Registrations.objects.get(pk=r_pk).user
+    regs = Registrations.objects.all()
+    
+    final = []
+    for reg in regs:
+        sub = {}
+        if reg.user == user:
+            s_event = SubEvents.objects.get(pk=reg.subevent_id)
+            sub["name"] = s_event.subevent_name
+            sub["category"] = s_event.category
+            sub["dates"] = date_conversion(s_event.subevent_dates)
+
+            final.append(sub)
+
+    context = {
+        "Events":final,
+        "title":user.first_name + " " + user.last_name + "'s Previous Events",
+        "return_redirect":'/{}{}/{}/rview/{}'.format(teacher_hash,str(pk),str(sub_pk),str(r_pk)),
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
+    }
+
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/view_previous_events.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/view_previous_events.html',context)
 
 def accept(request,pk,sub_pk,r_pk):  
     login_check(request)
@@ -726,6 +914,10 @@ def accept(request,pk,sub_pk,r_pk):
             return redirect('student-homepage')
     except:
         return redirect('login')
+    
+    if not event_over_check(pk,sub_pk):
+        messages.warning(request,"Event '{}' Is Already Complete!".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
 
     if finalize_check(request,pk,sub_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
@@ -770,6 +962,10 @@ def reject(request,pk,sub_pk,r_pk):
     except:
         return redirect('login')
     
+    if not event_over_check(pk,sub_pk):
+        messages.warning(request,"Event '{}' Is Already Complete!".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
+    
     if finalize_check(request,pk,sub_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
         return redirect('teacher-homepage')
@@ -809,6 +1005,10 @@ def view_selected_students(request,pk,sub_pk):
     except:
         return redirect('login')
     
+    if not event_over_check(pk,sub_pk):
+        messages.warning(request,"Event '{}' Is Already Complete!".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
+
     if finalize_check(request,pk,sub_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
         return redirect('teacher-homepage')
@@ -839,11 +1039,17 @@ def view_selected_students(request,pk,sub_pk):
         "event_name":Events.objects.filter(event_id=pk).first().event_name,
         "subevent_name":SubEvents.objects.filter(subevent_id=int(sub_pk)).first().subevent_name,
         "Registrations":final,
-        "header_redirect":"/{}{}/{}/rview".format(teacher_hash,str(pk),str(sub_pk))
+        "header_redirect":"/{}{}/{}/rview".format(teacher_hash,str(pk),str(sub_pk)),
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
     }
 
-    return render(request,'teacherview/view_selected_students.html',context)
- 
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/view_selected_students.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/view_selected_students.html',context)
+
 def view_registered_students(request,pk,sub_pk):
     login_check(request)
     
@@ -853,6 +1059,10 @@ def view_registered_students(request,pk,sub_pk):
             return redirect('student-homepage')
     except:
         return redirect('login')
+    
+    if not event_over_check(pk,sub_pk):
+        messages.warning(request,"Event '{}' Is Already Complete!".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
 
     if finalize_check(request,pk,sub_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
@@ -883,11 +1093,17 @@ def view_registered_students(request,pk,sub_pk):
         "event_name":Events.objects.filter(event_id=pk).first().event_name,
         "subevent_name":SubEvents.objects.filter(subevent_id=int(sub_pk)).first().subevent_name,
         "Registrations":final,
-        "header_redirect":"/{}{}/{}/rview".format(teacher_hash,str(pk),str(sub_pk))
+        "header_redirect":"/{}{}/{}/rview".format(teacher_hash,str(pk),str(sub_pk)),
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
     }
 
-    return render(request,'teacherview/view_registered_students.html',context)
- 
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/view_registered_students.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/view_registered_students.html',context)
+
 def add_event(request):
     login_check(request)
     
@@ -913,14 +1129,35 @@ def add_event(request):
                     new_event.event_dates = "{} to {}".format(start_date,last_date)
                     new_event.single_check = single_check
                     new_event.event_attachment = request.FILES['add_attachment']
-                    new_event.teacher_incharge_id = int(User.objects.filter(first_name=form.cleaned_data.get('teacher_incharge').split()[0],last_name=form.cleaned_data.get('teacher_incharge').split()[1]).first().pk)
+
+                    options = []
+                    users = User.objects.all()
+                    for user in users:
+                        try:
+                            if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+                                options.append(user)
+                        except:
+                            pass
+                    new_event.teacher_incharge_id = options[int(form.cleaned_data.get('teacher_incharge'))].pk
+                    new_event.teacher_incharge = options[int(form.cleaned_data.get('teacher_incharge'))].first_name + " " + options[int(form.cleaned_data.get('teacher_incharge'))].last_name
                     new_event.save()
                     return HttpResponseRedirect('/{}add-event/{}'.format(teacher_hash,new_event.event_id))
                 else:
                     new_event.event_dates = "{} to {}".format(start_date,last_date)
                     new_event.single_check = single_check
                     new_event.event_attachment = request.FILES['add_attachment']
-                    new_event.teacher_incharge_id = int(User.objects.filter(first_name=form.cleaned_data.get('teacher_incharge').split()[0],last_name=form.cleaned_data.get('teacher_incharge').split()[1]).first().pk)
+                    
+                    options = []
+                    users = User.objects.all()
+                    for user in users:
+                        try:
+                            if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+                                options.append(user)
+                        except:
+                            pass
+
+                    new_event.teacher_incharge_id = options[int(form.cleaned_data.get('teacher_incharge'))].pk
+                    new_event.teacher_incharge = options[int(form.cleaned_data.get('teacher_incharge'))].first_name + " " + options[int(form.cleaned_data.get('teacher_incharge'))].last_name
                     new_event.save()
                     messages.success(request,"Event {} has been successfully created!".format(new_event.event_name)) 
                     return HttpResponseRedirect('/{}add-event/{}/sub'.format(teacher_hash,new_event.event_id))
@@ -929,10 +1166,17 @@ def add_event(request):
 
     context = {
         "form":form,
-        "title":"New Event"
+        "title":"New Event",
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
     }
-    return render(request,'teacherview/add_event.html',context)
- 
+    
+    if get_device(request)=="pc":
+        return render(request,"teacherview/desktop/add_event.html",context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/add_event.html',context)
+
 def single_event_information(request,event_id):
     login_check(request)
     
@@ -981,10 +1225,17 @@ def single_event_information(request,event_id):
 
         context = {
             "form":form,
-            "title":Events.objects.get(pk=event_id).event_name
+            "title":Events.objects.get(pk=event_id).event_name,
+            "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+            "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+            "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
         }
-        return render(request,'teacherview/single_event_information.html',context)
- 
+
+    if get_device(request)=="pc":
+        return render(request,"teacherview/desktop/single_event_information.html",context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/single_event_information.html',context)
+
 def subevent_addition_page(request,event_id):
     login_check(request)
     
@@ -1012,10 +1263,16 @@ def subevent_addition_page(request,event_id):
         context = {"title":event.event_name,
                     "event":final,
                     "url_redirect":"/{}add-event/{}/sub/add".format(teacher_hash,event_id),
-                    "event_redirect": "/{}{}".format(teacher_hash,event_id)}
+                    "event_redirect": "/{}{}".format(teacher_hash,event_id),
+                    "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+                    "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+                    "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]}
 
-        return render(request, "teacherview/subevent_addition_page.html", context)
- 
+        if get_device(request)=="pc":
+            return render(request,'teacherview/desktop/subevent_addition_page.html',context)
+        elif get_device(request)=="mobile":
+            return render(request,'teacherview/mobile/subevent_addition_page.html',context)
+
 def add_subevent(request,event_id):
     login_check(request)
     
@@ -1043,8 +1300,16 @@ def add_subevent(request,event_id):
                     return HttpResponseRedirect('/{}add-event/{}/sub/add'.format(teacher_hash,event_id))
                 else:
                     event = Events.objects.get(event_id=event_id)
-                    new_subevent.subevent_teacher_incharge = form.cleaned_data.get('teacher_incharge')
-                    new_subevent.subevent_teacher_incharge_id = int(User.objects.filter(first_name=form.cleaned_data.get('teacher_incharge').split()[0],last_name=form.cleaned_data.get('teacher_incharge').split()[1]).first().pk)
+                    options = []
+                    users = User.objects.all()
+                    for user in users:
+                        try:
+                            if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+                                options.append(user)
+                        except:
+                            pass
+                    new_subevent.subevent_teacher_incharge = options[int(form.cleaned_data.get('teacher_incharge'))].first_name + " " +options[int(form.cleaned_data.get('teacher_incharge'))].last_name
+                    new_subevent.subevent_teacher_incharge_id = options[int(form.cleaned_data.get('teacher_incharge'))].pk
                     new_subevent.subevent_name = form.cleaned_data.get('event_name')
                     new_subevent.subevent_dates = form.cleaned_data.get('start_date') +" to " + form.cleaned_data.get("last_date")
                     new_subevent.event_id = event.event_id
@@ -1070,10 +1335,17 @@ def add_subevent(request,event_id):
 
         context = {
             "form":form,
-            "title":Events.objects.get(pk=event_id).event_name
+            "title":Events.objects.get(pk=event_id).event_name,
+            "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+            "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+            "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
         }
-        return render(request,'teacherview/add_subevent.html',context)
- 
+        
+        if get_device(request)=="pc":
+            return render(request,'teacherview/desktop/add_subevent.html',context)
+        elif get_device(request)=="mobile":
+            return render(request,'teacherview/mobile/add_subevent.html',context)
+
 def edit_event(request,event_id,subevent_id):
     login_check(request)
     
@@ -1099,8 +1371,18 @@ def edit_event(request,event_id,subevent_id):
             edit_subevent = form.save(commit=False)
             total_slots = form.cleaned_data.get('maximum_applicants')
             maximum_students = form.cleaned_data.get('maximum_participants')
-            event = Events.objects.get(event_id=event_id)
-            sub.subevent_teacher_incharge = form.cleaned_data.get('teacher_incharge')
+        
+            options = []
+            users = User.objects.all()
+            for user in users:
+                try:
+                    if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+                        options.append(user)
+                except:
+                    pass
+
+            sub.subevent_teacher_incharge = options[int(form.cleaned_data.get('teacher_incharge'))].first_name + " " + options[int(form.cleaned_data.get('teacher_incharge'))].last_name
+            sub.subevent_teacher_incharge_id = options[int(form.cleaned_data.get('teacher_incharge'))].pk
             sub.subevent_name = form.cleaned_data.get('event_name')
             sub.subevent_dates = form.cleaned_data.get('start_date') +" to " + form.cleaned_data.get("last_date")
             sub.subevent_information = form.cleaned_data.get('event_description')
@@ -1126,10 +1408,17 @@ def edit_event(request,event_id,subevent_id):
 
     context = {
         "form":form,
-        "title":SubEvents.objects.get(pk=subevent_id).subevent_name
+        "title":SubEvents.objects.get(pk=subevent_id).subevent_name,
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
     }
-    return render(request,'teacherview/add_subevent.html',context)
- 
+
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/add_subevent.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/add_subevent.html',context)
+
 def delete_event(request,event_id,subevent_id):
     login_check(request)
 
@@ -1194,31 +1483,40 @@ def searchpage(request):
                     "additional_information": subevent_data.subevent_information
                 }
                 context["search_results"].append(subevent_context)
-    return render(request, "teacherview/searchpage.html", context)
+
+    context["notifications_days_left"]=get_current_notifications_teachers(request,0)[1][:3]
+    context["notifications_count"]="3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0]
+    context["notifications_applications"]=get_current_notifications_teachers(request,0)[2][:3]
+    
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/searchpage.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/searchpage.html',context)
 
 def search(query, min_accuracy=0.5, limit=None):
     all_subevents = list(SubEvents.objects.all())
     search_results = []
     for subevent_data in all_subevents:
-        resultant_data = {
-            "accuracy": 0,
-            "subevent_id": subevent_data.subevent_id
-        }
-        search_criteria = [
-            subevent_data.event_id,
-            subevent_data.subevent_name,
-            subevent_data.subevent_id,
-            subevent_data.subevent_name,
-            subevent_data.subevent_teacher_incharge,
-            subevent_data.subevent_requirements,
-            subevent_data.subevent_information
-        ]
-        for criteria in search_criteria:
-            match = get_search_accuracy(query, criteria)
-            if match > min_accuracy and match > resultant_data["accuracy"]:
-                resultant_data["accuracy"] = match
-        if resultant_data["accuracy"] > min_accuracy:
-            search_results.append(resultant_data)
+        if event_over_check(subevent_data.event_id,subevent_data.subevent_id):
+            resultant_data = {
+                "accuracy": 0,
+                "subevent_id": subevent_data.subevent_id
+            }
+            search_criteria = [
+                subevent_data.event_id,
+                subevent_data.subevent_name,
+                subevent_data.subevent_id,
+                subevent_data.subevent_name,
+                subevent_data.subevent_teacher_incharge,
+                subevent_data.subevent_requirements,
+                subevent_data.subevent_information
+            ]
+            for criteria in search_criteria:
+                match = get_search_accuracy(query, criteria)
+                if match > min_accuracy and match > resultant_data["accuracy"]:
+                    resultant_data["accuracy"] = match
+            if resultant_data["accuracy"] > min_accuracy:
+                search_results.append(resultant_data)
     search_results = [data["subevent_id"] for data in sorted(search_results, key=lambda res:res["accuracy"])][:limit if limit else len(search_results)]
     return search_results
 
@@ -1254,6 +1552,81 @@ def get_search_accuracy(query, result):
                 computed_accuracy = instance_accuracy
     return round(computed_accuracy, 2)
 
+def show_all_notifications(request):
+    login_check(request)
+    
+    try:
+        if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
+        
+    cnt,days_left,application_sent = get_current_notifications_teachers(request,1)
+
+    context = {
+        "title":"Notifications",
+        "Days_Left": days_left,
+        "Application_Sent": application_sent,
+        "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+        "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0]>3 else get_current_notifications_teachers(request,0)[0],
+        "notifications_applications":get_current_notifications_teachers(request,0)[2][:3]
+    }
+
+    if get_device(request)=="pc":
+        return render(request,'teacherview/desktop/show_all_notifications.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'teacherview/mobile/show_all_notifications.html',context)
+
+def get_current_notifications_teachers(request,typ):
+    '''two types
+    1- Days Left to Deadline
+    2- New Application
+    '''
+    
+    user = User.objects.get(pk=int(request.COOKIES.get('id')))
+    events = SubEvents.objects.filter(subevent_teacher_incharge_id=user.pk)
+
+    final = []
+    for event in events:
+        sub = {}
+        if event_over_check(event.event_id,event.subevent_id):
+            cur = date.today()
+            d = event.subevent_dates.split(" to ")[1]
+            date_obj = date(int(d.split("-")[0]),int(d.split("-")[1]),int(d.split("-")[2]))
+            if (date_obj-cur).days>0:
+                sub["notification_header"] = "Days Left"
+                if typ==0:
+                    sub["days_left"] = "- " + str((date_obj-cur).days)
+                else:
+                    sub["days_left"] = str((date_obj-cur).days)
+                sub["event_name"] = event.subevent_name
+                sub["url_redirect"] = "{}{}/{}".format(teacher_hash,event.event_id,event.subevent_id)
+            elif (date_obj-cur).days==0:
+                sub["notification_header"] = "Deadline Today!"
+                sub["event_name"] = event.subevent_name
+                sub["days_left"] = ""
+                sub["url_redirect"] = "{}{}/{}".format(teacher_hash,event.event_id,event.subevent_id)
+            final.append(sub)
+
+    final2=[]
+    for event in events:
+        if event_over_check(event.event_id,event.subevent_id):
+            regs = Registrations.objects.filter(subevent_id=event.subevent_id)
+            for reg in regs:
+                sub={}
+                sub["student_name"] = reg.student_name
+                sub["notification_header"] = "Application Submitted!"
+                sub["event_name"] = event.subevent_name
+                sub["url_redirect"] = "{}{}/{}/rview/{}".format(teacher_hash,event.event_id,event.subevent_id,reg.registration_id)
+
+                final2.append(sub)
+
+    shuffle(final)
+    shuffle(final2)
+    return len(final)+len(final2),final,final2
+
+'''
 def get_current_notifications():
     profile_name = ''
     res = {
@@ -1261,7 +1634,7 @@ def get_current_notifications():
         "read": [],
     }
     date_info = datetime.datetime.now()
-    event_ids = [event.subevent_id for event in SubEvents.objects.filter(subevent_teacher_incharge="Vikranti Ashtikar")]
+    event_ids = [event.subevent_id for event in SubEvents.objects.filter(subevent_teacher_incharge=Users.objects.get(pk=int(request.COOKIES.get('id'))))]
     txt = []
     for subevent_data in SubEvents.objects.all():
         if subevent_data.subevent_id in event_ids:
@@ -1272,7 +1645,7 @@ def get_current_notifications():
             timestamp = ''
             dt = 'Less than a day' if time_diff <= 1 else '{} days'.format(time_diff)
             text = '{} until {}'.format(dt, subevent_data.subevent_name)
-            url = '//{}/{}{}/{}'.format(website_url,teacher_hash, subevent_data.event_id, subevent_data.subevent_id)
+            #url = '//{}/{}{}/{}'.format(website_url,teacher_hash, subevent_data.event_id, subevent_data.subevent_id)
             raw_txt = "{}::{}::{}::{}".format(cat, timestamp, text, url)
             txt.append(raw_txt)
         for notification_text in txt:#user_data.notifications:
@@ -1288,7 +1661,7 @@ def get_current_notifications():
         cnt = "9+"
     res["count"] = str(cnt)
     return res
-
+'''
 
 '''
 @csrf_exempt

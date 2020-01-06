@@ -13,7 +13,8 @@ class Registrations(models.Model):
 	reg_info = models.TextField()
 	reg_status = models.CharField(max_length=1) #R- Rejected, A- Accepted
 	date_applied = models.DateField(default=datetime.today())
-	group_ids = models.CharField(max_length=256)
+	event_type = models.CharField(max_length=1) #I- Individual, G- Group
+	group_id = models.IntegerField()
 	#acheivements will be pulled from the users db
 	
 	def __str__(self):

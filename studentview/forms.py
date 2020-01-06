@@ -16,6 +16,19 @@ class RegistrationSingleForm(forms.ModelForm):
     class Meta:
         model = Registrations
         fields = ['grade','section','additional_Information']
+
+class RegistrationsGroupForm(forms.ModelForm):
+    user = forms.IntegerField(help_text="ID Of The User",widget=forms.TextInput())
+    #name = current_user.first_name  + " " + current_user.last_name
+    grade = forms.IntegerField(help_text="Grade Of Student (Eg:11)",widget=forms.NumberInput(attrs={'size': '20'}))
+    section = forms.CharField(help_text="Section of Student (Eg:A)",widget=forms.TextInput())
+    additional_Information = forms.CharField(help_text="Reason For Desire To Participate, Relevant Experience, etc..",widget=forms.Textarea(attrs={'rows':10, 'cols':50, 'placeholder':'Enter The Information Here...'}))
+    #event_id = event_id
+    #subevent_id = subevent_id
+    
+    class Meta:
+        model = Registrations
+        fields = ['grade','section','additional_Information']
     
 '''
 fields = { 'name': forms.CharField(max_length=50),
@@ -54,7 +67,18 @@ class AchievementForm(forms.ModelForm):
     achievement_title = forms.CharField(help_text="Title For Achievement (Eg:Cisco Internship)",widget=forms.TextInput(attrs={'placeholder':'Enter The Name For Achievement Here...'}))
     start_date_of_achievement = forms.CharField(help_text="Start Date Of Achievement (Eg:1st January,2020)",widget=SelectDateWidget())
     last_date_of_achievement = forms.CharField(help_text="Late Date Of Achievement (Eg:3rd January,2020)",widget=SelectDateWidget())
-    achievement_type = forms.CharField(help_text="Category Of Achievement (Eg:Technology)",widget=forms.TextInput())
+    cat_options = (
+		("IT",'IT'),
+		("Sport",'Sport'),
+		("Debate",'Debate'),
+		("Public Speaking",'Public Speaking'),
+		("Educational",'Educational'),
+		("Technology",'Technology'),
+		("Literature",'Literature'),
+		("Design",'Design'),
+		("Science",'Science')
+	)
+    achievement_type = forms.CharField(help_text="Category Of Achievement (Eg:Technology)",widget=forms.Select(choices=cat_options))
     achievement_info = forms.CharField(help_text="Explain The Achievement",widget=forms.Textarea(attrs={'rows':10, 'cols':50, 'placeholder':'Enter The Information Here...'}))
 
     class Meta:

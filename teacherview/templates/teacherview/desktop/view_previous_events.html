@@ -1,0 +1,42 @@
+{% extends 'teacherview/desktop/layout.html' %}
+
+{% block ContentView %}
+
+<div class="container-fluid">
+  <div class="card shadow mb-4 border-success" style="border-radius: 25px;">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="border-radius: 3rem;">
+      <div>
+        <h1 class="m-0 font-weight-bold text-success"><a class="text-success" href={{ return_redirect }}>{{ title }}</a></h1>
+      </div>
+      <div align="right">
+        <a href={{ return_redirect }}>
+          <i class="fas fa-arrow-left fa-2x" style="color: rgb(51, 177, 51);"></i>
+        </a>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th><h3><b>Name</b></h3></th>
+              <th><h3><b>Category</b></h3></th>
+              <th><h3><b>Dates</b></h3></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for event_data in Events %}
+              <tr>
+                <td><h5>{{ event_data.name }}</h5></td>
+                <td><h5>{{ event_data.category }}</h5></td>
+                <td><h5>{{ event_data.dates }}</h5></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

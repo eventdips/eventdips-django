@@ -1,0 +1,50 @@
+{% extends 'teacherview/mobile/layout.html' %}
+
+{% block ContentView %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->       
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">All Events</h1>
+  </div>
+  <div class="row">
+    {% for event_data in AllEvents %}
+      {% if event_data.confirmation_status == "N" %}
+        <div class="col-lg-4">
+          <div class="card shadow mb-3" style="border-radius: 25px;">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-success" style="border-radius: 0px 25px 25px 0px;">
+              <a href={{ event_data.url_redirect }} style="text-decoration:none;">
+                  <h4 class="m-0 font-weight-bold text-success">&nbsp;{{ event_data.name }}</h4>
+              </a>
+            </div>
+            <div class="card-body">
+              <ul>
+                <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }} </li>
+                <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
+                <li><b>Event Description</b>: {{ event_data.event_information }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="col-lg-4">
+          <div class="card shadow mb-3" style="border-radius: 25px;">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-secondary" style="border-radius: 0px 25px 25px 0px;">
+              <h4 class="m-0 font-weight-bold text-secondary">&nbsp;{{ event_data.name }}<small> (FINALIZED)</small></h4>
+            </div>
+            <div class="card-body">
+              <ul>
+                <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }} </li>
+                <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
+                <li><b>Event Description</b>: {{ event_data.event_information }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

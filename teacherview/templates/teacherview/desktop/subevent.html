@@ -1,0 +1,100 @@
+{% extends 'teacherview/desktop/layout.html' %}
+
+<!-- To display all the search results -->
+
+{% block ContentView %}
+
+<div class="container-fluid">
+  <!-- Page Heading -->   
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <a href={{ header_redirect }}><h1 class="h3 mb-0 text-gray-800">{{ event_name }}</h1></a>
+  </div>
+  {% for event_data in subevents %}
+    <div class="row">
+      <div class="container-fluid">
+        <div class="card shadow" style="border-radius: 25px;">
+            <div class="card-header m-0 py-3 border-left-success" style="border-radius: 0px 25px 25px 0px ;">
+              <div class="row" style="width:100%;">
+                <div class="d-inline" style="float: left; width: 47%">
+                  <h2 class="font-weight-bold text-success">&nbsp;{{ event_data.name }}</h2>
+                </div>
+                {% if event_data.my_event %}
+                  <div class="d-inline text-right d-none d-sm-block" style="float: right; width: 52%">
+                    <a href={{ event_data.event_edit_redirect }} style="color: rgb(139, 139, 139); padding: 5px 5px 5px 5px; text-decoration:none"><i class="fas fa-edit fa-lg" ></i>Edit</a>
+                    <a href={{ event_data.event_delete_redirect }} style="color: rgb(255,0,0); padding: 5px 5px 5px 5px;  text-decoration:none; padding-left: 15px;" onclick="return confirm('Are you sure you want to delete this?')"><i class="fas fa-trash fa-lg" ></i>Delete</a>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                    <p><b>Dates Of Event</b>: {{ event_data.dates }}</p>
+                    <p><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</p>
+                    <p><b>Deadline</b>: {{ event_data.last_date }}</p>
+                    <p><b>Event type</b>: {{ event_data.type }}</p>
+                    {% if event_data.type == "Group" %}
+                      <p><b>Group Size</b>: {{ event_data.size }}</p>
+                    {% endif %}
+                    {% if event_data.allowed_grades != "ALL" %}
+                     <p><b>Grades</b>: {{ event_data.allowed_grades }}</p>
+                    {% endif %}
+                    <p><b>Registered</b>: {{ event_data.total_registrations }}</p>
+                    <p><b>Available Slots</b>: {{ event_data.available_slots }}</p>
+                    {% if event_data.my_event %}
+                      <p><b>Maximum Participants</b>: {{ event_data.maximum_participants }}</p>
+                      <p><b>No. of Selected Students</b>: {{ event_data.selected_students }}</p>
+                    {% endif %}
+                    {% if event_data.category %}
+                      <p><b>Category</b>: {{ event_data.category }}</p>
+                    {% endif %}
+                    {% if event_data.completed_check %}
+                      <p><b>Status</b>: Registrations/Acceptions Complete</p>
+                    {% else %}
+                      <p><b>Status</b>: Registrations/Acceptions Pending</p>
+                    {% endif %}
+                </div>
+                <!-- not visible on xs devices-->
+                <div class="col d-none d-sm-block">
+                  {% if event_data.event_information != "" %}
+                    <p><b>Event Description</b>: {{ event_data.event_information }}</p>
+                  {% endif %}
+                  {% if event_data.event_requirements != "" %}
+                    <p><b>Requirements</b>: {{ event_data.event_requirements }}</p>
+                  {% endif %}
+				          {% if event_data.event_attachment != '' %}
+                  	<p><b>Attachment</b>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file"></i></a></p>
+                  {% endif %}
+                </div>
+                <!--Only visible on xs devices-->
+                <div class="row d-block d-sm-none">
+                  <div class="col">
+                    {% if event_data.event_information != "" %}
+                      <p><b>Event Description</b>: {{ event_data.event_information }}</p>
+                    {% endif %}
+                    {% if event_data.event_requirements != "" %}
+                      <p><b>Requirements</b>: {{ event_data.event_requirements }}</p>
+                    {% endif %}
+                    {% if event_data.event_attachment != '' %}
+                      <p><b>Attachment</b>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file"></i></a></p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <a href={{ event_data.url_redirect }} style="text-decoration:none">
+                {% if event_data.my_event %}
+                  <div class="card-footer green lighten-1">
+                    <h4 style="vertical-align: middle;color:white;" align='center'>
+                      VIEW REGISTRATIONS
+                    </h4>
+                  </div>
+                {% endif %}
+              </a>
+            </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

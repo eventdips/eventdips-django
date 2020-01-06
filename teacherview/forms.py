@@ -1,7 +1,16 @@
 from django import forms
-from .models import Events,SubEvents
+from django.contrib.auth.models import User
+from .models import Events,SubEvents, Status
 from studentview.models import Registrations
 from django.forms.widgets import SelectDateWidget
+
+def name_sort(l):
+	for m in range(len(l)):
+		for i in range(len(l)-1):
+			if l[i][1]<l[i+1][1]:
+				l[i],l[i+1]=l[i+1],l[i]
+	
+	return l
 
 class LoginForm(forms.Form):
 	username = forms.CharField(widget=forms.TextInput())
@@ -16,7 +25,21 @@ class ResetPassword(forms.Form):
 	
 class EventCreationForm(forms.ModelForm):
 	event_name = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Event Name Here'}))
-	teacher_incharge = forms.CharField(widget= forms.TextInput(attrs={'class':'form-control'}))
+	
+	teacher_options = []
+	users = User.objects.all()
+	c=0
+	for user in users:
+		try:
+			if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+				teacher_options.append((c,user.first_name + " " +user.last_name))
+				c+=1
+		except:
+			pass
+
+	teacher_options = name_sort(teacher_options)
+
+	teacher_incharge = forms.CharField(widget=forms.Select(choices=teacher_options,attrs={'class':'form-control'}))
 	event_information = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control','rows':5, 'cols':50, 'placeholder':'Enter The Information Here...'}))
 	start_date = forms.CharField(widget=SelectDateWidget(attrs={'class':'form-control'}))
 	last_date = forms.CharField(widget=SelectDateWidget(attrs={'class':'form-control'}))
@@ -81,7 +104,21 @@ class SubEventCreationForm(forms.ModelForm):
 	maximum_participants = forms.CharField(help_text='Maximum Number Of Students Who Can Participate In An Event',widget=forms.TextInput(attrs={'placeholder': '5'}))
 	event_description = forms.CharField(help_text="Information About the Event (eg: Website Links)",widget=forms.Textarea(attrs={'rows':5, 'cols':50, 'placeholder':'Enter The Information Here...'}))
 	requirements = forms.CharField(help_text='Requirements or Selection Criteria.',widget=forms.Textarea(attrs={'rows':5, 'cols':50,'placeholder': '''Must Be From Class 10\nMust have attended atleast 2 debate competetions... '''}))
-	teacher_incharge= forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Vikranti Ashtikar'}))
+	
+	teacher_options = []
+	users = User.objects.all()
+	c=0
+	for user in users:
+		try:
+			if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+				teacher_options.append((c,user.first_name + " " +user.last_name))
+				c+=1
+		except:
+			pass
+
+	teacher_options = name_sort(teacher_options)
+
+	teacher_incharge = forms.CharField(widget=forms.Select(choices=teacher_options,attrs={'class':'form-control'}))	
 	registration_deadline = forms.DateField(help_text="Last Date Of Registration (eg: 03/12/2019)",widget=SelectDateWidget())
 	allowed_grades = forms.CharField(help_text='Grades Allowed. (Eg: 9th,10th)',widget=forms.TextInput(attrs={'placeholder': '9th,10th,11th'}))
 	

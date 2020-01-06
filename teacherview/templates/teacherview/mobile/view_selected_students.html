@@ -1,0 +1,44 @@
+{% extends 'teacherview/mobile/layout.html' %}
+
+{% block ContentView %}
+
+<div class="container-fluid">
+  <div class="card shadow mb-4 border-success" style="border-radius: 25px;">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="border-radius: 0px 25px 25px 0px;">
+        <div>
+          <h1 class="m-0 font-weight-bold text-success">Selected Students: '<a class="text-success" href={{ header_redirect }}>{{ subevent_name }}</a>'</h1>
+        </div>
+        <div align="right">
+          <a href={{ header_redirect }}>
+            <i class="fas fa-arrow-left fa-2x"></i>
+          </a>
+        </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th><h3><b>Name</b></h3></th>
+              <th><h3><b>Class</b></h3></th>
+              <th><h3><b>Section</b></h3></th>
+              <th><h3><b>Status</b></h3></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student_data in Registrations %}
+              <tr>
+                <td><h5><a href={{ student_data.url_redirect }}>{{ student_data.name }}</a></td>
+                <td><h5>{{ student_data.class }}</h5></td>
+                <td><h5>{{ student_data.section }}</h5></td>
+                <td><h5>{{ student_data.status }}</h5></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

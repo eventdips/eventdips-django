@@ -1,0 +1,59 @@
+{% extends 'teacherview/mobile/layout.html' %}
+
+{% block ContentView %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->       
+  <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
+    <h1>Days Left</h1>
+  </div>
+  <div class="row">
+    {% for notification in Days_Left %}
+        <div class="col-md-4">
+            <div class="card shadow mb-3" style="border-radius: 25px;">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-success" style="border-radius: 0px 25px 25px 0px;">     
+                    <a href={{ notification.url_redirect }}>
+                        <h4 class="m-0 font-weight-bold text-success">&nbsp;{{ notification.event_name }}</h4>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <p class="lead">{{ notification.days_left }}</p>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+  </div>
+</div>
+
+<br>
+<br>
+
+<div class="container-fluid">
+    <!-- Page Heading -->       
+    <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
+        <h1>Applications Received</h1>
+    </div>
+    <div class="row">
+        {% for notification in Application_Sent %}
+            <div class="col-md-4">
+                <div class="card shadow mb-3" style="border-radius: 25px;">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-success" style="border-radius: 0px 25px 25px 0px;">     
+                        <a href={{ notification.url_redirect }}>
+                            <h4 class="m-0 font-weight-bold text-success">&nbsp;{{ notification.event_name }}</h4>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <p class="lead"><b>{{ notification.student_name }}</b></p>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

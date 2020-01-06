@@ -1,0 +1,7 @@
+1) Email Service
+2) Notifs for student
+3) Notifs on mobile- both views
+4) Group Regs
+5) Search on mobile
+6) PPT
+7) Demo

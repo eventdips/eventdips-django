@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['eventdips.ga','localhost','127.0.0.1']
 
+SILENCED_SYSTEM_CHECKS = ["auth.W004"]
 
 # Application definition
 
@@ -40,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crispy_forms'
+    'crispy_forms',
+    'django_user_agents'
 ]
 
 FILE_UPLOAD_HANDLERS = [
@@ -55,8 +57,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
-    
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware'
 ]
 
 
@@ -88,7 +90,8 @@ TEMPLATES = [
             ],
 
             'libraries':{
-                'tags': 'teacherview.templatetags.tags',
+                'teach_tags': 'teacherview.templatetags.tags',
+                'student_tags':'studentview.templatetags.tags'
             }
         },
     },
@@ -159,3 +162,4 @@ EMAIL_HOST_USER = 'support@eventdips.ga'
 EMAIL_HOST_PASSWORD = 'SupportPassEventdips123'
 EMAIL_USE_TLS = True
 
+USER_AGENTS_CACHE = 'default'
