@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import Registrations
 from teacherview.models import Events,SubEvents,Status
-import teacherview.views as t_views
+from teacherview import views as t_views
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from .forms import RegistrationSingleForm, AchievementForm, RegistrationsGroupForm
