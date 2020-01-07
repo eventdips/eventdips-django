@@ -70,7 +70,7 @@ class SingleEventInformationForm(forms.ModelForm):
 	#subevent_information = event_information
 	requirements = forms.CharField(help_text='Requirements or Selection Criteria.',widget=forms.Textarea(attrs={'rows':5, 'cols':50,'placeholder': '''Must Be From Class 10 \nMust have attended atleast 2 debate competetions... '''}))
 	#subevent_teacher_incharge=event_incharge
-	registration_deadline = forms.DateField(help_text="Last Date Of Registration (eg: 03/12/2019)",widget=SelectDateWidget())
+	registration_deadline = forms.DateField(help_text="Last Date Of Registration (eg: 03/12/2019)",widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
 	allowed_grades = forms.CharField(help_text='Grades Allowed. (Eg: 9th,10th)',widget=forms.TextInput(attrs={'placeholder': '9th,10th,11th'}))
 	
 	cat_options = (
@@ -98,8 +98,8 @@ class SubEventCreationForm(forms.ModelForm):
 	)
 	event_type = forms.CharField(help_text='Individual Event or Group Event',widget=forms.Select(choices=options))
 	group_size = forms.IntegerField(required=False,help_text="Number Of Students Per Group (If Individual Participation: Leave Blank)",widget=forms.NumberInput(attrs={'size': '20'}))
-	start_date = forms.CharField(help_text="Start Date Of The Event (eg: 01/01/2020)",widget=SelectDateWidget())
-	last_date = forms.CharField(help_text="Last Date Of The Event (eg: 03/01/2020)",widget=SelectDateWidget())
+	start_date = forms.CharField(help_text="Start Date Of The Event (eg: 01/01/2020)",widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
+	last_date = forms.CharField(help_text="Last Date Of The Event (eg: 03/01/2020)",widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
 	maximum_applicants = forms.CharField(help_text='Maximum Number Of Applications',widget=forms.TextInput(attrs={'placeholder': '50'}))
 	maximum_participants = forms.CharField(help_text='Maximum Number Of Students Who Can Participate In An Event',widget=forms.TextInput(attrs={'placeholder': '5'}))
 	event_description = forms.CharField(help_text="Information About the Event (eg: Website Links)",widget=forms.Textarea(attrs={'rows':5, 'cols':50, 'placeholder':'Enter The Information Here...'}))
@@ -119,7 +119,7 @@ class SubEventCreationForm(forms.ModelForm):
 	teacher_options = name_sort(teacher_options)
 
 	teacher_incharge = forms.CharField(widget=forms.Select(choices=teacher_options,attrs={'class':'form-control'}))	
-	registration_deadline = forms.DateField(help_text="Last Date Of Registration (eg: 03/12/2019)",widget=SelectDateWidget())
+	registration_deadline = forms.DateField(help_text="Last Date Of Registration (eg: 03/12/2019)",widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
 	allowed_grades = forms.CharField(help_text='Grades Allowed. (Eg: 9th,10th)',widget=forms.TextInput(attrs={'placeholder': '9th,10th,11th'}))
 	
 	cat_options = (
