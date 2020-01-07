@@ -41,8 +41,8 @@ class EventCreationForm(forms.ModelForm):
 
 	teacher_incharge = forms.CharField(widget=forms.Select(choices=teacher_options,attrs={'class':'form-control'}))
 	event_information = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control','rows':5, 'cols':50, 'placeholder':'Enter The Information Here...'}))
-	start_date = forms.CharField(widget=SelectDateWidget(attrs={'class':'form-control'}))
-	last_date = forms.CharField(widget=SelectDateWidget(attrs={'class':'form-control'}))
+	start_date = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
+	last_date = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
 	options = (
 		("True",'True'),
 		("False",'False')
