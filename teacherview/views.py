@@ -24,102 +24,14 @@ teacher_hash = "teachers/"
 student_hash = "students/"
 
 def date_conversion(date):
-    date = str(date)
-    if len(date.split())>1:
-        l = date.split(" to ")
-        month = {1:"January",2:"February",3:"March",4:"April",5:"May",6:"June",7:"July",8:"August",9:"September",10:"October",11:"November",12:"December"}
-        if l[0]==l[1]:
-            date = l[0].split("-")
-            mon=date[1]
-            if int(date[2]) in [1,21,31]:
-                date[2] = str(date[2]) + "st"
-            elif int(date[2]) in [2,22]:
-                date[2] = str(date[2]) + "nd"
-            elif int(date[2]) in [3,23]:
-                date[2] = str(date[2]) + "rd"
-            elif int(date[2]) in [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,24,25,26,27,28,29,30]:
-                date[2] = str(date[2]) + "th"
-            return "{} {}, {}".format(date[2],month[int(mon)],str(date[0]))
-        else:
-            date1 = l[0].split("-")
-            mon=date1[1]
-            date2 = l[1].split("-")
-            mon2=date2[1]
-            if int(date1[2]) in [1,21,31]:
-                date1[2] = str(date1[2]) + "st"
-            elif int(date1[2]) in [2,22]:
-                date1[2] = str(date1[2]) + "nd"
-            elif int(date1[2]) in [3,23]:
-                date1[2] = str(date1[2]) + "rd"
-            elif int(date1[2]) in [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,24,25,26,27,28,29,30]:
-                date1[2] = str(date1[2]) + "th"
-
-            if int(date2[2]) in [1,21,31]:
-                date2[2] = str(date2[2]) + "st"
-            elif int(date2[2]) in [2,22]:
-                date2[2] = str(date2[2]) + "nd"
-            elif int(date2[2]) in [3,23]:
-                date2[2] = str(date2[2]) + "rd"
-            elif int(date2[2]) in [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,24,25,26,27,28,29,30]:
-                date2[2] = str(date2[2]) + "th"
-            s1 = "{} {}, {}".format(str(date1[2]),month[int(mon)],str(date1[0]))
-            s2 = "{} {}, {}".format(str(date2[2]),month[int(mon2)],str(date2[0]))
-            return s1 + " to " + s2
-    else:
-        l = date.split()
-        month = {1:"January",2:"February",3:"March",4:"April",5:"May",6:"June",7:"July",8:"August",9:"September",10:"October",11:"November",12:"December"}
-        date = l[0].split("-")
-        mon = date[1]
-        if int(date[2]) in [1,21,31]:
-            date[2] = str(date[2]) + "st"
-        elif int(date[2]) in [2,22]:
-            date[2] = str(date[2]) + "nd"
-        elif int(date[2]) in [3,23]:
-            date[2] = str(date[2]) + "rd"
-        elif int(date[2]) in [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,24,25,26,27,28,29,30]:
-            date[2] = str(date[2]) + "th"
-        return "{} {}, {}".format(str(date[2]),month[int(mon)],str(date[0]))
-
-def teacher_event_sort(events):
-    #By Event Deadline- Teachers
-    #By Registration Deadline- Students
-
-    months = ["January","February","March","April","May","June","July","August","Septemeber","October","November","December"]
-    j = 0
-    while j<=(10000):
-        for i in range(0,len(events)-1):
-            base1 = events[i]['event_dates'].split(" to ")
-            base2 = events[i+1]['event_dates'].split(" to ")
-            if len(base1)>1:
-                y1 = int(events[i]['event_dates'].split(" to ")[1].split(", ")[1])
-                m1 = months.index(events[i]['event_dates'].split(" to ")[1].split()[1].split(",")[0])
-                d1 = int(events[i]['event_dates'].split(" to ")[1].split()[0][:-2])
-            else:
-                y1 = int(events[i]['event_dates'].split(" to ")[0].split(", ")[1])
-                m1 = months.index(events[i]['event_dates'].split(" to ")[0].split()[1].split(",")[0])
-                d1 = int(events[i]['event_dates'].split(" to ")[0].split()[0][:-2])
-
-            if len(base2)>1:
-                y2 = int(events[i+1]['event_dates'].split(" to ")[1].split(", ")[1])
-                m2 = months.index(events[i+1]['event_dates'].split(" to ")[1].split()[1].split(",")[0])
-                d2 = int(events[i+1]['event_dates'].split(" to ")[1].split()[0][:-2])
-            else:
-                y2 = int(events[i+1]['event_dates'].split(" to ")[0].split(", ")[1])
-                m2 = months.index(events[i+1]['event_dates'].split(" to ")[0].split()[1].split(",")[0])
-                d2 = int(events[i+1]['event_dates'].split(" to ")[0].split()[0][:-2])
-
-            if y1>y2:
-                events[i],events[i+1]=events[i+1],events[i]
-            else:
-                if m1>m2:
-                    events[i],events[i+1]=events[i+1],events[i]
-                else:
-                    if d1>d2:
-                        events[i],events[i+1]=events[i+1],events[i]
-
-        j+=1
-
-    return events
+    months = {1:"January",2:"February",3:"March",4:"April",5:"May",6:"June",7:"July",8:"August",9:"September",10:"October",11:"November",12:"December"}
+    dates_list = list(set(str(date).split(" to ")))
+    formatted_dates = []
+    for date_str in dates_list:
+        YYYY, MM, DD = map(int, date_str.split("-"))
+        date_suffix = ("st" if DD%10==1 else ("nd" if DD%10==2 else ("rd" if DD%10==3 else "th")))
+        formatted_dates.insert(0, "{}{} {}, {}".format(DD, date_suffix, months[MM], YYYY))
+    return " to ".join(formatted_dates)
 
 def encrypt(string):
     string = string.upper()
@@ -352,9 +264,6 @@ def home(request):
                     sub["event_dates"] = date_conversion(i.event_dates)
                     sub["event_check"] = True
                     final2.append(sub)
-    
-    final = teacher_event_sort(final)
-    final2 = teacher_event_sort(final2)
 
     context = {"title":"Home",
         "AllEvents": final,
