@@ -21,7 +21,7 @@ def get_device(request):
     if user_agent.is_mobile:
         return "mobile"
     else:
-        return "pc"
+        return "mobile"
 
 def home(request):
     t_views.login_check(request)
@@ -87,7 +87,7 @@ def home(request):
                         sub["category"] = s_event.category
                         #sub["valid"] = t_views.event_over_check(s_event.event_id,s_event.subevent_id)
                         sub["completed_check"] = True
-                        sub["finalized"] = True if sub_event.confirmation_status == "Y" else False
+                        sub["finalized"] = True if s_event.confirmation_status == "Y" else False
                         final.append(sub)
             
     context = {
