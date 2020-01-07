@@ -25,10 +25,11 @@
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-primary" style="border-radius: 0px 25px 25px 0px;">
                         <div class="row">
                             <h4 class="m-0 font-weight-bold text-primary">&nbsp;{{ ach.name }}</h4>  
-                            <div class="dropdown no-arrow">
-                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                </a>
+                        </div>
+                        <div class="dropdown no-arrow" align='right'>
+                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
                             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                 <div class="dropdown-header">Achievement Options:</div>
                                     <a class="dropdown-item" href={{ ach.event_edit_redirect }}><i class="fas fa-edit" style="color: grey"></i> Edit</a>
