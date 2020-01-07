@@ -15,11 +15,6 @@ import hashlib
 from datetime import date
 from random import shuffle
 
-'''
-teachers-ff1b4751894e267c4fe3e1c7025670929c15c05b033800e088f9ce931a377912- hashlib.sha256("teachers/".encode('utf-8')).hexdigest()
-student-b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0- hashlib.sha256("students/".encode('utf-8')).hexdigest()
-'''
-
 teacher_hash = "teachers/"
 student_hash = "students/"
 
@@ -102,12 +97,6 @@ def logout_auth(request):
     response.delete_cookie('logged_in')
     response.delete_cookie('id')
     return response
-    
-'''
-SORT EVENTS BY DEADLINES- TEACHERVIEW
-SORT EVENTS BY REGISTRATION DEADLINES- STUDENTVIEW
-CREATE CUSTOM 404-PAGE
-'''
 
 def forgot_password(request):
     if request.method=='POST':
