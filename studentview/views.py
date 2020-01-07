@@ -21,7 +21,7 @@ def get_device(request):
     if user_agent.is_mobile:
         return "mobile"
     else:
-        return "mobile"
+        return "pc"
 
 def home(request):
     t_views.login_check(request)
