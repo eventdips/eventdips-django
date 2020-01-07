@@ -43,7 +43,11 @@
                         <h6><b>Class</b>: {{ student_data.class }}</h6>
                         <h6><b>Section</b>: {{ student_data.section }}</h6>
                         <h6><b>Registration Information</b>: {{ student_data.info }}</h6>
-                        <h6><b>Acheivements</b>: {{ student_data.ego_flex }}</h6>
+                        <h6><b>Acheivements</b>: <a href={{ view_achievement_redirect }}>View Achievements</a></h6>
+                        <h6><b>Previous Particpations</b>: <a href={{ view_previous_redirect }}>View Previous Events</a></h6>
+                        {% if student_data.group_type %}
+                          <h6><b>Group Members</b>: <b>{{ student_data.team_members}}</b></h6>
+                        {% endif %}
                         <h6><b>Current Status</b>: {{ student_data.status }}</h6>
                     </div>
                   </div>
