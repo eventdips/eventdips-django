@@ -20,8 +20,8 @@ teachers-ff1b4751894e267c4fe3e1c7025670929c15c05b033800e088f9ce931a377912- hashl
 student-b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0- hashlib.sha256("students/".encode('utf-8')).hexdigest()
 '''
 
-teacher_hash = hashlib.sha256("teachers/".encode('utf-8')).hexdigest()
-student_hash = hashlib.sha256("students/".encode('utf-8')).hexdigest()
+teacher_hash = "teachers/"
+student_hash = "students/"
 
 def date_conversion(date):
     date = str(date)
@@ -1601,12 +1601,12 @@ def get_current_notifications_teachers(request,typ):
                 else:
                     sub["days_left"] = str((date_obj-cur).days)
                 sub["event_name"] = event.subevent_name
-                sub["url_redirect"] = "{}{}/{}".format(teacher_hash,event.event_id,event.subevent_id)
+                sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,event.event_id,event.subevent_id)
             elif (date_obj-cur).days==0:
                 sub["notification_header"] = "Deadline Today!"
                 sub["event_name"] = event.subevent_name
                 sub["days_left"] = ""
-                sub["url_redirect"] = "{}{}/{}".format(teacher_hash,event.event_id,event.subevent_id)
+                sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,event.event_id,event.subevent_id)
             final.append(sub)
 
     final2=[]
@@ -1618,7 +1618,7 @@ def get_current_notifications_teachers(request,typ):
                 sub["student_name"] = reg.student_name
                 sub["notification_header"] = "Application Submitted!"
                 sub["event_name"] = event.subevent_name
-                sub["url_redirect"] = "{}{}/{}/rview/{}".format(teacher_hash,event.event_id,event.subevent_id,reg.registration_id)
+                sub["url_redirect"] = "/{}{}/{}/rview/{}".format(teacher_hash,event.event_id,event.subevent_id,reg.registration_id)
 
                 final2.append(sub)
 

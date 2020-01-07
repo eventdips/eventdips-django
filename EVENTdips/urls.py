@@ -10,8 +10,8 @@ import hashlib
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url="login/")),
-    path(hashlib.sha256("students/".encode('utf-8')).hexdigest(),include('studentview.urls')),
-    path(hashlib.sha256("teachers/".encode('utf-8')).hexdigest(),include('teacherview.urls')),
+    path('students/',include('studentview.urls')),
+    path('teachers/',include('teacherview.urls')),
     path('login/', teach_view.login_auth, name="login"),
     path('logout/', teach_view.logout_auth, name="logout"),
     path('forgot/', teach_view.forgot_password, name="forgot-password"),

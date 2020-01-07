@@ -176,21 +176,21 @@ def my_achievements(request):
     final=[]
     pre_achievements = status.achievements #will be all the acheivements in a list stored as a string
     list_achievements = pre_achievements[1:-1].split("666")
-    
-    for i in range(list_achievements.count("")):
-        list_achievements.remove("")
+    if pre_achievements != "None":
+        for i in range(list_achievements.count("")):
+            list_achievements.remove("")
 
-    for pre in list_achievements:
-        pre = pre[1:-1]
-        ach = pre.split(":")
-        sub = {}
-        sub["name"] = ach[1]
-        sub["info"] = ach[3]
-        sub["date"] = t_views.date_conversion(ach[5])
-        sub["category"] = ach[7]
-        sub["event_edit_redirect"] = "achievements/edit/{}".format(ach[9])
-        sub["event_delete_redirect"] = "achievements/delete/{}".format(ach[9])
-        final.append(sub)
+        for pre in list_achievements:
+            pre = pre[1:-1]
+            ach = pre.split(":")
+            sub = {}
+            sub["name"] = ach[1]
+            sub["info"] = ach[3]
+            sub["date"] = t_views.date_conversion(ach[5])
+            sub["category"] = ach[7]
+            sub["event_edit_redirect"] = "achievements/edit/{}".format(ach[9])
+            sub["event_delete_redirect"] = "achievements/delete/{}".format(ach[9])
+            final.append(sub)
 
     context ={
         "achievements":final,
@@ -219,7 +219,7 @@ def add_achievement(request):
     achievements = status.achievements
     list_achievements = achievements[1:-1].split("666")
     list_achievements.pop(-1)
-    latest_id = int(list_achievements[-1][1:-1].split(":")[-1])
+    latest_id = int(list_achievements[-1][1:-1].split(":")[-1]) if achievements != "None" else 0
 
     if request.method=="POST":
         form = AchievementForm(request.POST)

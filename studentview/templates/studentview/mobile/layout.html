@@ -40,7 +40,7 @@
       <!--navbar-->
       <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow" style="background-color: #2196f3;border-radius:0rem 0rem 1.5rem 1.5rem;">
         <div class="container">
-          <a class="navbar-brand" href="/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0"><img src="{% static 'teacherview/EventDipsLarge.webp' %}" style="height:2.5rem;  filter: drop-shadow(0 0 8px #FFFFFF);"></a>
+          <a class="navbar-brand" href="/students"><img src="{% static 'teacherview/EventDipsMedium.png' %}" style="height:2.5rem;  filter: drop-shadow(0 0 8px #FFFFFF);"></a>
           <button class="navbar-toggler border-0 text-dark" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
           </button>
@@ -48,21 +48,21 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
               <li class="nav-item">
-                <a class="nav-link text-white" href="/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0"><i class="fas fa-home"></i> Home</a>
+                <a class="nav-link text-white" href="/students"><i class="fas fa-home"></i> Home</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="fas fa-calendar"></i> Events
                 </a>
                 <div class="dropdown-menu mr-auto mt-2 mt-lg-0 shadow" aria-labelledby="navbarDropdown" style="animation-duration: 0.7s;animation-name: jackInTheBox;border-radius:1rem">
-                  <a class="dropdown-item" href='/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//IT'>IT</a>
-                  <a class="dropdown-item" href='/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Sport'>Sport</a>
-                  <a class="dropdown-item" href='/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Debate'>Debate</a>
-                  <a class="dropdown-item" href='/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Public%20Speaking'>Public Speaking</a>
-                  <a class="dropdown-item" href='/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Education'>Educational</a>
-                  <a class="dropdown-item" href='/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Literature'>Literature</a>
-                  <a class="dropdown-item" href='/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Design'>Design</a>
-                  <a class="dropdown-item" href='/b90fa6a75b91609042515f892f39f7f3e584df5dbef91f6ea67dfaed32a0bab0//Science'>Science</a>
+                  <a class="dropdown-item" href='/students///IT'>IT</a>
+                  <a class="dropdown-item" href='/students///Sport'>Sport</a>
+                  <a class="dropdown-item" href='/students///Debate'>Debate</a>
+                  <a class="dropdown-item" href='/students///Public%20Speaking'>Public Speaking</a>
+                  <a class="dropdown-item" href='/students///Education'>Educational</a>
+                  <a class="dropdown-item" href='/students///Literature'>Literature</a>
+                  <a class="dropdown-item" href='/students///Design'>Design</a>
+                  <a class="dropdown-item" href='/students///Science'>Science</a>
                 </div>
               </li>
               <li class="nav-item">
@@ -89,11 +89,11 @@
             </ul>
             <hr class="d-block d-sm-none">
             
-            <form class="form-inline">
+            <form class="form-inline" method="GET" action="{% url 'student-search' %}">
               <div class="container-fluid">
                 <div class="input-group" style="padding-bottom:0.5rem">
-                  <input class="form-control d-inline" type="search" placeholder="Search" aria-label="Search" id="searchbar">
-                  <button class="btn btn-success d-inline" type="submit" onclick=searchFunction()><i class="fas fa-search"></i></button>
+                  <input name='query' class="form-control d-inline" type="search" placeholder="Search" aria-label="Search" id="searchbar">
+                  <button class="btn btn-primary d-inline" type="submit" onclick="searchFunction()"><i class="fas fa-search" id="searchButton"></i></button>
                 </div>
               </div>
             </form>
@@ -151,7 +151,7 @@
       <script>
         function searchFunction(){
           var input = document.getElementById('searchbar').value;
-          location.href="{% url 'student-search' %}" + '?query='+input;
+          location.href='/students/search/?query='+input;
         }
       </script>
     </div>
