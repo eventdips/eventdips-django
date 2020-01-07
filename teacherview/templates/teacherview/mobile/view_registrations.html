@@ -8,14 +8,12 @@
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="width: 100%;">
       <div style="width: 60%">
         <a href={{ header_redirect }} style="text-decoration: none;">
-          <h1 class="h3 mb-0 text-gray-800">{{ event_name }}- {{ subevent_name }}</h1>
+          <h1 class="h3 mb-0 text-secondary">{{ event_name }}- {{ subevent_name }}</h1>
         </a>
       </div>
-      <div align="right" style="width: 30%;">
+      <div align="right">
         <a href={{ confirmation }} style="text-decoration: none;" onclick="return confirm('Are you sure you want to confirm your decisions? Students will be iniformed, and NO FURTHER CHANGES will be permitted.')">
-          <li class="list-group-item btn-success text-white" style="border-radius: 25px; text-align: center;">
-            CONFIRM DECISION
-          </li>
+          Confirm Decision
         </a>
       </div>
       <div class="dropdown no-arrow">
@@ -35,11 +33,9 @@
         <div style="width: 60%">
           <a href={{ header_redirect }}><h1 class="h3 mb-0 text-gray-800">{{ event_name }}</h1></a>
         </div>
-        <div align="right" style="width: 30%; background-color: #4caf50; border-radius: 2rem;">
+        <div align="right">
             <a href={{ confirmation }} style="text-decoration: none;" onclick="return confirm('Are you sure you want to confirm your decisions? Students will be iniformed, and NO FURTHER CHANGES will be permitted.')">
-              <li class="list-group-item text-white">
-                CONFIRM DECISION
-              </li>
+              <span class="btn btn-success" style="border-radius: 2rem;">CONFIRM DECISION</span>
             </a>
           </div>
         <div class="dropdown no-arrow">
