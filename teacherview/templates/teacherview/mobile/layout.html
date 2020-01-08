@@ -34,6 +34,12 @@
       .card-header{
           border-radius: 2rem 0rem 2rem 2rem;
         }
+      .container-scroll-horizontal{
+          width: 100%; 
+          overflow: scroll;
+          overflow-x: scroll;
+          overflow-y:hidden
+      }
     </style>
   </head>
   <body style="font-family: 'Montserrat', sans-serif;">
@@ -97,40 +103,43 @@
       <br><br><br>
       <!-- Begin Page Content -->
       <div class="container">
-        <div class="row">
-          {% if messages %}
-            {% for message in messages %}
-              <div>
-                {% if message.tags == "warning" %}
-                  <span class="badge badge-pill badge-warning" style="display: inline-block;">
-                    {{ message }}
+        <div class="container-fluid container-scroll-horizontal">
+          <div class="row flex-row flex-nowrap">
+            {% if messages %}
+              {% for message in messages %}
+                
+                  {% if message.tags == "warning" %}
+                    <span class="badge badge-pill badge-warning">
+                      {{ message }}
+                    </span>
+                  {% endif %}
+                  {% if message.tags == "success" %}
+                    <span class="badge badge-pill badge-success">
+                      {{ message }}
+                    </span>
+                  {% endif %}
+                
+              {% endfor %}
+            {% endif %}
+            &nbsp;
+            {% if notifications_days_left or notifications_applications %}
+              {% for notification_data in notifications_days_left %}
+                
+                  <span class="badge badge-pill badge-dark" style=" background-color: #4caf50;">
+                    {{ notification_data.event_name }}{{ notification_data.days_left }} Days Left
                   </span>
-                {% endif %}
-                {% if message.tags == "success" %}
-                  <span class="badge badge-pill badge-success" style="display: inline-block;">
-                    {{ message }}
-                  </span>
-                {% endif %}
-              </div>
-            {% endfor %}
-          {% endif %}
-          &nbsp;
-          {% if notifications_days_left or notifications_applications %}
-            {% for notification_data in notifications_days_left %}
-              <div>
-                <span class="badge badge-pill badge-dark" style="display: inline-block; background-color: #4caf50;">
-                  {{ notification_data.event_name }}{{ notification_data.days_left }} Days Left
-                </span>
-              </div>
-              &nbsp;
-            {% endfor %}
-            {% for notification_data in notifications_applications %}
-                <a href={{ notification_data.url_redirect }}>
-                    <span class="badge badge-pill badge-dark" style="display: inline-block; background-color: #4caf50;">{{ notification_data.student_name }} for {{ notification_data.event_name }}</span>
-                </a>
                 &nbsp;
-            {% endfor %}
-          {% endif %}
+              {% endfor %}
+              {% for notification_data in notifications_applications %}
+                      <span class="badge badge-pill badge-dark" style="background-color: #4caf50;">
+                        <a href={{ notification_data.url_redirect }} style="text-decoration: none;">
+                          {{ notification_data.student_name }} for {{ notification_data.event_name }}
+                        </a>
+                      </span>
+                  &nbsp;
+              {% endfor %}
+            {% endif %}
+          </div>
         </div>
         <br>
         {% block ContentView %}
