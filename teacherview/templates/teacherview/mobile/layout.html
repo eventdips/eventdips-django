@@ -83,6 +83,7 @@
                   </div>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="{% url 'teacher-profile' %}">Profile</a>
+                  <a class="dropdown-item" href="{% url 'teacher-notifications' %}">Show All Notifications</a>
                   <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
                 </div>
               </li>
@@ -132,7 +133,7 @@
               {% endfor %}
               {% for notification_data in notifications_applications %}
                       <span class="badge badge-pill badge-dark" style="background-color: #4caf50;">
-                        <a href={{ notification_data.url_redirect }} style="text-decoration: none;">
+                        <a href={{ notification_data.url_redirect }} style="text-decoration: none;" class="text-white">
                           {{ notification_data.student_name }} for {{ notification_data.event_name }}
                         </a>
                       </span>
