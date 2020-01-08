@@ -136,6 +136,10 @@
                 <span class="badge badge-pill badge-dark" style="display: inline-block; background-color: #2196f3">
                   {{ notification_data.event_name }}{{ notification_data.decision }}
                 </span>
+                <br>
+                {% if notification_data.reason %}
+                  <small><b>Message from {{ notification_data.teacher_incharge }}:</b><br> {{ notification_data.reason }}</small>
+                {% endif %}
               </div>
               &nbsp;
             {% endfor%}

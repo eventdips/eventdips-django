@@ -839,7 +839,9 @@ def get_current_notifications_students(request):
 
                 sub["decision"] = "- Accepted" if reg.reg_status=="A" else "- Rejected"
                 sub["notification_header"] = "Final Decision"
+                sub["reason"] = reg.rej_reason if reg.reg_status=="R" else ""
                 sub["event_name"] = s_event.subevent_name
+                sub["teacher_incharge"] = s_event.subevent_teacher_incharge
         
                 final2.append(sub)
     

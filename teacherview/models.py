@@ -10,7 +10,7 @@ class Events(models.Model):
 	event_information = models.TextField(blank=True)
 	event_dates = models.TextField()
 	single_check = models.CharField(max_length=5)
-	event_attachment = models.FileField(default='',upload_to='Attachments')
+	event_attachment = models.FileField(blank=True,upload_to='Attachments')
 
 	def __str__(self):
 		return self.event_name + " " + str(self.event_id) + " " + self.teacher_incharge
@@ -33,7 +33,7 @@ class SubEvents(models.Model):
 	published_date = models.DateField(auto_now_add=True)
 	last_date = models.DateField()
 	allowed_grades = models.CharField(default="ALL", max_length=32)
-	subevent_attachment = models.FileField(default='',upload_to='Attachments')
+	subevent_attachment = models.FileField(blank=True,upload_to='Attachments')
 	category = models.CharField(max_length=32)
 	confirmation_status = models.CharField(default="N",max_length=1) #"Y"-Yes
 

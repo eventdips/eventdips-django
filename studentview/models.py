@@ -15,6 +15,7 @@ class Registrations(models.Model):
 	date_applied = models.DateField(default=datetime.today())
 	event_type = models.CharField(max_length=1) #I- Individual, G- Group
 	group_id = models.IntegerField()
+	rej_reason = models.TextField(null=True,default="Sorry, kindly submit your application for future attempts.") #Only filled when Event is confirmed and Student has been rejected.
 	#acheivements will be pulled from the users db
 	
 	def __str__(self):

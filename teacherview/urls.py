@@ -11,6 +11,7 @@ urlpatterns = [
 	path('<int:pk>/<int:sub_pk>',views.subevent,name='teacher-subevent'),
 	path('<int:pk>/<int:sub_pk>/rview',views.view_registrations,name='teacher-registers'),
 	path('<int:pk>/<int:sub_pk>/rview/confirmation',views.confirmation,name='teacher-confirmation'),
+	path('<int:pk>/<int:sub_pk>/reason-for-rejections',views.reason_for_rejection,name='teacher-reason'),
 	path('<int:pk>/<int:sub_pk>/rview/<int:r_pk>',views.view_registration,name='teacher-register'),
 	path('<int:pk>/<int:sub_pk>/rview/<int:r_pk>/view-achievement',views.view_achievement,name='teacher-achievement'),
 	path('<int:pk>/<int:sub_pk>/rview/<int:r_pk>/view-previous',views.view_previous_events,name='teacher-previous'),

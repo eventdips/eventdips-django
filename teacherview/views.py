@@ -641,12 +641,63 @@ def confirmation(request,pk,sub_pk):
         sub.confirmation_status = "Y"
         sub.save()
         #REPORTLAB PDF GEN
-
         messages.success(request,"Decisions for '{}' have been finalized!".format(sub.subevent_name))
-        return redirect('teacher-homepage')
+
+        regs = list(Registrations.objects.filter(subevent_id=sub_pk))
+        rejected_students = []
+        for reg in regs:
+            if reg.reg_status=="R":
+                sub = {}
+                sub["name"] = reg.user.first_name + " " + reg.user.last_name
+                sub["class"] = reg.student_class
+                sub["section"] = reg.student_section
+                sub["id"] = reg.registration_id
+                rejected_students.append(sub)
+        
+        context = {
+            "title": "Reason For Rejections",
+            "Rejected_Students": rejected_students,
+            "event_name": SubEvents.objects.get(pk=sub_pk).subevent_name,
+            "notifications_days_left":get_current_notifications_teachers(request,0)[1][:3],
+            "notifications_count":"3+" if get_current_notifications_teachers(request,0)[0] > 3 else get_current_notifications_teachers(request,0)[0],
+            "notifications_applications":get_current_notifications_teachers(request,0)[2][:3],
+            "url_redirect": "/{}{}/{}/reason-for-rejections".format(teacher_hash,pk,sub_pk)
+        }
+
+        return render(request, 'teacherview/desktop/confirmation.html', context)
+
     else:
         messages.warning(request,"Decisions for '{}' have been already been finalized.".format(sub.subevent_name))
         return redirect('teacher-homepage')
+
+def reason_for_rejection(request,pk,sub_pk):
+    login_check(request)
+
+    try:
+        if student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
+            return redirect('student-homepage')
+    except:
+        return redirect('login')
+    
+    if not event_over_check(pk,sub_pk):
+        messages.warning(request,"Event '{}' Is Already Complete!".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
+
+    if SubEvents.objects.get(pk=sub_pk).confirmation_status == "N":
+        messages.warning(request,"Decisions for the Event '{}' Are Yet To Be Confirmed.".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
+        return redirect('teacher-homepage')
+
+    regs = list(Registrations.objects.filter(subevent_id=sub_pk))
+    for reg in regs:
+        reason = request.GET.get(str(reg.registration_id))
+        if reason!="":
+            reg.rej_reason = reason
+        reg.save()
+
+    messages.success(request,"Students Will be Notified of the Decisions!")
+    return redirect('teacher-homepage')
+
 
 def view_registration(request,pk,sub_pk,r_pk):
     login_check(request)
@@ -1026,8 +1077,10 @@ def add_event(request):
                 if single_check=="True":
                     new_event.event_dates = "{} to {}".format(start_date,last_date)
                     new_event.single_check = single_check
-                    new_event.event_attachment = request.FILES['add_attachment']
-
+                    try:
+                        new_event.event_attachment = request.FILES['add_attachment']
+                    except:
+                        pass
                     options = []
                     users = User.objects.all()
                     for user in users:
@@ -1222,7 +1275,10 @@ def add_subevent(request,event_id):
                     new_subevent.subevent_requirements = form.cleaned_data.get('requirements')
                     new_subevent.last_date = form.cleaned_data.get('registration_deadline')
                     new_subevent.allowed_grades = form.cleaned_data.get('allowed_grades')
-                    new_subevent.subevent_attachment = request.FILES['add_attachment']
+                    try:
+                        new_subevent.subevent_attachment = request.FILES['add_attachment']
+                    except:
+                        pass
                     new_subevent.category = form.cleaned_data.get('category')
                     new_subevent.save()
 
@@ -1295,7 +1351,10 @@ def edit_event(request,event_id,subevent_id):
             sub.subevent_requirements = form.cleaned_data.get('requirements')
             sub.last_date = form.cleaned_data.get('registration_deadline')
             sub.allowed_grades = form.cleaned_data.get('allowed_grades')
-            sub.subevent_attachment = request.FILES['add_attachment']
+            try:
+                sub.subevent_attachment = request.FILES['add_attachment']
+            except:
+                pass
             sub.category = form.cleaned_data.get('category')
             sub.save()
 
@@ -1510,15 +1569,16 @@ def get_current_notifications_teachers(request,typ):
     final2=[]
     for event in events:
         if event_over_check(event.event_id,event.subevent_id):
-            regs = Registrations.objects.filter(subevent_id=event.subevent_id)
-            for reg in regs:
-                sub={}
-                sub["student_name"] = reg.student_name
-                sub["notification_header"] = "Application Submitted!"
-                sub["event_name"] = event.subevent_name
-                sub["url_redirect"] = "/{}{}/{}/rview/{}".format(teacher_hash,event.event_id,event.subevent_id,reg.registration_id)
+            if event.confirmation_status=="N":
+                regs = Registrations.objects.filter(subevent_id=event.subevent_id)
+                for reg in regs:
+                    sub={}
+                    sub["student_name"] = reg.student_name
+                    sub["notification_header"] = "Application Submitted!"
+                    sub["event_name"] = event.subevent_name
+                    sub["url_redirect"] = "/{}{}/{}/rview/{}".format(teacher_hash,event.event_id,event.subevent_id,reg.registration_id)
 
-                final2.append(sub)
+                    final2.append(sub)
 
     shuffle(final)
     shuffle(final2)

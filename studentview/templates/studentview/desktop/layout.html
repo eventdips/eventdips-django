@@ -210,6 +210,10 @@
                         <div>
                           <div class="small text-gray-800">{{ notification_data.notification_header }}</div>
                           <span class="font-weight-bold">{{ notification_data.event_name }}{{ notification_data.decision }}</span>
+                          <br>
+                          {% if notification_data.reason %}
+                            <small><b>Message from {{ notification_data.teacher_incharge }}:</b><br> {{ notification_data.reason }}</small>
+                          {% endif %}
                         </div>
                       </a>
                     {% endif %}
