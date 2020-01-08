@@ -696,6 +696,8 @@ def reason_for_rejection(request,pk,sub_pk):
         reason = request.GET.get(str(reg.registration_id))
         if reason!="":
             reg.rej_reason = reason
+        else:
+            reg.rej_reason = "Sorry, your application has been accepted."
         reg.save()
 
     messages.success(request,"Students Will be Notified of the Decisions!")
