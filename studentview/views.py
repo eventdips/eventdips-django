@@ -385,7 +385,8 @@ def event_by_category(request,category):
                 "subevents":final,
                 "notifications_days_left":get_current_notifications_students(request)[1][:3],
                 "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-        "notifications_decisions":get_current_notifications_students(request)[2][:3]}
+                "notifications_decisions":get_current_notifications_students(request)[2][:3]
+            }
 
     if get_device(request)=="pc":
         return render(request,'studentview/desktop/event_by_category.html',context)
@@ -805,6 +806,32 @@ def registration(request,event_id,subevent_id):
         return render(request,'studentview/desktop/registration.html',context)
     elif get_device(request)=="mobile":
         return render(request,'studentview/mobile/registration.html',context)
+
+def show_all_notifications(request):
+    t_views.login_check(request)
+    
+    try:
+        if not t_views.student_check(request):
+            messages.warning(request,'Illegal Action Attempted!')
+            return redirect('teacher-homepage')
+    except:
+        return redirect('login')
+        
+    cnt,days_left,decision_received = get_current_notifications_students(request)
+
+    context = {
+        "title":"Notifications",
+        "Days_Left": days_left,
+        "Decisions_Received": decision_received,
+        "notifications_days_left":get_current_notifications_students(request)[1][:3],
+        "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
+        "notifications_decisions":get_current_notifications_students(request)[2][:3]
+    }
+
+    if get_device(request)=="pc":
+        return render(request,'studentview/desktop/show_all_notifications.html',context)
+    elif get_device(request)=="mobile":
+        return render(request,'studentview/mobile/show_all_notifications.html',context)
 
 def get_current_notifications_students(request):
     '''two types

@@ -664,7 +664,10 @@ def confirmation(request,pk,sub_pk):
             "url_redirect": "/{}{}/{}/reason-for-rejections".format(teacher_hash,pk,sub_pk)
         }
 
-        return render(request, 'teacherview/desktop/confirmation.html', context)
+        if get_device(request)=="pc":
+            return render(request,'teacherview/desktop/confirmation.html',context)
+        elif get_device(request)=="mobile":
+            return render(request,'teacherview/mobile/confirmation.html',context)
 
     else:
         messages.warning(request,"Decisions for '{}' have been already been finalized.".format(sub.subevent_name))

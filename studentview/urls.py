@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
 	path('',views.home,name="student-homepage"),
 	path('profile',views.profile,name="student-profile"),
+	path('notifications',views.show_all_notifications,name="student-notifications"),
 	path('/achievements',views.my_achievements,name="student-achievements"),
 	path('search/', views.searchpage, name='student-search'),
 	path('/achievements/add',views.add_achievement,name="student-achievement-add"),
