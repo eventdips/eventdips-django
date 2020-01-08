@@ -1,0 +1,23 @@
+{% extends 'teacherview/mobile/layout.html' %}
+
+{% block ContentView %}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Reason For Rejections- {{ event_name }}</h1>
+    </div>
+    <br>
+    <form method="GET" action={{ url_redirect }}>
+        {% for student in Rejected_Students %}
+            <b><label for="reason">{{ student.name }}- {{ student.class}} {{ student.section }}: </label></b>
+            <input type="text" name={{ student.id }} id="reason" class="form-control bg-light border-0 small" placeholder="Enter Reason For Rejection (Leave Blank To Provide Default Reason)" aria-describedby="basic-addon2">
+            <br><br>
+        {% endfor %}
+    
+        <center>
+            <button class="btn btn-success" type="submit" style="width:100%; border-radius:25px; padding:15px;">SUBMIT</button>
+        </center>
+    </form>
+</div>
+
+{% endblock %}
