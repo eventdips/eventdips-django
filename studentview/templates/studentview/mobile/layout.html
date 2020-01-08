@@ -33,7 +33,13 @@
       }
       .card-header{
           border-radius: 2rem 0rem 2rem 2rem;
-        }
+      }
+      .container-scroll-horizontal{
+        width: 100%; 
+        overflow: scroll;
+        overflow-x: scroll;
+        overflow-y:hidden
+      }
     </style>
   </head>
   <body style="font-family: 'Montserrat', sans-serif;">
@@ -104,10 +110,10 @@
       <br><br><br>
       <!-- Begin Page Content -->
       <div class="container">
-        <div class="row">
-          {% if messages %}
-            {% for message in messages %}
-              <div>
+        <div class="container-fluid container-scroll-horizontal">
+          <div class="row flex-row flex-nowrap">
+            {% if messages %}
+              {% for message in messages %}
                 {% if message.tags == "warning" %}
                   <span class="badge badge-pill badge-warning" style="display: inline-block;">
                     {{ message }}
@@ -118,32 +124,28 @@
                     {{ message }}
                   </span>
                 {% endif %}
-              </div>
-            {% endfor %}
-          {% endif %}
-          &nbsp;
-          {% if notification_count %}
-            {% for notification_data in notifications_days_left %}
-              <div>
+              {% endfor %}
+            {% endif %}
+            &nbsp;
+            {% if notification_count %}
+              {% for notification_data in notifications_days_left %}
                 <span class="badge badge-pill badge-dark" style="display: inline-block; background-color: #2196f3">
                   {{ notification_data.event_name }}{{ notification_data.days_left }} Days Left
                 </span>
-              </div>
-              &nbsp;
-            {% endfor %}
-            {% for notification_data in notifications_decisions %}
-              <div>
+                &nbsp;
+              {% endfor %}
+              {% for notification_data in notifications_decisions %}
                 <span class="badge badge-pill badge-dark" style="display: inline-block; background-color: #2196f3">
                   {{ notification_data.event_name }}{{ notification_data.decision }}
+                  &nbsp
+                  {% if notification_data.reason %}
+                    <small><b>Message from {{ notification_data.teacher_incharge }}:</b><br> {{ notification_data.reason }}</small>
+                  {% endif %}
                 </span>
-                <br>
-                {% if notification_data.reason %}
-                  <small><b>Message from {{ notification_data.teacher_incharge }}:</b><br> {{ notification_data.reason }}</small>
-                {% endif %}
-              </div>
-              &nbsp;
-            {% endfor%}
-          {% endif %}
+                &nbsp;
+              {% endfor%}
+            {% endif %}
+          </div>
         </div>
         <br>
         {% block ContentView %}
