@@ -156,11 +156,10 @@ LOGIN_URL = 'login'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
 
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'eventdips@gmail.com'
-EMAIL_HOST_PASSWORD = 'eventdips123'
+EMAIL_HOST_USER = 'eventdips-support@sandbox02b68f27438347fcb2366dc39e56f4cf.mailgun.org'
+EMAIL_HOST_PASSWORD = 'a36b9630b5cc601f3a2f2f10a54b859b-713d4f73-6986e3cf'
 EMAIL_USE_TLS = True
-
 
 USER_AGENTS_CACHE = 'default'
