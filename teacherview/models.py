@@ -45,7 +45,8 @@ class Status(models.Model):
 	status = models.CharField(default="",max_length=1)
 	achievements = models.TextField(default="") #stores STUDENT ACHEIVEMENTS- Teacher=="None"
 	department = models.CharField(max_length=64) #stored TEACHER DEPT- Student=="None"
-	#notifications - notification and read/unread
+	security_questions = models.TextField() #stored as question1%%question2%%question3
+	security_answers = models.TextField() #stored in the same way, encrypted
 
 	def __str__(self):
 		return self.user.first_name + " " + self.user.last_name + ": " + self.status

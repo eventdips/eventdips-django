@@ -15,6 +15,16 @@ def event_finalized_check(event_id,subevent_id):
         return True
     else:
         return False
+    
+def registration_deadline_passed(event_id,subevent_id):
+    reg_deadline = SubEvents.objects.get(pk=subevent_id).last_date
+    today = date.today()
+
+    if today>reg_deadline:
+        return True
+    else:
+        return False
+    
 
 def get_device(request):
     user_agent = get_user_agent(request)
@@ -370,7 +380,7 @@ def event_by_category(request,category):
             else:
                 sub["completed_check"] = True
      
-            sub["finalized"] = True if i.confirmation_status == "Y" else False
+            ssub["finalized"] = True if i.confirmation_status == "Y" else False
             sub["name"] = i.subevent_name
             sub["dates"] = t_views.date_conversion(i.subevent_dates)
             sub["available_slots"] = str(i.total_slots-i.total_registrations)
@@ -598,7 +608,11 @@ def add_reg_for_group(request,event_id,subevent_id,current_group_id):
     if event_finalized_check(event_id,subevent_id):
         messages.warning(request,"Decisions Regarding Event '{}' Is Already Finalized!".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
         return redirect('student-homepage')
-    
+
+    if registration_deadline_passed(event_id,subevent_id):
+        messages.warning(request,"Registration Deadline for '{}' Has Passed.".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
+        return redirect('student-homepage')
+
     subevent = SubEvents.objects.get(pk=subevent_id)
     if subevent.total_registrations==subevent.total_slots:
         messages.warning(request,"Registrations Are Complete For '{}'".format(subevent.subevent_name))
@@ -656,13 +670,16 @@ def group_registration(request,event_id,subevent_id,current_group_id):
         messages.warning(request,"Decisions Regarding Event '{}' Is Already Finalized!".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
         return redirect('student-homepage')
 
+    if registration_deadline_passed(event_id,subevent_id):
+        messages.warning(request,"Registration Deadline for '{}' Has Passed.".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
+        return redirect('student-homepage')
+
     #REGISTRATION COMPLETE CHECK
     subevent = SubEvents.objects.get(pk=subevent_id)
     if subevent.total_registrations==subevent.total_slots:
         messages.warning(request,"Registrations Are Complete For '{}'".format(subevent.subevent_name))
         return redirect('student-homepage')
     
-   
     if request.method=="POST":
         form = RegistrationsGroupForm(request.POST)
         if form.is_valid():
@@ -727,6 +744,10 @@ def registration(request,event_id,subevent_id):
     
     if event_finalized_check(event_id,subevent_id):
         messages.warning(request,"Decisions Regarding Event '{}' Is Already Finalized!".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
+        return redirect('student-homepage')
+    
+    if registration_deadline_passed(event_id,subevent_id):
+        messages.warning(request,"Registration Deadline for '{}' Has Passed.".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
         return redirect('student-homepage')
 
     #REGISTRATION COMPLETE CHECK

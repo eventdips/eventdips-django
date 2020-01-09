@@ -15,7 +15,8 @@ urlpatterns = [
     path('login/', teach_view.login_auth, name="login"),
     path('logout/', teach_view.logout_auth, name="logout"),
     path('forgot/', teach_view.forgot_password, name="forgot-password"),
-    path("{}<str:email>".format(hashlib.sha256("reset/".encode('utf-8')).hexdigest()), teach_view.reset_password, name="reset-password")
+    path('security-questions/<str:email>', teach_view.security_questions, name="security-questions"),
+    path('reset-password/<str:email>/<str:code>', teach_view.reset_password, name="reset_password"),
 ]
 
 if settings.DEBUG:

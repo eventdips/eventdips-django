@@ -90,7 +90,6 @@ def login_auth(request):
 
     return render(request,'studentview/desktop/login.html',context)    
     
-
 def logout_auth(request):
     logout(request)
     response = render(request,"studentview/desktop/logout.html")
@@ -102,19 +101,14 @@ def forgot_password(request):
     if request.method=='POST':
         form = ForgotPassword(request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get('email')
-            email_crypt = encrypt(email)
-            
-            template = get_template('email/forgotPassword.html')
-            content = template.render({'email': "http://localhost:8000/{}{}".format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),email_crypt)})
-            msg = EmailMessage('Forgot Password - EventDips',content,'no-reply@eventdips.ga',to=[email])
-            msg.content_subtype = "html" 
-            msg.send()               
-            messages.success(request,"Email has been sent to '{}'!".format(email))
+            email = form.cleaned_data.get('email')  
+
+        return HttpResponseRedirect("/security-questions/{}".format(email))       
     else:
         form = ForgotPassword()
     
     context = {
+        "title":"Forgot Password",
         "form":form
     }
 
@@ -123,35 +117,73 @@ def forgot_password(request):
     elif get_device(request)=="mobile":
         return render(request,'studentview/mobile/forgot_password.html',context)
 
-def reset_password(request,email):
-    if request.method=='POST':
-        form = ResetPassword(request.POST)
-        if form.is_valid():
-            password = form.cleaned_data.get('password')
-            confirm_pass = form.cleaned_data.get('confirm_password')
-            
-            if password==confirm_pass:
-                email_decrypt = decrypt(email)
-                user = User.objects.get(email=email_decrypt)
-                if user.password == password:
-                    messages.warning(request,"Entered Password Is Already In Use!")
-                    return HttpResponseRedirect("{}{}".format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),email_decrypt))
-                else:
-                    user.set_password(password)
-                    user.save()
-                    messages.success(request,"Your Password Has Been Changed!")
-                    return redirect('teacher-homepage')
-            else:
-                messages.warning(request,'Entered Passwords Do Not Match!')
-                return HttpResponseRedirect("{}{}".format(hashlib.sha256("reset/".encode('utf-8')).hexdigest(),email))
-    else:
-        form = ResetPassword()
-    
+def security_questions(request,email):
+    questions = Status.objects.get(user=User.objects.get(email=email)).security_questions.split("%%")
+
+    final = []
+    count = 0
+    for question in questions:
+        sub = {
+            "question":question,
+            "id":"{}".format(count)
+        }
+
+        final.append(sub)
+        count +=1
+
     context = {
-        "form":form
+        "title":"Security Questions",
+        "questions": final,
+        "url_redirect": "/reset-password/{}/{}".format(email,encrypt(email))
     }
 
-    return render(request,'studentview/desktop/reset_password.html',context) 
+    print(encrypt(email))
+
+    return render(request,'studentview/desktop/security_questions.html', context)
+
+def reset_password(request,email,code):
+    if decrypt(code)!=email:
+        messages.warning(request,"Illegal Action Attempted!")
+        return redirect('login')
+
+    first_ans = request.GET.get('0').lower()
+    second_ans = request.GET.get('1').lower()
+    third_ans = request.GET.get('2').lower()
+
+    status = Status.objects.get(user=User.objects.get(email=email))
+    answers = status.security_answers.split("%%")
+
+    if first_ans==decrypt(answers[0]) and second_ans==decrypt(answers[1]) and third_ans==decrypt(answers[2]):
+        if request.method=='POST':
+            form = ResetPassword(request.POST)
+            if form.is_valid():
+                password = form.cleaned_data.get('password')
+                confirm_pass = form.cleaned_data.get('confirm_password')
+                
+                if password==confirm_pass:
+                    user = User.objects.get(email=email)
+                    if user.password == password:
+                        messages.warning(request,"Entered Password Is Already In Use!")
+                        return HttpResponseRedirect("/reset-password/{}".format(email))
+                    else:
+                        user.set_password(password)
+                        user.save()
+                        messages.success(request,"Your Password Has Been Changed!")
+                        return redirect('login')
+                else:
+                    messages.warning(request,'Entered Passwords Do Not Match!')
+                    return HttpResponseRedirect("/reset-password/{}".format(email))
+        else:
+            form = ResetPassword()
+    
+        context = {
+            "form":form
+        }
+
+        return render(request,'studentview/desktop/reset_password.html',context) 
+    else:
+        messages.warning(request,"Answers Entered are Incorrect!")
+        return HttpResponseRedirect("/security-questions/{}".format(email))
 
 def event_over_check(event_id,subevent_id):
     if not subevent_id:

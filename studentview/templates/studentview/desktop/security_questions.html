@@ -1,0 +1,22 @@
+{% block ContentView %}
+
+<title>Security Questions- EventDips</title>
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Security Questions</h1>
+    </div>
+    <br>
+    <form method="GET" action="{{ url_redirect }}">
+        {% for question in questions %}
+            <b><label for="answer">{{ question.question }}</label></b><br>
+            <input type="password" name={{ question.id }} id="answer" class="form-control bg-light border-0 small" placeholder="Enter Answer..." aria-describedby="basic-addon2">
+            <br><br>
+        {% endfor %}
+    
+        <center>
+            <button class="btn btn-success" type="submit" style="width:100%; border-radius:25px; padding:15px;">SUBMIT</button>
+        </center>
+    </form>
+</div>
+
+{% endblock %}
