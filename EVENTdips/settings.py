@@ -158,8 +158,9 @@ MEDIA_URL = '/media/'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'eventdips'
+EMAIL_HOST_USER = 'eventdips@gmail.com'
 EMAIL_HOST_PASSWORD = 'eventdips123'
 EMAIL_USE_TLS = True
+
 
 USER_AGENTS_CACHE = 'default'
