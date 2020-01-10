@@ -27,11 +27,8 @@
                         <h4 class="m-0 font-weight-bold text-primary">&nbsp;{{ notification.event_name }}</h4>
                     </div>
                     <div class="card-body">
-                        <ul>
-                            <h3><b>{{ notification.decision }}</b></h3>
-                            <br>
-                            <h6><b>Message from {{ notification.teacher_incharge }}:</b><br><br>{{ notification.reason }}</h6>
-                        </ul>
+                            <small><b>Message from {{ notification.teacher_incharge }}:</b></small>
+                            <h6><br>{{ notification.reason }}</h6>
                     </div>
                 </div>
             {% endfor %}

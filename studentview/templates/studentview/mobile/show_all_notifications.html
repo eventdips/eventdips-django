@@ -4,7 +4,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-4">
+        <div class="col-5">
             <div class="card shadow" style="border-radius: 3rem;">
                 <div class="card-header" style="border-radius: 3rem;">
                     <h3>Days Left</h3>
@@ -25,14 +25,11 @@
             {% for notification in Decisions_Received %}
                 <div class="card shadow" style="border-radius: 2rem;">
                     <div class="card-header bg-white border-0" style="border-radius: 3rem;">                             
-                        <h4 class="m-0 font-weight-bold text-primary">&nbsp;{{ notification.event_name }}</h4>
+                        <h4 class="m-0 font-weight-bold text-primary">&nbsp;{{ notification.event_name }}</h4> - <h6 class="text-secondary">{{ notification.decision }}</h6>
                     </div>
                     <div class="card-body">
-                        <ul>
-                            <h3><b>{{ notification.decision }}</b></h3>
-                            <br>
-                            <h6><b>Message from {{ notification.teacher_incharge }}:</b><br><br>{{ notification.reason }}</h6>
-                        </ul>
+                            <small><b>Message from {{ notification.teacher_incharge }}:</b></small>
+                            <h6><br>{{ notification.reason }}</h6>
                     </div>
                 </div>
             {% endfor %}
