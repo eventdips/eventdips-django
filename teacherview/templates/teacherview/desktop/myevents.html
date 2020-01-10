@@ -8,6 +8,7 @@
         <h1 class="h3 mb-0 text-gray-800">My Events</h1>
     </div>
     <div class="row">
+    {% if MyEvents %}
         {% for event_data in MyEvents %}
             {% if event_data.confirmation_status == "N" %}
                 <div class="col-lg-4">
@@ -66,6 +67,13 @@
                 </div>
             {% endif %}
         {% endfor %}
+    {% else %}
+            <div class="container-fluid">
+            <br>
+            <h2><strong>No Created Events Yet.</strong></h2>
+            <br>
+            </div>
+    {% endif %}
     </div>
 </div>
 
