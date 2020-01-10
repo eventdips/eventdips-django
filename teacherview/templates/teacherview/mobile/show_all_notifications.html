@@ -19,20 +19,12 @@
             </ul>
         </div>
     </div>
-    <br>
     <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
         <h2 class="text-secondary">All Applications</h2>
     </div>
     {% for notification in Application_Sent %}
         <div class="card shadow">
-            <div class="card-header border-0 bg-white" style="border-radius:3rem">
-                <h4 class="text-success">{{ notification.event_name }}</h4>
-            </div>
-            <div class="card-body">
-                <ul class="list-group">
-                    <li class="list-group-item"><a class="text-secondary" href={{ notification.url_redirect }}><strong>{{ notification.student_name }}</strong></a></li>
-                </ul>
-            </div>
+                <h4 class="text-success">{{ notification.event_name }}</h4> - <h5>{{ notification.student_name }}</h5>
         </div>
         <br>
     {% endfor %}
