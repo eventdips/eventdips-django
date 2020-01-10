@@ -1,23 +1,109 @@
-{% block ContentView %}
+{% load static %}
 
-<title>Security Questions- EventDips</title>
-<div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Security Questions</h1>
-    </div>
-    <br>
-    <form method="GET" action="{{ url_redirect }}">
-        {% csrf_token %}
-        {% for question in questions %}
-            <b><label for="answer">{{ question.question }}</label></b><br>
-            <input type="password" name={{ question.id }} id="answer" class="form-control bg-light border-0 small" placeholder="Enter Answer..." aria-describedby="basic-addon2">
-            <br><br>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="A state-of-the-art event communicator for school events creating a link between students and teachers to iron out wrinkles in the selection process.">
+  <meta name="author" content="Team EventDiPS">
+  <meta name="theme-color" content="#2196f3">
+	<link rel="shortcut icon" type="image/png" href="{% static 'teacherview/EventDipsMini.png' %}"/>
+
+  {% if page_title %}
+    <title>{{page_title}}</title>
+  {% else %}
+    <title>EventDiPS</title>
+  {% endif %}
+
+  <!-- Custom fonts for this template-->
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+   <!-- Bootstrap core CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Material Design Bootstrap -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/css/mdb.min.css" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="{% static "teacherview/css/sb-admin-2.min.css" %}" rel="stylesheet">
+
+</head>
+
+<body id="page-top" class="sidebar-toggled">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
         {% endfor %}
-    
-        <center>
-            <button class="btn btn-success" type="submit" style="width:100%; border-radius:25px; padding:15px;">SUBMIT</button>
-        </center>
-    </form>
-</div>
+      {% endif %}
+        
+      <!-- Begin Page Content -->
+      <br><br>
+      <title>Security Questions- EventDips</title>
+        <div class="container-fluid">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800">Security Questions</h1>
+            </div>
+            <br>
+            <form method="GET" action="{{ url_redirect }}">
+                {% csrf_token %}
+                {% for question in questions %}
+                    <b><label for="answer">{{ question.question }}</label></b><br>
+                    <input type="password" name={{ question.id }} id="answer" class="form-control bg-light border-0 small" placeholder="Enter Answer..." aria-describedby="basic-addon2">
+                    <br><br>
+                {% endfor %}
+            
+                <center>
+                    <button class="btn btn-success" type="submit" style="width:100%; border-radius:25px; padding:15px;">SUBMIT</button>
+                </center>
+            </form>
+        </div>
+      <!-- End of Main Content -->
 
-{% endblock %}
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static "teacherview/vendor/jquery/jquery.min.js" %}"></script>
+  <script src="{% static "teacherview/vendor/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="{% static "teacherview/vendor/jquery-easing/jquery.easing.min.js" %}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{% static "teacherview/js/sb-admin-2.min.js" %}"></script>
+  {% block scripts %}
+  {% endblock %}
+</body>
+
+</html>
