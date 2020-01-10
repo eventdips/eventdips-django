@@ -9,6 +9,22 @@ from .forms import RegistrationSingleForm, AchievementForm, RegistrationsGroupFo
 from datetime import date
 from django_user_agents.utils import get_user_agent
 
+def error_404(request):
+    data = {}
+    return render(request,'studentview/error_templates/error_404.html',data)
+
+def error_500(request):
+    data = {}
+    return render(request,'studentview/error_templates/error_500.html',data)
+
+def error_400(request):
+    data = {}
+    return render(request,'studentview/error_templates/error_400.html',data)
+
+def error_403(request):
+    data = {}
+    return render(request,'studentview/error_templates/error_403.html',data)
+
 def event_finalized_check(event_id,subevent_id):
     sub = SubEvents.objects.get(pk=subevent_id)
     if sub.confirmation_status == "Y":
