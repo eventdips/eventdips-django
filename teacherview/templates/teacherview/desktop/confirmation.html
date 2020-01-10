@@ -8,6 +8,7 @@
     </div>
     <br>
     <form method="GET" action={{ url_redirect }}>
+        {% csrf_token %}
         {% for student in Rejected_Students %}
             <b><label for="reason">{{ student.name }}- {{ student.class}} {{ student.section }}: </label></b>
             <input type="text" name={{ student.id }} id="reason" class="form-control bg-light border-0 small" placeholder="Enter Reason For Rejection (Leave Blank To Provide Default Reason)" aria-describedby="basic-addon2">

@@ -701,7 +701,7 @@ def group_registration(request,event_id,subevent_id,current_group_id):
             reg.reg_info = form.cleaned_data.get('additional_Information')
             reg.save()
 
-            msg = "Successfully Registered For '{}'".format("{}- {}".format(Events.objects.get(pk=event_id).event_name,SubEvents.objects.get(pk=subevent_id).subevent_name) if Events.objects.get(pk=event_id).event_name!=SubEvents.objects.get(pk=subevent_id).subevent_name else "{}".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
+            msg = "'{}' Has Been Successfully Registered For '{}'".format(reg.user.first_name+ " "+reg.user.last_name,SubEvents.objects.get(pk=subevent_id).subevent_name) 
             messages.success(request,msg)
             return HttpResponseRedirect("/{}{}/{}/add-group/{}".format(t_views.student_hash,event_id,subevent_id,current_group_id))
         else:

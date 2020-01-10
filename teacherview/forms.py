@@ -37,7 +37,7 @@ class EventCreationForm(forms.ModelForm):
 		except:
 			pass
 
-	teacher_options = name_sort(teacher_options)
+	#teacher_options = name_sort(teacher_options)
 
 	teacher_incharge = forms.CharField(widget=forms.Select(choices=teacher_options,attrs={'class':'form-control'}))
 	event_information = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control','rows':5, 'cols':50, 'placeholder':'Enter The Information Here...'}))

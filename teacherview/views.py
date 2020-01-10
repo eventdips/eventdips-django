@@ -20,13 +20,37 @@ student_hash = "students/"
 
 def date_conversion(date):
     months = {1:"January",2:"February",3:"March",4:"April",5:"May",6:"June",7:"July",8:"August",9:"September",10:"October",11:"November",12:"December"}
-    dates_list = list(set(str(date).split(" to ")))
-    formatted_dates = []
-    for date_str in dates_list:
-        YYYY, MM, DD = map(int, date_str.split("-"))
-        date_suffix = ("st" if DD%10==1 else ("nd" if DD%10==2 else ("rd" if DD%10==3 else "th")))
-        formatted_dates.insert(0, "{}{} {}, {}".format(DD, date_suffix, months[MM], YYYY))
-    return " to ".join(formatted_dates)
+    try:
+        dates = date.split(" to ")
+        if dates[0]==dates[1]:
+            base = dates[0].split("-")
+            YYYY,M,DD = int(base[0]),months[int(base[1])],int(base[2])
+            suffix = "st" if DD%10==1 else ("nd" if DD%10==2 else ("rd" if DD%10==3 else "th"))
+            if len(str(DD))==1:
+                DD = "0"+str(DD)
+            final = "{}{} {},{}".format(DD,suffix,M,YYYY)
+        else:
+            final = ""
+            for i in range(2):
+                base = dates[i].split("-")
+                YYYY,M,DD = int(base[0]),months[int(base[1])],int(base[2])
+                suffix = "st" if DD%10==1 else ("nd" if DD%10==2 else ("rd" if DD%10==3 else "th"))
+                if len(str(DD))==1:
+                    DD = "0"+str(DD)
+                if i==0:
+                    final += "{}{} {},{} to ".format(DD,suffix,M,YYYY)
+                else:
+                    final += "{}{} {},{}".format(DD,suffix,M,YYYY)
+
+        return final
+    except:
+        YYYY,MM,DD = date.year,date.month,date.day
+        suffix = "st" if DD%10==1 else ("nd" if DD%10==2 else ("rd" if DD%10==3 else "th"))
+        if len(str(DD))==1:
+            sDD = "0"+str(DD)
+        final = "{}{} {},{}".format(DD,suffix,months[MM],YYYY)
+
+        return final
 
 def encrypt(string):
     string = string.upper()
@@ -1135,8 +1159,10 @@ def add_event(request):
                 else:
                     new_event.event_dates = "{} to {}".format(start_date,last_date)
                     new_event.single_check = single_check
-                    new_event.event_attachment = request.FILES['add_attachment']
-                    
+                    try:
+                        new_event.event_attachment = request.FILES['add_attachment']
+                    except:
+                        pass
                     options = []
                     users = User.objects.all()
                     for user in users:

@@ -14,6 +14,9 @@ class Events(models.Model):
 
 	def __str__(self):
 		return self.event_name + " " + str(self.event_id) + " " + self.teacher_incharge
+	
+	class Meta:
+		verbose_name_plural = "Events"
  
 class SubEvents(models.Model):
 	subevent_id = models.AutoField(primary_key=True)
@@ -40,6 +43,9 @@ class SubEvents(models.Model):
 	def __str__(self):
 		return self.subevent_name + " " + str("Event Id: {}".format(str(self.event_id))) + " " + self.subevent_teacher_incharge
 
+	class Meta:
+		verbose_name_plural = "SubEvents"
+
 class Status(models.Model):
 	user = models.OneToOneField(User, on_delete= models.CASCADE)
 	status = models.CharField(default="",max_length=1)
@@ -50,5 +56,8 @@ class Status(models.Model):
 
 	def __str__(self):
 		return self.user.first_name + " " + self.user.last_name + ": " + self.status
+
+	class Meta:
+		verbose_name_plural = "Status"
 
 #TEACHERS TABLE- TEACHER ID, TEACHER NAME, TEACHER EVENTS(SUBEVENT_IDS SEPERATED BY A COLON)

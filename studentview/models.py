@@ -20,3 +20,6 @@ class Registrations(models.Model):
 	
 	def __str__(self):
 		return self.student_name + " " + str(self.event_id) + " " + str(self.registration_id)
+
+	class Meta:
+		verbose_name_plural = "Registrations"
