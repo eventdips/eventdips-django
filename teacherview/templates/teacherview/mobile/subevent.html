@@ -28,44 +28,39 @@
             <div class="card-body">
               <div class="row">
                 <div class="col">
-                    <p><small>Dates Of Event</small><br> {{ event_data.dates }}</p>
-                    <p><small>Teacher Incharge</small><br> {{ event_data.teacher_incharge }}</p>
-                    <p><small>Deadline</small>: {{ event_data.last_date }}</p>
-                    <p><small>Event type</small>: {{ event_data.type }}</p>
-                    {% if event_data.type == "Group" %}
-                      <p><small>Group Size</small>: {{ event_data.size }}</p>
-                    {% endif %}
-                    {% if event_data.allowed_grades != "ALL" %}
-                     <p><small>Grades</small>: {{ event_data.allowed_grades }}</p>
-                    {% endif %}
-                    <p><small>Registered</small>: {{ event_data.total_registrations }}</p>
-                    <p><small>Available Slots</small>: {{ event_data.available_slots }}</p>
-                    {% if event_data.my_event %}
-                      <p><small>Maximum Participants</small>: {{ event_data.maximum_participants }}</p>
-                      <p><small>No. of Selected Students</small>: {{ event_data.selected_students }}</p>
-                    {% endif %}
-                    {% if event_data.category %}
-                      <p><small>Category</small>: {{ event_data.category }}</p>
-                    {% endif %}
-                    {% if event_data.completed_check %}
-                      <p><small>Status</small>: Registrations/Acceptions Complete</p>
-                    {% else %}
-                      <p><small>Status</small>: Registrations/Acceptions Pending</p>
-                    {% endif %}
-                </div>
-                <!--Only visible on xs devices-->
-                <div class="row">
-                  <div class="container-fluid">
-                    {% if event_data.event_information != "" %}
-                      <p><small>Event Description</small><br> {{ event_data.event_information }}</p>
-                    {% endif %}
-                    {% if event_data.event_requirements != "" %}
-                      <p><small>Requirements</small><br> {{ event_data.event_requirements }}</p>
-                    {% endif %}
-                    {% if event_data.event_attachment != '' %}
-                      <p><small>Attachment</small>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file"></i></a></p>
-                    {% endif %}
-                  </div>
+                  <p><small>Dates Of Event</small><br> {{ event_data.dates }}</p>
+                  <p><small>Teacher Incharge</small><br> {{ event_data.teacher_incharge }}</p>
+                  <p><small>Deadline</small>: {{ event_data.last_date }}</p>
+                  <p><small>Event type</small>: {{ event_data.type }}</p>
+                  {% if event_data.type == "Group" %}
+                    <p><small>Group Size</small>: {{ event_data.size }}</p>
+                  {% endif %}
+                  {% if event_data.allowed_grades != "ALL" %}
+                    <p><small>Grades</small>: {{ event_data.allowed_grades }}</p>
+                  {% endif %}
+                  <p><small>Registered</small>: {{ event_data.total_registrations }}</p>
+                  <p><small>Available Slots</small>: {{ event_data.available_slots }}</p>
+                  {% if event_data.my_event %}
+                    <p><small>Maximum Participants</small>: {{ event_data.maximum_participants }}</p>
+                    <p><small>No. of Selected Students</small>: {{ event_data.selected_students }}</p>
+                  {% endif %}
+                  {% if event_data.category %}
+                    <p><small>Category</small>: {{ event_data.category }}</p>
+                  {% endif %}
+                  {% if event_data.completed_check %}
+                    <p><small>Status</small>: Registrations/Acceptions Complete</p>
+                  {% else %}
+                    <p><small>Status</small>: Registrations/Acceptions Pending</p>
+                  {% endif %}
+                  {% if event_data.event_information != "" %}
+                    <p><small>Event Description</small><br> {{ event_data.event_information }}</p>
+                  {% endif %}
+                  {% if event_data.event_requirements != "" %}
+                    <p><small>Requirements</small><br> {{ event_data.event_requirements }}</p>
+                  {% endif %}
+                  {% if event_data.event_attachment != '' %}
+                    <p><small>Attachment</small>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file"></i></a></p>
+                  {% endif %}
                 </div>
               </div>
               <a href={{ event_data.url_redirect }} style="text-decoration:none">
