@@ -18,54 +18,51 @@
     <div class="row">
       <div class="container-fluid">
         {% if student_data.status == "Accepted" %}
-          <div class="card shadow border-success" style="border-radius: 0px 25px 25px 25px;">
+          <div class="card shadow" style="border-radius: 25px 0px 25px 25px;">
         {% elif student_data.status == "Rejected" %}
-          <div class="card shadow border-danger" style="border-radius: 0px 25px 25px 25px;">
+          <div class="card shadow border-danger" style="border-radius: 25px 0px 25px 25px;">
         {% else %}
-          <div class="card shadow border-primary" style="border-radius: 0px 25px 25px 25px;">
+          <div class="card shadow border-primary" style="border-radius: 25px 0px 25px 25px;">
         {% endif %}
             {% if student_data.status == "Accepted" %}
-              <div class="card-header m-0 border-left-success" style="border-radius: 0px 25px 25px 0px;">
+              <div class="card-header m-0" style="border-radius: 25px 0px 25px 0px;">
                 <h2 class="font-weight-bold text-success">{{ student_data.name }}</h2>
               </div>
             {% elif student_data.status == "Rejected" %}
-              <div class="card-header m-0 border-left-danger" style="border-radius: 0px 25px 25px 0px;">
+              <div class="card-header m-0" style="border-radius: 25px 0px 25px 0px;">
                 <h2 class="font-weight-bold text-danger">{{ student_data.name }}</h2>
               </div>
             {% else %}
-              <div class="card-header m-0 border-left-primary" style="border-radius: 0px 25px 25px 0px;">
+              <div class="card-header m-0" style="border-radius: 25px 0px 25px 0px;">
                 <h2 class="font-weight-bold text-primary">{{ student_data.name }}</h2>
               </div>
             {% endif %}
             <div class="card-body">
                 <div class="row align-items-start">
                     <div class="col">
-                        <h6><b>Class</b>: {{ student_data.class }}</h6>
-                        <h6><b>Section</b>: {{ student_data.section }}</h6>
-                        <h6><b>Registration Information</b>: {{ student_data.info }}</h6>
-                        <h6><b>Acheivements</b>: <a href={{ view_achievement_redirect }}>View Achievements</a></h6>
-                        <h6><b>Previous Particpations</b>: <a href={{ view_previous_redirect }}>View Previous Events</a></h6>
+                        <h6><small>Class</small>: {{ student_data.class }}</h6>
+                        <h6><small>Section</small>: {{ student_data.section }}</h6>
+                        <h6><small>Registration Information</small>: {{ student_data.info }}</h6>
+                        <h6><small>Acheivements</small>: <a href={{ view_achievement_redirect }}>View Achievements</a></h6>
+                        <h6><small>Previous Particpations</small>: <a href={{ view_previous_redirect }}>View Previous Events</a></h6>
                         {% if student_data.group_type %}
-                          <h6><b>Group Members</b>: <b>{{ student_data.team_members}}</b></h6>
+                          <h6><small>Group Members</small>: <b>{{ student_data.team_members}}</b></h6>
                         {% endif %}
-                        <h6><b>Current Status</b>: {{ student_data.status }}</h6>
+                        <h6><small>Current Status</small>: {{ student_data.status }}</h6>
                     </div>
                   </div>
             </div>
               <div class="container-fluid">
-                <div class="row">
-                  <div class="col">    
-                    <a href={{ url_redirect_1 }}>
-                      <span class="btn btn-success" style="width:100%;border-radius:2rem"><h4 class="m-0 text-white" align='center'>ACCEPT</h4></span>
-                    </a>
-                  </div>
-                  <div class="col">
-                    <a href={{ url_redirect_2 }}>
-                      <div class="btn btn-danger" style="width:100%;border-radius:2rem"><h4 class="m-0 text-white" align='center'>REJECT</h4></div>
-                    </a>
-                  </div>
+                <div class="btn-group btn-group-justified" style="border-radius:2rem;">   
+                  <a href={{ url_redirect_1 }} class="btn btn-success">
+                    Accept
+                  </a>
+                  <a href={{ url_redirect_2 }} class="btn btn-danger">
+                    Reject
+                  </a>
                 </div>
                 <br>
+              </div>
             </div>
         </div>
       </div>
