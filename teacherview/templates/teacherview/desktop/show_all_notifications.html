@@ -1,59 +1,40 @@
-{% extends 'teacherview/desktop/layout.html' %}
+{% extends 'teacherview/mobile/layout.html' %}
+
 
 {% block ContentView %}
 
-<!-- Begin Page Content -->
 <div class="container-fluid">
-  <!-- Page Heading -->       
-  <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
-    <h1>Days Left</h1>
-  </div>
-  <div class="row">
-    {% for notification in Days_Left %}
-        <div class="col-md-4">
-            <div class="card shadow mb-3" style="border-radius: 25px;">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-success" style="border-radius: 0px 25px 25px 0px;">     
-                    <a href={{ notification.url_redirect }}>
-                        <h4 class="m-0 font-weight-bold text-success">&nbsp;{{ notification.event_name }}</h4>
-                    </a>
-                </div>
-                <div class="card-body">
-                    <ul>
-                        <p class="lead">{{ notification.days_left }}</p>
-                    </ul>
-                </div>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
+        <h2 class="text-secondary">All Notifications</h2>
+    </div>
+    <div class="card shadow">
+        <div class="card-header" style="border-radius:3rem">
+            <h4 class="text-success">Days Left</h4>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                {% for notification in Days_Left %}
+                    <li class="list-group-item"><a class="text-secondary" ='{{ notification.url_redirect }}'><strong>{{ notification.event_name }}</strong> - {{ notification.days_left }} days</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <br>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
+        <h2 class="text-secondary">All Applications</h2>
+    </div>
+    {% for notification in Application_Sent %}
+        <div class="card shadow">
+            <div class="card-header" style="border-radius:3rem">
+                <h4 class="text-success">{{ notification.event_name }}</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item"><a class="text-secondary" href={{ notification.url_redirect }}><strong>{{ notification.student_name }}</strong></a></li>
+                </ul>
             </div>
         </div>
+        <br>
     {% endfor %}
-  </div>
 </div>
-
-<br>
-<br>
-
-<div class="container-fluid">
-    <!-- Page Heading -->       
-    <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
-        <h1>Applications Received</h1>
-    </div>
-    <div class="row">
-        {% for notification in Application_Sent %}
-            <div class="col-md-4">
-                <div class="card shadow mb-3" style="border-radius: 25px;">
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-success" style="border-radius: 0px 25px 25px 0px;">     
-                        <a href={{ notification.url_redirect }}>
-                            <h4 class="m-0 font-weight-bold text-success">&nbsp;{{ notification.event_name }}</h4>
-                        </a>
-                    </div>
-                    <div class="card-body">
-                        <ul>
-                            <p class="lead"><b>{{ notification.student_name }}</b></p>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-</div>
-
 {% endblock %}
