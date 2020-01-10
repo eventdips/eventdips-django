@@ -12,7 +12,7 @@
             </div>
             <div class="card shadow">
                 <div class="card-header border-0 bg-white" style="border-radius:3rem">
-                    <h4 class="text-success">Days Left</h4>
+                    <h2 class="text-success"><b>Days Left</b></h2>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
@@ -25,12 +25,12 @@
         </div>
         <div class="col">
             <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
-                <h2 class="text-secondary">All Applications</h2>
+                <h2 class="text-secondary"><b>All Applications</b></h2>
             </div>
             {% for notification in Application_Sent %}
         <div class="card shadow">
             <div class="card-body">
-                <h4 class="text-success">{{ notification.event_name }}</h4> - <h5>{{ notification.student_name }}</h5>
+                <h4 class="text-success">{{ notification.event_name }}</h4><br><a href={{ notification.url_redirect }}><h5>{{ notification.student_name }}</h5></a>
             </div>
         </div>
         <br>
