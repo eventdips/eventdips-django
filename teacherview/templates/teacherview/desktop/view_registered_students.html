@@ -6,7 +6,7 @@
   <div class="card shadow mb-4 border-primary" style="border-radius: 25px;">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="border-radius: 3rem;">
       <div>
-        <h1 class="m-0 font-weight-bold text-primary">Registered Students: '<a class="text-primary" href={{ header_redirect }}>{{ subevent_name }}</a>'</h1>
+        <h3 class="m-0 font-weight-bold text-primary">Registered Students: '<a class="text-primary" href={{ header_redirect }}>{{ subevent_name }}</a>'</h3>
       </div>
       <div align="right">
         <a href={{ header_redirect }}>
@@ -19,19 +19,19 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th><h3><b>Name</b></h3></th>
-              <th><h3><b>Class</b></h3></th>
-              <th><h3><b>Section</b></h3></th>
-              <th><h3><b>Status</b></h3></th>
+              <th><h6><b>Name</b></h6></th>
+              <th><h6><b>Class</b></h6></th>
+              <th><h6><b>Section</b></h6></th>
+              <th><h6><b>Status</b></h6></th>
             </tr>
           </thead>
           <tbody>
             {% for student_data in Registrations %}
               <tr>
-                <td><h5><a href={{ student_data.url_redirect }}>{{ student_data.name }}</a></td>
-                <td><h5>{{ student_data.class }}</h5></td>
-                <td><h5>{{ student_data.section }}</h5></td>
-                <td><h5>{{ student_data.status }}</h5></td>
+                <td><p><a href={{ student_data.url_redirect }}>{{ student_data.name }}</a></td>
+                <td><p>{{ student_data.class }}</p></td>
+                <td><p>{{ student_data.section }}</p></td>
+                <td><p>{{ student_data.status }}</p></td>
               </tr>
             {% endfor %}
           </tbody>
