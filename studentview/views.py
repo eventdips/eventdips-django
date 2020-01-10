@@ -380,7 +380,7 @@ def event_by_category(request,category):
             else:
                 sub["completed_check"] = True
      
-            ssub["finalized"] = True if i.confirmation_status == "Y" else False
+            sub["finalized"] = True if i.confirmation_status == "Y" else False
             sub["name"] = i.subevent_name
             sub["dates"] = t_views.date_conversion(i.subevent_dates)
             sub["available_slots"] = str(i.total_slots-i.total_registrations)
