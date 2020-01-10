@@ -24,7 +24,7 @@ class ResetPassword(forms.Form):
 	confirm_password = forms.CharField(widget=forms.PasswordInput())
 	
 class EventCreationForm(forms.ModelForm):
-	event_name = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Event Name Here'}))
+	event_name = forms.CharField(widget= forms.TextInput(attrs={'placeholder':'Event Name Here','class':'form-control'}))
 	
 	teacher_options = []
 	users = User.objects.all()
@@ -96,7 +96,7 @@ class SubEventCreationForm(forms.ModelForm):
 		("Individual",'Individual'),
 		("Group",'Group')
 	)
-	event_type = forms.CharField(help_text='Individual Event or Group Event',widget=forms.Select(choices=options,),attrs={'class':'form-control'})
+	event_type = forms.CharField(help_text='Individual Event or Group Event',widget=forms.Select(choices=options,attrs={'class':'form-control'}))
 	group_size = forms.IntegerField(required=False,help_text="Number Of Students Per Group (If Individual Participation: Leave Blank)",widget=forms.NumberInput(attrs={'size': '20','class':'form-control'}))
 	start_date = forms.CharField(help_text="Start Date Of The Event (eg: 01/01/2020)",widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
 	last_date = forms.CharField(help_text="Last Date Of The Event (eg: 03/01/2020)",widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
