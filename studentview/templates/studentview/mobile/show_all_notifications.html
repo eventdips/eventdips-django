@@ -15,17 +15,18 @@
             </ul>
         </div>
     </div>
+    <br>
     <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
         <h1>Decisions Received</h1>
     </div>
     {% for notification in Decisions_Received %}
         <div class="card shadow" style="border-radius: 2rem;">
             <div class="card-header bg-white border-0" style="border-radius: 3rem;">                             
-                <h4 class="m-0 font-weight-bold text-primary">&nbsp;{{ notification.event_name }}</h4> - <h6 class="text-secondary">{{ notification.decision }}</h6>
+                <h4 class="m-0 font-weight-bold text-primary">&nbsp;{{ notification.event_name }}</h4><h6 class="text-secondary">{{ notification.decision }}</h6>
             </div>
             <div class="card-body">
                     <small><b>Message from {{ notification.teacher_incharge }}:</b></small>
-                    <h6><br>{{ notification.reason }}</h6>
+                    <h6>{{ notification.reason }}</h6>
             </div>
         </div>
     {% endfor %}
