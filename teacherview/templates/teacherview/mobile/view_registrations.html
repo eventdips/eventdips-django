@@ -6,22 +6,16 @@
   <!-- Page Heading -->       
   {% if subevent_name != event_name %}
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="width: 100%;">
-      <div style="width: 60%">
         <a href={{ header_redirect }} style="text-decoration: none;">
           <h1 class="h3 mb-0 text-secondary">{{ event_name }}- {{ subevent_name }}</h1>
         </a>
-      </div>
-      <div align="right">
-        <a href={{ confirmation }} style="text-decoration: none;" onclick="return confirm('Are you sure you want to confirm your decisions? Students will be iniformed, and NO FURTHER CHANGES will be permitted.')">
-          <span class="btn btn-success" style="border-radius: 2rem;">CONFIRM DECISION</span>
-        </a>
-      </div>
       <div class="dropdown no-arrow">
         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-cog fa-xl fa-fw text-gray-800"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
           <div class="dropdown-header">View Options:</div>
+            <a class="dropdown-item text-white" href={{ confirmation }} style="text-decoration: none;background-color:green;" onclick="return confirm('Are you sure you want to confirm your decisions? Students will be iniformed, and NO FURTHER CHANGES will be permitted.')"><i class="fas fa-check"></i></a>
             <a class="dropdown-item" href={{ view_selected_students }}><i class="fas fa-users" style="color: rgb(0, 179, 0)"></i> View Selected Students</a>
             <a class="dropdown-item" href={{ view_registered_students }}><i class="fas fa-users" style="color: maroon;"></i> View Registered Students</a>
           </div>
@@ -30,20 +24,14 @@
     </div>
   {% else %}
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <div style="width: 60%">
-          <a href={{ header_redirect }}><h1 class="h3 mb-0 text-gray-800">{{ event_name }}</h1></a>
-        </div>
-        <div align="right">
-            <a href={{ confirmation }} style="text-decoration: none;" onclick="return confirm('Are you sure you want to confirm your decisions? Students will be iniformed, and NO FURTHER CHANGES will be permitted.')">
-              <span class="btn btn-success" style="border-radius: 2rem;">CONFIRM DECISION</span>
-            </a>
-          </div>
+        <a href={{ header_redirect }}><h1 class="h3 mb-0 text-gray-800">{{ event_name }}</h1></a>
         <div class="dropdown no-arrow">
           <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-cog fa-xl fa-fw text-gray-800"></i>
           </a>
           <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
             <div class="dropdown-header">View Options:</div>
+              <a class="dropdown-item text-white" href={{ confirmation }} style="text-decoration: none;background-color:green;" onclick="return confirm('Are you sure you want to confirm your decisions? Students will be iniformed, and NO FURTHER CHANGES will be permitted.')"><i class="fas fa-check"></i></a>
               <a class="dropdown-item" href={{ view_selected_students }}><i class="fas fa-users" style="color: rgb(0, 179, 0)"></i> View Selected Students</a>
               <a class="dropdown-item" href={{ view_registered_students }}><i class="fas fa-users" style="color: maroon;"></i> View Registered Students</a>
             </div>
