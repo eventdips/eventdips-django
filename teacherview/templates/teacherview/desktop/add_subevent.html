@@ -2,25 +2,6 @@
 {% load crispy_forms_tags %}
 
 {% block ContentView %}
-<!--<div class="container-fluid">
-	<div clas="card shadow mb-4" style="border-radius: 25px;">
-		<div class="card-header border-left-success" style="border-radius: 0px 25px 25px 0px;">
-			<h4 class="m-0 font-weight-bold text-success">{{ title }}</h4>
-		</div>
-		<div class="card-body">
-			<form method="POST" enctype="multipart/form-data">
-				{% csrf_token %}
-				<fieldset class="form-group" id="EventForm" >
-						{{ form|crispy }}
-				</fieldset>
-				<div class="form-group">
-					<button class="btn green text-white" type="submit" name="file" style="width:100%">Submit</button>
-				</div>
-			</form>	
-		</div>
-	</div>
-</div>-->
-
 <style>
 	input{
 		border-width:0px;
@@ -47,37 +28,47 @@
 							{{ form.event_type }}
 							<small class="text-disabled">Individual Event or Group Event</small>
 							<br>
+							<br>
 							<label for="category">Category: </label>
 							{{ form.category }}
 							<small class="text-disabled">Event Category</small>
 							<br>
+							<br>
 							<label for="teacher_incharge">Teacher Incharge: </label>
 							{{ form.teacher_incharge }}
+							<br>
 							<br>
 							<label for="maximum_applicants">Maximim applications: </label>
 							{{ form.maximum_applicants }}
 							<small class="text-disabled">Maximum Number Of Applications</small>
 							<br>
+							<br>
 							<label for="maximum_participants">Maximum pariticipants: </label>
 							{{ form.maximum_participants }}
 							<small class="text-disabled">Maximum Number Of Students Who Can Participate In An Event</small>
+							<br>
 							<br>
 							<label for="allowed_grades">Allowed Grades: </label>
 							{{ form.allowed_grades }}
 							<small class="text-disabled">Grades Allowed. (Eg: 9th,10th)</small>
 							<br>
+							<br>
 							<label for="add_attachment">Attachment: </label>
 							{{ form.add_attachment }}
 							<small class="text-disabled"></small>
+							<br>
+							<br>
 						</div>
 						<div class="col">
 							<label for="requirements">Additional Requirements: </label>
 							{{ form.requirements }}
 							<small class="text-disabled">Requirements or Selection Criteria.</small>
 							<br>
+							<br>
 							<label for="event_description">Event Description: </label>
 							{{ form.event_description }}
 							<small class="text-disabled">Information About the Event (eg: Website Links)</small>
+							<br>
 							<br>
 							<label for="registration_deadline">Last Date To Apply: </label>
 							{{ form.registration_deadline }}
@@ -85,11 +76,13 @@
 							<div class="row">
 								<div class="col">
 									<br>
+									<br>
 									<label for="start_date">Event Start Date: </label>
 									{{ form.start_date }}
 									<small class="text-disabled">Start Date Of The Event (eg: 01/01/2020)</small>
 								</div>
 								<div class="col">
+									<br>
 									<br>
 									<label for="last_date">Event End Date: </label>
 									{{ form.last_date }}
