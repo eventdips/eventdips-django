@@ -142,7 +142,11 @@ def forgot_password(request):
         return render(request,'studentview/mobile/forgot_password.html',context)
 
 def security_questions(request,email):
-    questions = Status.objects.get(user=User.objects.get(email=email)).security_questions.split("%%")
+    try:
+        questions = Status.objects.get(user=User.objects.get(email=email)).security_questions.split("%%")
+    except:
+        messages.warning(request,"Entered Email Is Invalid.")
+        return redirect('forgot-password')
 
     final = []
     count = 0

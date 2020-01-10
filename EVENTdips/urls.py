@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_view
 from teacherview import views as teach_view
 import hashlib
-
+ 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url="login/")),
