@@ -96,7 +96,7 @@ class SubEventCreationForm(forms.ModelForm):
 		("Individual",'Individual'),
 		("Group",'Group')
 	)
-	event_type = forms.CharField(help_text='Individual Event or Group Event',widget=forms.Select(choices=options,))
+	event_type = forms.CharField(help_text='Individual Event or Group Event',widget=forms.Select(choices=options,),attrs={'class':'form-control'})
 	group_size = forms.IntegerField(required=False,help_text="Number Of Students Per Group (If Individual Participation: Leave Blank)",widget=forms.NumberInput(attrs={'size': '20','class':'form-control'}))
 	start_date = forms.CharField(help_text="Start Date Of The Event (eg: 01/01/2020)",widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
 	last_date = forms.CharField(help_text="Last Date Of The Event (eg: 03/01/2020)",widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
@@ -133,8 +133,8 @@ class SubEventCreationForm(forms.ModelForm):
 		("Design",'Design'),
 		("Science",'Science')
 	)
-	category = forms.CharField(help_text='Event Category',widget=forms.Select(choices=cat_options))
-	add_attachment = forms.FileField(required=False,widget=forms.ClearableFileInput(attrs={'class':'btn btn-success green'}))
+	category = forms.CharField(help_text='Event Category',widget=forms.Select(choices=cat_options,attrs={'class':'form-control'}))
+	add_attachment = forms.FileField(required=False,widget=forms.ClearableFileInput(attrs={'class':'btn btn-success green form-control'}))
 
 	class Meta:
 		model = SubEvents
