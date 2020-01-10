@@ -7,10 +7,6 @@ In what city does your nearest sibling live?
 
 '''
 DEMO:
-What was your childhood nickname?
-What is the name of your favorite childhood friend?
-What school did you attend for sixth grade?
+What was your childhood nickname?%%What is the name of your favorite childhood friend?%%What school did you attend for sixth grade?
 Answers: 
-68657873
-657875858372
-68808369
+68657873%%657875858372%%68808369
