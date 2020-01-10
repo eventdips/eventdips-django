@@ -3,38 +3,32 @@
 {% block ContentView %}
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-5">
-            <div class="card shadow" style="border-radius: 3rem;">
-                <div class="card-header" style="border-radius: 3rem;">
-                    <h3>Days Left</h3>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group">
-                        {% for notification in Days_Left %}
-                            <li class="list-group-item"><strong>{{ notification.event_name }} :</strong> {{ notification.days_left }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
+    <div class="card shadow" style="border-radius: 3rem;">
+        <div class="card-header" style="border-radius: 3rem;">
+            <h3>Days Left</h3>
         </div>
-        <div class="col">
-            <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
-                <h1>Decisions Received</h1>
-            </div>
-            {% for notification in Decisions_Received %}
-                <div class="card shadow" style="border-radius: 2rem;">
-                    <div class="card-header bg-white border-0" style="border-radius: 3rem;">                             
-                        <h4 class="m-0 font-weight-bold text-primary">&nbsp;{{ notification.event_name }}</h4> - <h6 class="text-secondary">{{ notification.decision }}</h6>
-                    </div>
-                    <div class="card-body">
-                            <small><b>Message from {{ notification.teacher_incharge }}:</b></small>
-                            <h6><br>{{ notification.reason }}</h6>
-                    </div>
-                </div>
-            {% endfor %}
+        <div class="card-body">
+            <ul class="list-group">
+                {% for notification in Days_Left %}
+                    <li class="list-group-item"><strong>{{ notification.event_name }} :</strong> {{ notification.days_left }}</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
+        <h1>Decisions Received</h1>
+    </div>
+    {% for notification in Decisions_Received %}
+        <div class="card shadow" style="border-radius: 2rem;">
+            <div class="card-header bg-white border-0" style="border-radius: 3rem;">                             
+                <h4 class="m-0 font-weight-bold text-primary">&nbsp;{{ notification.event_name }}</h4> - <h6 class="text-secondary">{{ notification.decision }}</h6>
+            </div>
+            <div class="card-body">
+                    <small><b>Message from {{ notification.teacher_incharge }}:</b></small>
+                    <h6><br>{{ notification.reason }}</h6>
+            </div>
+        </div>
+    {% endfor %}
 </div>
 
 {% endblock %}
