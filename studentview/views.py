@@ -686,6 +686,13 @@ def group_registration(request,event_id,subevent_id,current_group_id):
             reg = form.save(commit=False)
             reg.user = User.objects.get(pk=int(form.cleaned_data.get('user')))
             
+            try:    
+                if Registrations.objects.get(user=reg.user,subevent_id=subevent_id) in list(Registrations.objects.filter(subevent_id=subevent_id)):
+                    messages.warning(request,"'{}' Has Already Registered For '{}'!".format(reg.user.first_name+" "+reg.user.last_name,subevent.subevent_name))
+                    return HttpResponseRedirect("/{}{}/{}/add-group/{}".format(t_views.student_hash,event_id,subevent_id,current_group_id))
+            except:
+                pass
+
             if reg.user in [r.user for r in Registrations.objects.filter(group_id=current_group_id)]:
                 msg = "{} Has Already Registered for '{}'".format(reg.user.first_name+ " "+reg.user.last_name,SubEvents.objects.get(pk=subevent_id).subevent_name)
                 messages.warning(request,msg)
