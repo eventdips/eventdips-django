@@ -104,9 +104,9 @@ def home(request):
         "MyEvents": final,
         "OngoingEvents": final2,
         "Title": "Home",
-        "notifications_days_left":get_current_notifications_students(request)[1][:3],
-        "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-        "notifications_decisions":get_current_notifications_students(request)[2][:3]
+        "notifications_days_left":get_current_notifications_students(request,0)[1][:3],
+        "notification_count":"6+" if get_current_notifications_students(request,0)[0]>6 else get_current_notifications_students(request,0)[0],
+        "notifications_decisions":get_current_notifications_students(request,0)[2][:3]
     }
     
     if get_device(request)=="pc":
@@ -159,9 +159,9 @@ def profile(request):
         "name": user.first_name + " " + user.last_name,
         "email": user.email,
         "MyEvents": final,
-        "notifications_days_left":get_current_notifications_students(request)[1][:3],
-        "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-        "notifications_decisions":get_current_notifications_students(request)[2][:3]
+        "notifications_days_left":get_current_notifications_students(request,0)[1][:3],
+        "notification_count":"6+" if get_current_notifications_students(request,0)[0]>6 else get_current_notifications_students(request,0)[0],
+        "notifications_decisions":get_current_notifications_students(request,0)[2][:3]
     }
     
     if get_device(request)=="pc":
@@ -205,9 +205,9 @@ def my_achievements(request):
     context ={
         "achievements":final,
         "url_redirect2":"achievements/add",
-        "notifications_days_left":get_current_notifications_students(request)[1][:3],
-        "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-        "notifications_decisions":get_current_notifications_students(request)[2][:3]}
+        "notifications_days_left":get_current_notifications_students(request,0)[1][:3],
+        "notification_count":"6+" if get_current_notifications_students(request,0)[0]>6 else get_current_notifications_students(request,0)[0],
+        "notifications_decisions":get_current_notifications_students(request,0)[2][:3]}
     
     if get_device(request)=="pc":
         return render(request,'studentview/desktop/my_achievements.html',context)
@@ -260,9 +260,9 @@ def add_achievement(request):
 
     context = {
         "form":form,
-        "notifications_days_left":get_current_notifications_students(request)[1][:3],
-        "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-        "notifications_decisions":get_current_notifications_students(request)[2][:3]
+        "notifications_days_left":get_current_notifications_students(request,0)[1][:3],
+        "notification_count":"6+" if get_current_notifications_students(request,0)[0]>6 else get_current_notifications_students(request,0)[0],
+        "notifications_decisions":get_current_notifications_students(request,0)[2][:3]
     }
 
     if get_device(request)=="pc":
@@ -319,9 +319,9 @@ def achievements_edit(request,achievement_id):
     context = {
         "form":form,
         "title":title,
-        "notifications_days_left":get_current_notifications_students(request)[1][:3],
-        "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-        "notifications_decisions":get_current_notifications_students(request)[2][:3]
+        "notifications_days_left":get_current_notifications_students(request,0)[1][:3],
+        "notification_count":"6+" if get_current_notifications_students(request,0)[0]>6 else get_current_notifications_students(request,0)[0],
+        "notifications_decisions":get_current_notifications_students(request,0)[2][:3]
     }
 
     if get_device(request)=="pc":
@@ -393,9 +393,9 @@ def event_by_category(request,category):
 
     context = {"title": category,
                 "subevents":final,
-                "notifications_days_left":get_current_notifications_students(request)[1][:3],
-                "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-                "notifications_decisions":get_current_notifications_students(request)[2][:3]
+                "notifications_days_left":get_current_notifications_students(request,0)[1][:3],
+                "notification_count":"6+" if get_current_notifications_students(request,0)[0]>6 else get_current_notifications_students(request,0)[0],
+                "notifications_decisions":get_current_notifications_students(request,0)[2][:3]
             }
 
     if get_device(request)=="pc":
@@ -433,9 +433,9 @@ def my_applications(request):
 
     context={
         "Registrations":final,
-        "notifications_days_left":get_current_notifications_students(request)[1][:3],
-        "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-        "notifications_decisions":get_current_notifications_students(request)[2][:3]
+        "notifications_days_left":get_current_notifications_students(request,0)[1][:3],
+        "notification_count":"6+" if get_current_notifications_students(request,0)[0]>6 else get_current_notifications_students(request,0)[0],
+        "notifications_decisions":get_current_notifications_students(request,0)[2][:3]
     }
 
     if get_device(request)=="pc":
@@ -479,9 +479,9 @@ def subevents(request,event_id):
     context = {"title":event.event_name,
                 "event_name": event.event_name,
                 "subevents":final,
-                "notifications_days_left":get_current_notifications_students(request)[1][:3],
-                "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-        "notifications_decisions":get_current_notifications_students(request)[2][:3]}
+                "notifications_days_left":get_current_notifications_students(request,0)[1][:3],
+                "notification_count":"6+" if get_current_notifications_students(request,0)[0]>6 else get_current_notifications_students(request,0)[0],
+        "notifications_decisions":get_current_notifications_students(request,0)[2][:3]}
 
     if get_device(request)=="pc":
         return render(request,'studentview/desktop/subevents.html',context)
@@ -581,9 +581,9 @@ def subevent(request,event_id,subevent_id):
                 "event_name": event.event_name,
                 "subevents":final,
                 "header_redirect":"/{}{}".format(t_views.student_hash,str(event_id)),
-                "notifications_days_left":get_current_notifications_students(request)[1][:3],
-                "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-        "notifications_decisions":get_current_notifications_students(request)[2][:3]}
+                "notifications_days_left":get_current_notifications_students(request,0)[1][:3],
+                "notification_count":"6+" if get_current_notifications_students(request,0)[0]>6 else get_current_notifications_students(request,0)[0],
+        "notifications_decisions":get_current_notifications_students(request,0)[2][:3]}
                 
     if get_device(request)=="pc":
         return render(request,'studentview/desktop/subevent.html',context)
@@ -642,8 +642,8 @@ def add_reg_for_group(request,event_id,subevent_id,current_group_id):
     context = {"title":subevent.subevent_name,
                 "event":final,
                 "url_redirect":"/{}{}/{}/add-group/{}/registration".format(t_views.student_hash,event_id,subevent_id,current_group_id),
-                "notifications_days_left":get_current_notifications_students(request)[1],
-                "notifications_count":get_current_notifications_students(request)[0]
+                "notifications_days_left":get_current_notifications_students(request,0)[1],
+                "notifications_count":get_current_notifications_students(request,0)[0]
             }
 
     if get_device(request)=="pc":
@@ -723,9 +723,9 @@ def group_registration(request,event_id,subevent_id,current_group_id):
         "title": SubEvents.objects.get(pk=subevent_id).subevent_name,
         "event_name": Events.objects.get(pk=event_id).event_name,
         'form': form,
-        "notifications_days_left":get_current_notifications_students(request)[1][:3],
-        "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-        "notifications_decisions":get_current_notifications_students(request)[2][:3]
+        "notifications_days_left":get_current_notifications_students(request,0)[1][:3],
+        "notification_count":"6+" if get_current_notifications_students(request,0)[0]>6 else get_current_notifications_students(request,0)[0],
+        "notifications_decisions":get_current_notifications_students(request,0)[2][:3]
     }
 
     if get_device(request)=="pc":
@@ -825,9 +825,9 @@ def registration(request,event_id,subevent_id):
         "title": SubEvents.objects.get(pk=subevent_id).subevent_name,
         "event_name": Events.objects.get(pk=event_id).event_name,
         'form': form,
-        "notifications_days_left":get_current_notifications_students(request)[1][:3],
-        "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-        "notifications_decisions":get_current_notifications_students(request)[2][:3]
+        "notifications_days_left":get_current_notifications_students(request,0)[1][:3],
+        "notification_count":"6+" if get_current_notifications_students(request,0)[0]>6 else get_current_notifications_students(request,0)[0],
+        "notifications_decisions":get_current_notifications_students(request,0)[2][:3]
     }
 
     if get_device(request)=="pc":
@@ -845,15 +845,15 @@ def show_all_notifications(request):
     except:
         return redirect('login')
         
-    cnt,days_left,decision_received = get_current_notifications_students(request)
+    cnt,days_left,decision_received = get_current_notifications_students(request,1)
 
     context = {
         "title":"Notifications",
         "Days_Left": days_left,
         "Decisions_Received": decision_received,
-        "notifications_days_left":get_current_notifications_students(request)[1][:3],
-        "notification_count":"6+" if get_current_notifications_students(request)[0]>6 else get_current_notifications_students(request)[0],
-        "notifications_decisions":get_current_notifications_students(request)[2][:3]
+        "notifications_days_left":get_current_notifications_students(request,0)[1][:3],
+        "notification_count":"6+" if get_current_notifications_students(request,0)[0]>6 else get_current_notifications_students(request,1)[0],
+        "notifications_decisions":get_current_notifications_students(request,0)[2][:3]
     }
 
     if get_device(request)=="pc":
@@ -861,7 +861,7 @@ def show_all_notifications(request):
     elif get_device(request)=="mobile":
         return render(request,'studentview/mobile/show_all_notifications.html',context)
 
-def get_current_notifications_students(request):
+def get_current_notifications_students(request,typ):
     '''two types
     1- Days Left to Deadline
     2- New Application
@@ -882,7 +882,10 @@ def get_current_notifications_students(request):
             cur = date.today()
             d = s_event.subevent_dates.split(" to ")[1]
             date_obj = date(int(d.split("-")[0]),int(d.split("-")[1]),int(d.split("-")[2]))
-            sub["days_left"] = "- " + str((date_obj-cur).days)
+            if typ==0:
+                sub["days_left"] = "- " + str((date_obj-cur).days)
+            else:
+                sub["days_left"] = str((date_obj-cur).days)
 
             final.append(sub)
 
@@ -942,8 +945,8 @@ def searchpage(request):
                 }
                 context["search_results"].append(subevent_context)
 
-    context["notifications_days_left"]=get_current_notifications_students(request)[1][:3]
-    context["notification_count"]=get_current_notifications_students(request)[0]
+    context["notifications_days_left"]=get_current_notifications_students(request,0)[1][:3]
+    context["notification_count"]=get_current_notifications_students(request,0)[0]
 
     if get_device(request)=="pc":
         return render(request,'studentview/desktop/searchpage.html',context)
