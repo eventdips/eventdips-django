@@ -1231,7 +1231,10 @@ def single_event_information(request,event_id):
                 else:
                     new_subevent.group_size = 1
                 new_subevent.total_slots = int(total_slots)
-                new_subevent.maximum_students = int(maximum_students)
+                if new_subevent.subevent_type=="G":
+                    new_subevent.maximum_students = int(maximum_students)*new_subevent.group_size
+                else:
+                    new_subevent.maximum_students = int(maximum_students)
                 new_subevent.subevent_requirements = form.cleaned_data.get('requirements')
                 new_subevent.last_date = form.cleaned_data.get('registration_deadline')
                 new_subevent.allowed_grades = form.cleaned_data.get('allowed_grades')
@@ -1340,7 +1343,10 @@ def add_subevent(request,event_id):
                     else:
                         new_subevent.group_size = 1
                     new_subevent.total_slots = int(total_slots)
-                    new_subevent.maximum_students = int(maximum_students)
+                    if new_subevent.subevent_type=="G":
+                        new_subevent.maximum_students = int(maximum_students)*new_subevent.group_size
+                    else:
+                        new_subevent.maximum_students = int(maximum_students)
                     new_subevent.subevent_requirements = form.cleaned_data.get('requirements')
                     new_subevent.last_date = form.cleaned_data.get('registration_deadline')
                     new_subevent.allowed_grades = form.cleaned_data.get('allowed_grades')
@@ -1455,7 +1461,7 @@ def delete_event(request,event_id,subevent_id):
     except:
         return redirect('login')
     
-    if finalize_check(request,pk,sub_pk):
+    if finalize_check(request,event_id,subevent_id):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
         return redirect('teacher-homepage')
 
