@@ -64,9 +64,9 @@ class RegistrationsGroupForm(forms.ModelForm,subevent_id):
 '''
 
 class AchievementForm(forms.ModelForm):
-    achievement_title = forms.CharField(help_text="Title For Achievement (Eg:Cisco Internship)",widget=forms.TextInput(attrs={'placeholder':'Enter The Name For Achievement Here...'}))
-    start_date_of_achievement = forms.CharField(help_text="Start Date Of Achievement (Eg:1st January,2020)",widget=SelectDateWidget())
-    last_date_of_achievement = forms.CharField(help_text="Late Date Of Achievement (Eg:3rd January,2020)",widget=SelectDateWidget())
+    achievement_title = forms.CharField(help_text="Title For Achievement (Eg:Cisco Internship)",widget=forms.TextInput(attrs={'placeholder':'Name of Achievement...','class':'form-control'}))
+    start_date_of_achievement = forms.CharField(help_text="Start Date Of Achievement (Eg:1st January,2020)",widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
+    last_date_of_achievement = forms.CharField(help_text="Late Date Of Achievement (Eg:3rd January,2020)",widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
     cat_options = (
 		("IT",'IT'),
 		("Sport",'Sport'),
@@ -78,8 +78,8 @@ class AchievementForm(forms.ModelForm):
 		("Design",'Design'),
 		("Science",'Science')
 	)
-    achievement_type = forms.CharField(help_text="Category Of Achievement (Eg:Technology)",widget=forms.Select(choices=cat_options))
-    achievement_info = forms.CharField(help_text="Explain The Achievement",widget=forms.Textarea(attrs={'rows':10, 'cols':50, 'placeholder':'Enter The Information Here...'}))
+    achievement_type = forms.CharField(help_text="Category Of Achievement (Eg:Technology)",widget=forms.Select(choices=cat_options,attrs={'class':'form-control'}))
+    achievement_info = forms.CharField(help_text="Explain The Achievement",widget=forms.Textarea(attrs={'rows':10, 'cols':50, 'placeholder':'Enter The Information Here...','class':'form-control'}))
 
     class Meta:
         model = Status
