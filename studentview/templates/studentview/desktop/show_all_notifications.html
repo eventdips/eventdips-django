@@ -26,10 +26,12 @@
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between border-left-primary" style="border-radius: 0px 25px 25px 0px;">                             
                         <h4 class="m-0 font-weight-bold text-primary">&nbsp;{{ notification.event_name }}</h4><h5 class="text-secondary">{{ notification.decision }}</h5>
                     </div>
-                    <div class="card-body">
+                    {% if notification.reason %}
+                        <div class="card-body">
                             <small><b>Message from {{ notification.teacher_incharge }}:</b></small>
                             <h6><br>{{ notification.reason }}</h6>
-                    </div>
+                        </div>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>

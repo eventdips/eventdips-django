@@ -74,6 +74,11 @@ def home(request):
                 else:
                     sub["completed_check"] = False
                 sub["finalized"] = True if sub_event.first().confirmation_status == "Y" else False
+                if sub["finalized"]:
+                    try:
+                        sub["attachment"] = sub_event.first().subevent_attachment
+                    except:
+                        sub["attachment"] = False
             else:
                 sub["url_redirect"] = "/{}{}".format(t_views.student_hash,str(i.event_id))
             sub["name"] = i.event_name
@@ -102,6 +107,11 @@ def home(request):
                         #sub["valid"] = t_views.event_over_check(s_event.event_id,s_event.subevent_id)
                         sub["completed_check"] = False
                         sub["finalized"] = True if s_event.confirmation_status == "Y" else False
+                        if sub["finalized"]:
+                            try:
+                                sub["event_attachment_url"] = s_event.subevent_attachment
+                            except:
+                                sub["event_attachment_url"] = False
                         final.append(sub)
                     else:
                         sub = {}
@@ -114,6 +124,11 @@ def home(request):
                         #sub["valid"] = t_views.event_over_check(s_event.event_id,s_event.subevent_id)
                         sub["completed_check"] = True
                         sub["finalized"] = True if s_event.confirmation_status == "Y" else False
+                        if sub["finalized"]:
+                            try:
+                                sub["event_attachment_url"] = s_event.subevent_attachment
+                            except:
+                                sub["event_attachment_url"] = False
                         final.append(sub)
             
     context = {

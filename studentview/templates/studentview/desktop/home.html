@@ -22,6 +22,9 @@
                                     <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</li>
                                     <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
                                     <li><b>Registration Deadline</b>: {{ event_data.registration_deadline }}</li>
+                                    {% if event_data.event_attachment_url %}
+                                        <li><b>Attachment</b>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file"></i></a></li>
+                                    {% endif %}
                                     {% if event_data.completed_check %}
                                         <li><b>Event Status</b>: Registrations Completed</li>
                                     {% else %}
@@ -42,6 +45,9 @@
                                     <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</li>
                                     <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
                                     <li><b>Registration Deadline</b>: {{ event_data.registration_deadline }}</li>
+                                    {% if event_data.event_attachment_url %}
+                                        <li><b>Attachment</b>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file"></i></a></li>
+                                    {% endif %}
                                     {% if event_data.completed_check %}
                                         <li><b>Event Status</b>: Registrations Completed</li>
                                     {% else %}
@@ -64,6 +70,9 @@
                                 <li><b>Teacher Incharge</b>: {{ event_data.teacher_incharge }}</li>
                                 <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
                                 <li><b>Registration Deadline</b>: {{ event_data.registration_deadline }}</li>
+                                {% if event_data.event_attachment_url %}
+                                    <li><b>Attachment</b>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file"></i></a></li>
+                                {% endif %}
                                 <br>
                                 <p class="lead">Event Decisions Finalized.</p>
                             </ul> 
@@ -100,6 +109,9 @@
                                     {% else %}
                                         <li><b>Event Description</b>: {{ event_data.event_information }}</li>
                                     {% endif %}
+                                    {% if event_data.event_attachment_url %}
+                                        <li><b>Attachment</b>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file"></i></a></li>
+                                    {% endif %}
                                     {% if event_data.completed_check %}
                                         <li><b>Event Status</b>: Registrations Completed</li>
                                     {% else %}
@@ -121,6 +133,9 @@
                                         <li><b>Registration Deadline</b>: {{ event_data.registration_deadline }}</li>
                                     {% else %}
                                         <li><b>Event Description</b>: {{ event_data.event_information }}</li>
+                                    {% endif %}
+                                    {% if event_data.event_attachment_url %}
+                                        <li><b>Attachment</b>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file"></i></a></li>
                                     {% endif %}
                                     {% if event_data.completed_check %}
                                         <li><b>Event Status</b>: Registrations Completed</li>
@@ -145,6 +160,9 @@
                                     <li><b>Registration Deadline</b>: {{ event_data.registration_deadline }}</li>
                                 {% else %}
                                     <li><b>Event Description</b>: {{ event_data.event_information }}</li>
+                                {% endif %}
+                                {% if event_data.event_attachment_url %}
+                                    <li><b>Attachment</b>: <a href="{{ event_data.event_attachment.url }}" download><i class="fas fa-file"></i></a></li>
                                 {% endif %}
                                 <br>
                                 <p class="lead">Event Decisions Finalized.</p>
