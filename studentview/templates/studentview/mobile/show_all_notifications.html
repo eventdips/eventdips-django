@@ -24,10 +24,12 @@
             <div class="card-header bg-white border-0" style="border-radius: 3rem;">                             
                 <h4 class="m-0 font-weight-bold text-primary">&nbsp;{{ notification.event_name }}</h4><br><h6 class="text-secondary">{{ notification.decision }}</h6>
             </div>
-            <div class="card-body">
-                <small><b>Message from {{ notification.teacher_incharge }}:</b></small>
-                <h6>{{ notification.reason }}</h6>
-            </div>
+            {% if notification.reason %}
+                <div class="card-body">
+                    <small><b>Message from {{ notification.teacher_incharge }}:</b></small>
+                    <h6>{{ notification.reason }}</h6>
+                </div>
+            {% endif %}
         </div>
     {% endfor %}
 </div>
