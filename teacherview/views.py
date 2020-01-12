@@ -899,7 +899,7 @@ def view_previous_events(request,pk,sub_pk,r_pk):
     final = []
     for reg in regs:
         sub = {}
-        if reg.user == user:
+        if reg.user == user and reg.reg_status=="A":
             s_event = SubEvents.objects.get(pk=reg.subevent_id)
             sub["name"] = s_event.subevent_name
             sub["category"] = s_event.category
