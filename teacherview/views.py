@@ -264,7 +264,7 @@ def home(request):
     for s_event in subevents:
         if event_over_check(s_event.event_id,s_event.subevent_id):
             if s_event.subevent_teacher_incharge_id==teacher_id or Status.objects.get(user=User.objects.get(pk=teacher_id)).status=="M":
-                if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
+                if (s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations) and s_event.confirmation_status=="N":
                     sub = {}
                     sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
                     sub["name"] = s_event.subevent_name
@@ -347,7 +347,7 @@ def myevents(request):
     for s_event in subevents:
         if event_over_check(s_event.event_id,s_event.subevent_id):
             if s_event.subevent_teacher_incharge_id==teacher_id or status.status=="M":
-                if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
+                if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations and s_event.confirmation_status=="N":
                     sub = {}
                     sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
                     sub["name"] = s_event.subevent_name
@@ -437,7 +437,7 @@ def profile(request):
         if event_over_check(s_event.event_id,s_event.subevent_id):
             if s_event.subevent_teacher_incharge_id==user.pk or status.status=="M":
                 sub = {}
-                if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations:
+                if s_event.selected_students<s_event.maximum_students and s_event.total_slots>s_event.total_registrations and s_event.confirmation_status=="N":
                     sub = {}
                     sub["url_redirect"] = "/{}{}/{}".format(teacher_hash,str(s_event.event_id),str(s_event.subevent_id))
                     sub["name"] = s_event.subevent_name
@@ -547,7 +547,7 @@ def subevent(request,pk,sub_pk):
     teacher_id = int(request.COOKIES.get("id"))
 
     if subevent.subevent_teacher_incharge_id==teacher_id or Status.objects.get(user=User.objects.get(pk=teacher_id)).status=="M":
-        if subevent.selected_students<subevent.maximum_students and subevent.total_slots>subevent.total_registrations:
+        if subevent.selected_students<subevent.maximum_students and subevent.total_slots>subevent.total_registrations and subevent.confirmation_status=="N":
             final = []
             sub = {}
             sub["url_redirect"] = "/{}{}/{}/rview".format(teacher_hash,str(pk),str(sub_pk))
