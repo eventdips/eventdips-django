@@ -28,10 +28,10 @@
           <tbody>
             {% for student_data in Registrations %}
               <tr>
-                <td><p><a href={{ student_data.url_redirect }}>{{ student_data.name }}</a></td>
-                <td><p>{{ student_data.class }}</p></td>
-                <td><p>{{ student_data.section }}</p></td>
-                <td><p>{{ student_data.status }}</p></td>
+                <td><p><b><a href={{ student_data.url_redirect }}>{{ student_data.name }}</a></b></p></td>
+                <td><p><b>{{ student_data.class }}</b></p></td>
+                <td><p><b>{{ student_data.section }}</b></p></td>
+                <td><p><b>{{ student_data.status }}</b></p></td>
               </tr>
             {% endfor %}
           </tbody>

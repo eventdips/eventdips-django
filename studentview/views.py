@@ -109,9 +109,9 @@ def home(request):
                         sub["finalized"] = True if s_event.confirmation_status == "Y" else False
                         if sub["finalized"]:
                             try:
-                                sub["event_attachment_url"] = s_event.subevent_attachment
+                                sub["attachment"] = s_event.subevent_attachment
                             except:
-                                sub["event_attachment_url"] = False
+                                sub["attachment"] = False
                         final.append(sub)
                     else:
                         sub = {}
@@ -126,9 +126,9 @@ def home(request):
                         sub["finalized"] = True if s_event.confirmation_status == "Y" else False
                         if sub["finalized"]:
                             try:
-                                sub["event_attachment_url"] = s_event.subevent_attachment
+                                sub["attachment"] = s_event.subevent_attachment
                             except:
-                                sub["event_attachment_url"] = False
+                                sub["attachment"] = False
                         final.append(sub)
             
     context = {
@@ -739,7 +739,7 @@ def group_registration(request,event_id,subevent_id,current_group_id):
             reg.reg_info = form.cleaned_data.get('additional_Information')
             reg.save()
 
-            msg = "'{}' Has Been Successfully Registered For '{}'".format(reg.user.first_name+ " "+reg.user.last_name,SubEvents.objects.get(pk=subevent_id).subevent_name) 
+            msg = "'{}' Has Been Successfully Registered For '{}'. Kindly Ensure that your Achievements are Updated.".format(reg.user.first_name+ " "+reg.user.last_name,SubEvents.objects.get(pk=subevent_id).subevent_name) 
             messages.success(request,msg)
             return HttpResponseRedirect("/{}{}/{}/add-group/{}".format(t_views.student_hash,event_id,subevent_id,current_group_id))
         else:
@@ -818,7 +818,7 @@ def registration(request,event_id,subevent_id):
                 reg.group_id = 0
                 reg.save()
 
-                msg = "Successfully Registered For '{}'".format("{}- {}".format(Events.objects.get(pk=event_id).event_name,SubEvents.objects.get(pk=subevent_id).subevent_name) if Events.objects.get(pk=event_id).event_name!=SubEvents.objects.get(pk=subevent_id).subevent_name else "{}".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
+                msg = "Successfully Registered For '{}'. Kindly Ensure that your Achievements are Updated.".format("{}- {}".format(Events.objects.get(pk=event_id).event_name,SubEvents.objects.get(pk=subevent_id).subevent_name) if Events.objects.get(pk=event_id).event_name!=SubEvents.objects.get(pk=subevent_id).subevent_name else "{}".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
                 messages.success(request,msg)
                 return redirect('student-homepage')
             else:
@@ -842,7 +842,7 @@ def registration(request,event_id,subevent_id):
                 reg.reg_info = form.cleaned_data.get('additional_Information')
                 reg.save()
 
-                msg = "Successfully Registered For '{}'".format("{}- {}".format(Events.objects.get(pk=event_id).event_name,SubEvents.objects.get(pk=subevent_id).subevent_name) if Events.objects.get(pk=event_id).event_name!=SubEvents.objects.get(pk=subevent_id).subevent_name else "{}".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
+                msg = "Successfully Registered For '{}'. Kindly Ensure that your Achievements are Updated.".format("{}- {}".format(Events.objects.get(pk=event_id).event_name,SubEvents.objects.get(pk=subevent_id).subevent_name) if Events.objects.get(pk=event_id).event_name!=SubEvents.objects.get(pk=subevent_id).subevent_name else "{}".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
                 messages.success(request,msg)
                 return redirect('student-homepage')
             else:
@@ -922,18 +922,18 @@ def get_current_notifications_students(request,typ):
 
     for reg in regs:
         if t_views.event_over_check(reg.event_id,reg.subevent_id):
+            s_event = SubEvents.objects.get(pk=reg.subevent_id)
             if s_event.confirmation_status=="Y":
-                s_event = SubEvents.objects.get(pk=reg.subevent_id)
+                print(s_event)
                 sub={}
 
                 sub["decision"] = "- Accepted" if reg.reg_status=="A" else "- Rejected"
                 sub["notification_header"] = "Final Decision"
-                sub["reason"] = reg.rej_reason if reg.reg_status=="R" else ""
+                sub["reason"] = reg.rej_reason if reg.reg_status=="R" else False
                 sub["event_name"] = s_event.subevent_name
                 sub["teacher_incharge"] = s_event.subevent_teacher_incharge
         
                 final2.append(sub)
-    
 
     return len(final)+len(final2),final,final2
 

@@ -14,6 +14,7 @@ from studentview.views import get_device
 import hashlib  
 from datetime import date
 from random import shuffle
+import os
 
 teacher_hash = "teachers/"
 student_hash = "students/"
@@ -165,8 +166,6 @@ def security_questions(request,email):
         "url_redirect": "/reset-password/{}/{}".format(email,encrypt(email))
     }
 
-    print(encrypt(email))
-
     return render(request,'studentview/desktop/security_questions.html', context)
 
 def reset_password(request,email,code):
@@ -227,6 +226,30 @@ def event_over_check(event_id,subevent_id):
         else:
             return False
 
+def finalized_file(event_id,subevent_id):
+    if not os.path.exists('.//media//FinalizedFiles//{}-{}.doc'.format(event_id,subevent_id)):
+        with open('.//media//FinalizedFiles//{}-{}.doc'.format(event_id,subevent_id),'w') as f:
+            event = Events.objects.get(pk=event_id)
+
+            #LOGO TO GO HERE.
+            if event.single_check:
+                f.write(SubEvents.objects.get(pk=subevent_id).subevent_name+"\n")
+                f.write("Teacher Incharge: {}".format(event.teacher_incharge))
+            else:
+                f.write(event.event_name+"- "+SubEvents.objects.get(pk=subevent_id).subevent_name+"\n")
+                f.write("Teacher Incharge: {}".format(SubEvents.objects.get(pk=subevent_id).subevent_teacher_incharge))       
+            f.write("\n\n")
+            f.write("Selected Students:-")
+            f.write('\n')
+
+            count = 1
+            regs = list(Registrations.objects.filter(subevent_id=subevent_id))
+            for reg in regs:
+                msg = str(count)+") "+reg.student_name+"- "+str(reg.student_class)+reg.student_section
+                f.write(msg)
+                f.write("\n")
+                count+=1
+        
 def home(request):
     login_check(request)
 
@@ -276,6 +299,8 @@ def home(request):
                     sub["category"] = s_event.category
                     sub["valid"] = event_over_check(s_event.event_id,s_event.subevent_id)
                     sub["confirmation_status"] = s_event.confirmation_status
+                    if sub["confirmation_status"] == "Y":
+                        sub["final_list"] = r"/media/FinalizedFiles/{}-{}.doc".format(s_event.event_id,s_event.subevent_id)
                     sub["completed_check"] = False
                     final2.append(sub)
                 else:
@@ -290,6 +315,8 @@ def home(request):
                     sub["category"] = s_event.category
                     #sub["valid"] = event_over_check(s_event.event_id,s_event.subevent_id)
                     sub["confirmation_status"] = s_event.confirmation_status
+                    if sub["confirmation_status"] == "Y":
+                        sub["final_list"] = r"/media/FinalizedFiles/{}-{}.doc".format(s_event.event_id,s_event.subevent_id)
                     sub["completed_check"] = True
                     final2.append(sub)
    
@@ -644,10 +671,6 @@ def view_registrations(request,pk,sub_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
         return redirect('teacher-homepage')
 
-    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
-        messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')'''
-
     registrations = list(Registrations.objects.filter(subevent_id=sub_pk))
     final=[]
 
@@ -702,7 +725,8 @@ def confirmation(request,pk,sub_pk):
     if sub.confirmation_status=="N":
         sub.confirmation_status = "Y"
         sub.save()
-        #REPORTLAB PDF GEN
+        
+        finalized_file(sub.event_id,sub.subevent_id)
         messages.success(request,"Decisions for '{}' have been finalized!".format(sub.subevent_name))
 
         regs = list(Registrations.objects.filter(subevent_id=sub_pk))
@@ -756,7 +780,7 @@ def reason_for_rejection(request,pk,sub_pk):
     regs = list(Registrations.objects.filter(subevent_id=sub_pk))
     for reg in regs:
         reason = request.GET.get(str(reg.registration_id))
-        if reason!="":
+        if reason:
             reg.rej_reason = reason
         else:
             reg.rej_reason = "Sorry, your application has not been accepted."
@@ -783,10 +807,6 @@ def view_registration(request,pk,sub_pk,r_pk):
     if finalize_check(request,pk,sub_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
         return redirect('teacher-homepage')
-
-    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
-        messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')'''
 
     registration = Registrations.objects.filter(registration_id=r_pk).first()
     student = User.objects.get(pk=registration.user.pk) 
@@ -939,10 +959,6 @@ def accept(request,pk,sub_pk,r_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
         return redirect('teacher-homepage')
 
-    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
-        messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')'''
-
     registration = Registrations.objects.get(registration_id=r_pk)
     partcipated_in = SubEvents.objects.get(subevent_id=sub_pk)
     
@@ -986,10 +1002,6 @@ def reject(request,pk,sub_pk,r_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
         return redirect('teacher-homepage')
 
-    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
-        messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')'''
-
     registration = Registrations.objects.get(registration_id=r_pk)
     partcipated_in = SubEvents.objects.get(subevent_id=sub_pk)
     
@@ -1028,10 +1040,6 @@ def view_selected_students(request,pk,sub_pk):
     if finalize_check(request,pk,sub_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
         return redirect('teacher-homepage')
-
-    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
-        messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')'''
 
     registrations = list(Registrations.objects.filter(subevent_id=sub_pk))
     final=[]
@@ -1083,10 +1091,6 @@ def view_registered_students(request,pk,sub_pk):
     if finalize_check(request,pk,sub_pk):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed".format(SubEvents.objects.get(pk=sub_pk).subevent_name))
         return redirect('teacher-homepage')
-
-    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=sub_pk).subevent_teacher_incharge_id:
-        messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')'''
 
     registrations = list(Registrations.objects.filter(subevent_id=sub_pk))
     final=[]
@@ -1151,11 +1155,8 @@ def add_event(request):
                     options = []
                     users = User.objects.all()
                     for user in users:
-                        try:
-                            if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
-                                options.append(user)
-                        except:
-                            pass
+                        if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+                            options.append(user) 
                     new_event.teacher_incharge_id = options[int(form.cleaned_data.get('teacher_incharge'))].pk
                     new_event.teacher_incharge = options[int(form.cleaned_data.get('teacher_incharge'))].first_name + " " + options[int(form.cleaned_data.get('teacher_incharge'))].last_name
                     new_event.save()
@@ -1182,7 +1183,15 @@ def add_event(request):
                     messages.success(request,"Event {} has been successfully created!".format(new_event.event_name)) 
                     return HttpResponseRedirect('/{}add-event/{}/sub'.format(teacher_hash,new_event.event_id))
     else:
-        form = EventCreationForm()
+        options = []
+        users = User.objects.all()
+        for user in users:
+            if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+                options.append(user)
+        user = User.objects.get(pk=int(request.COOKIES.get('id')))
+        teacher_incharge = (options.index(user),user.first_name+" "+user.last_name)
+
+        form = EventCreationForm(initial={"teacher_incharge":teacher_incharge})
 
     context = {
         "form":form,
@@ -1326,11 +1335,9 @@ def add_subevent(request,event_id):
                     options = []
                     users = User.objects.all()
                     for user in users:
-                        try:
-                            if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
-                                options.append(user)
-                        except:
-                            pass
+                        if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+                            options.append(user)
+                        
                     new_subevent.subevent_teacher_incharge = options[int(form.cleaned_data.get('teacher_incharge'))].first_name + " " +options[int(form.cleaned_data.get('teacher_incharge'))].last_name
                     new_subevent.subevent_teacher_incharge_id = options[int(form.cleaned_data.get('teacher_incharge'))].pk
                     new_subevent.subevent_name = form.cleaned_data.get('event_name')
@@ -1360,7 +1367,15 @@ def add_subevent(request,event_id):
                     messages.success(request,"Event '{}' has been successfully added to '{}'!".format(form.cleaned_data.get('event_name'),event.event_name))
                     return HttpResponseRedirect('/{}add-event/{}/sub'.format(teacher_hash,event_id))
         else:
-            form = SubEventCreationForm()
+            options = []
+            users = User.objects.all()
+            for user in users:
+                if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+                    options.append(user)
+
+            user = User.objects.get(pk=int(request.COOKIES.get('id')))
+            form = SubEventCreationForm(initial={"teacher_incharge":(options.index(user),user.first_name+" "+user.last_name)})
+
 
         context = {
             "form":form,
@@ -1389,26 +1404,19 @@ def edit_event(request,event_id,subevent_id):
         messages.warning(request,"Event '{}' Has Already Been Finalized! No Changes Are Allowed!".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
         return redirect('teacher-homepage')
 
-    '''if int(request.COOKIES.get("id"))!=SubEvents.objects.get(subevent_id=subevent_id).subevent_teacher_incharge_id:
-        messages.warning(request,'Illegal Action Attempted!')
-        return redirect('teacher-homepage')'''
-
     sub = SubEvents.objects.get(subevent_id=subevent_id)
     if request.method=="POST":
         form = SubEventCreationForm(request.POST,request.FILES,initial={'event_name': sub.subevent_name,'event_type': sub.subevent_type,'start_date':sub.subevent_dates.split(" to ")[0],'last_date':sub.subevent_dates.split(" to ")[1],'maximum_applicants':sub.total_slots,'maximum_participants':sub.maximum_students,'requirements':sub.subevent_requirements,'teacher_incharge':sub.subevent_teacher_incharge,'registration_deadline':sub.last_date,'allowed_grades':sub.allowed_grades,'event_description':sub.subevent_information,'category':sub.category,'add_attachment':sub.subevent_attachment})
         if form.is_valid():
             edit_subevent = form.save(commit=False)
             total_slots = form.cleaned_data.get('maximum_applicants')
-            maximum_students = form.cleaned_data.get('maximum_participants')
-        
+            maximum_students = form.cleaned_data.get('maximum_participants')   
+
             options = []
             users = User.objects.all()
             for user in users:
-                try:
-                    if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
-                        options.append(user)
-                except:
-                    pass
+                if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+                    options.append(user)
 
             sub.subevent_teacher_incharge = options[int(form.cleaned_data.get('teacher_incharge'))].first_name + " " + options[int(form.cleaned_data.get('teacher_incharge'))].last_name
             sub.subevent_teacher_incharge_id = options[int(form.cleaned_data.get('teacher_incharge'))].pk
@@ -1436,7 +1444,16 @@ def edit_event(request,event_id,subevent_id):
             messages.success(request,"Event '{}' has been edited!".format(form.cleaned_data.get('event_name')))
             return redirect('teacher-homepage')
     else:
-        form = SubEventCreationForm(initial={'event_name': sub.subevent_name,'event_type': sub.subevent_type,'start_date':sub.subevent_dates.split(" to ")[0],'last_date':sub.subevent_dates.split(" to ")[1],'maximum_applicants':sub.total_slots,'maximum_participants':sub.maximum_students,'requirements':sub.subevent_requirements,'teacher_incharge':sub.subevent_teacher_incharge,'registration_deadline':sub.last_date,'allowed_grades':sub.allowed_grades,'event_description':sub.subevent_information})
+        options = []
+        users = User.objects.all()
+        for user in users:
+            if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+                options.append(user)
+        sub = SubEvents.objects.get(subevent_id=subevent_id)
+        user = User.objects.get(pk=sub.subevent_teacher_incharge_id)
+        teacher_incharge = (options.index(user),user.first_name+" "+user.last_name)
+
+        form = SubEventCreationForm(initial={'event_name': sub.subevent_name,'event_type': sub.subevent_type,'start_date':sub.subevent_dates.split(" to ")[0],'last_date':sub.subevent_dates.split(" to ")[1],'maximum_applicants':sub.total_slots,'maximum_participants':sub.maximum_students,'requirements':sub.subevent_requirements,'teacher_incharge':teacher_incharge,'registration_deadline':sub.last_date,'allowed_grades':sub.allowed_grades,'event_description':sub.subevent_information})
 
     context = {
         "form":form,

@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-4">
             <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
-                <h2 class="text-secondary">All Notifications</h2>
+                <h2 class="text-secondary"><b>All Notifications</b></h2>
             </div>
             <div class="card shadow">
                 <div class="card-header border-0 bg-white" style="border-radius:3rem">
@@ -30,7 +30,7 @@
             {% for notification in Application_Sent %}
         <div class="card shadow">
             <div class="card-body">
-                <h4 class="text-success">{{ notification.event_name }}</h4><br><a href={{ notification.url_redirect }}><h5>{{ notification.student_name }}</h5></a>
+                <h4 class="text-success"><b>{{ notification.event_name }}</b></h4><br><a href={{ notification.url_redirect }}><h5>{{ notification.student_name }}</h5></a>
             </div>
         </div>
         <br>

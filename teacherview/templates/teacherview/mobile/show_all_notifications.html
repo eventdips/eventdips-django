@@ -26,7 +26,7 @@
     {% for notification in Application_Sent %}
         <div class="card shadow">
             <div class="card-body">
-                <h4 class="text-success">{{ notification.event_name }}</h4><br><a href={{ notification.url_redirect }}><h5>{{ notification.student_name }}</h5></a>
+                <h4 class="text-success"><b>{{ notification.event_name }}</b></h4><br><a href={{ notification.url_redirect }}><h5>{{ notification.student_name }}</h5></a>
             </div>
         </div>
         <br>
