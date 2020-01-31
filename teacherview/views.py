@@ -53,15 +53,24 @@ def date_conversion(date):
 
         return final
 
-def encrypt(string):
+def encrypt(string,email):
     string = string.upper()
     final = ""
     for i in string:
         final += str(ord(i))
+    add = ""
+    for i in email.upper():
+        add+=str(ord(i))
+    final = str(int(final)+int(add))
     
     return final
 
-def decrypt(string):
+def decrypt(string,email):
+    add = ""
+    for i in email.upper():
+        add+=str(ord(i))
+    string = str(int(string)-int(add))
+    
     final = ""
     for i in range(0,len(string),2):
         char = chr(int(string[i]+string[i+1]))
@@ -163,13 +172,13 @@ def security_questions(request,email):
     context = {
         "title":"Security Questions",
         "questions": final,
-        "url_redirect": "/reset-password/{}/{}".format(email,encrypt(email))
+        "url_redirect": "/reset-password/{}/{}".format(email,encrypt(email,email))
     }
 
     return render(request,'studentview/desktop/security_questions.html', context)
 
 def reset_password(request,email,code):
-    if decrypt(code)!=email:
+    if decrypt(code,email)!=email:
         messages.warning(request,"Illegal Action Attempted!")
         return redirect('login')
 
@@ -180,7 +189,7 @@ def reset_password(request,email,code):
     status = Status.objects.get(user=User.objects.get(email=email))
     answers = status.security_answers.split("%%")
 
-    if first_ans==decrypt(answers[0]) and second_ans==decrypt(answers[1]) and third_ans==decrypt(answers[2]):
+    if first_ans==decrypt(answers[0],email) and second_ans==decrypt(answers[1],email) and third_ans==decrypt(answers[2],email):
         if request.method=='POST':
             form = ResetPassword(request.POST)
             if form.is_valid():
@@ -222,6 +231,8 @@ def event_over_check(event_id,subevent_id):
     else:
         subevent = SubEvents.objects.get(pk=subevent_id)
         if subevent.subevent_dates.split(" to ")[1]>=str(date.today()):
+            if os.path.exists('.//media//FinalizedFiles//{}-{}.doc'.format(event_id,subevent_id)):
+                os.remove('.//media//FinalizedFiles//{}-{}.doc'.format(event_id,subevent_id))
             return True
         else:
             return False
