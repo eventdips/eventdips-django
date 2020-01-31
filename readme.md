@@ -1,1 +1,1 @@
-Website running off: eventdips.ga:8081
+Website running off: eventdips.ml
