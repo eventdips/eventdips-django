@@ -231,36 +231,61 @@ def event_over_check(event_id,subevent_id):
     else:
         subevent = SubEvents.objects.get(pk=subevent_id)
         if subevent.subevent_dates.split(" to ")[1]>=str(date.today()):
-            if os.path.exists('.//media//FinalizedFiles//{}-{}.doc'.format(event_id,subevent_id)):
-                os.remove('.//media//FinalizedFiles//{}-{}.doc'.format(event_id,subevent_id))
             return True
         else:
             return False
 
 def finalized_file(event_id,subevent_id):
-    if not os.path.exists('.//media//FinalizedFiles//{}-{}.doc'.format(event_id,subevent_id)):
-        with open('.//media//FinalizedFiles//{}-{}.doc'.format(event_id,subevent_id),'w') as f:
+    if not os.path.exists('.\\media\\FinalizedFiles\\{}-{}.doc'.format(event_id,subevent_id)):
+        with open('.\\media\\FinalizedFiles\\{}-{}.doc'.format(str(event_id),str(subevent_id)),'w') as f:
             event = Events.objects.get(pk=event_id)
 
-            #LOGO TO GO HERE.
             if event.single_check:
                 f.write(SubEvents.objects.get(pk=subevent_id).subevent_name+"\n")
                 f.write("Teacher Incharge: {}".format(event.teacher_incharge))
             else:
                 f.write(event.event_name+"- "+SubEvents.objects.get(pk=subevent_id).subevent_name+"\n")
                 f.write("Teacher Incharge: {}".format(SubEvents.objects.get(pk=subevent_id).subevent_teacher_incharge))       
+            
+            f.write("\n\n")
+            sub = SubEvents.objects.get(pk=subevent_id)
+            f.write("Event Dates: {}".format(date_conversion(sub.subevent_dates)))
             f.write("\n\n")
             f.write("Selected Students:-")
             f.write('\n')
 
-            count = 1
-            regs = list(Registrations.objects.filter(subevent_id=subevent_id))
-            for reg in regs:
-                msg = str(count)+") "+reg.student_name+"- "+str(reg.student_class)+reg.student_section
-                f.write(msg)
+            decisions = {
+                    "A":"Accepted",
+                    "R":"Rejected",
+                    "":"Pending"
+            }
+
+            if sub.subevent_type=="I":
+                count = 1
+                regs = list(Registrations.objects.filter(subevent_id=subevent_id))
+                for reg in regs:
+                    msg = str(count)+") "+reg.student_name+"- "+str(reg.student_class)+reg.student_section+" -> "+decisions[reg.reg_status]
+                    f.write(msg)
+                    f.write("\n")
+                    count+=1
+            else:
                 f.write("\n")
-                count+=1
-        
+                cur = 1      
+                while cur<=(sub.total_registrations/sub.group_size):
+                    f.write("Group {}:-".format(str(cur)))
+                    f.write("\n")
+                    regs = list(Registrations.objects.filter(subevent_id=subevent_id))
+                    temp = 1
+                    for reg in regs:
+                        print(reg)
+                        if reg.group_id==cur:
+                            msg = str(temp)+") "+reg.student_name+"- "+str(reg.student_class)+reg.student_section+" -> "+decisions[reg.reg_status]
+                            f.write(msg)
+                            f.write("\n")
+                            temp+=1
+                    f.write("\n")
+                    cur+=1
+
 def home(request):
     login_check(request)
 

@@ -69,7 +69,8 @@ def home(request):
                 sub["url_redirect"] = "/{}{}/{}".format(t_views.student_hash,str(i.event_id),str(subevent_id))
                 sub["registration_deadline"] = t_views.date_conversion(sub_event.first().last_date)
                 #sub["valid"] = t_views.event_over_check(i.event_id,False)
-                if sub_event.first().total_slots==sub_event.first().total_registrations:
+
+                if sub_event.first().total_slots==sub_event.first().total_registrations or sub_event.first().last_date<date.today():
                     sub["completed_check"] = True
                 else:
                     sub["completed_check"] = False
@@ -96,7 +97,7 @@ def home(request):
             r = list(Registrations.objects.filter(subevent_id=s_event.subevent_id))
             for i in r:
                 if i.user==user:
-                    if s_event.total_slots>s_event.total_registrations:
+                    if s_event.total_slots>s_event.total_registrations and s_event.last_date>date.today():
                         sub = {}
                         sub["url_redirect"] = "/{}{}/{}".format(t_views.student_hash,str(s_event.event_id),str(s_event.subevent_id))
                         sub["name"] = s_event.subevent_name
@@ -162,7 +163,7 @@ def profile(request):
             registrations = list(Registrations.objects.filter(subevent_id=s_event.subevent_id))
             if user in [reg.user for reg in registrations]:
                 sub = {}
-                if s_event.total_slots>s_event.total_registrations:
+                if s_event.total_slots>s_event.total_registrations and s_event.last_date>date.today():
                     sub = {}
                     sub["url_redirect"] = "/{}{}/{}".format(t_views.student_hash,str(s_event.event_id),str(s_event.subevent_id))
                     sub["name"] = s_event.subevent_name
@@ -406,7 +407,7 @@ def event_by_category(request,category):
     for i in events:
         if t_views.event_over_check(i.event_id,False):
             sub = {}
-            if i.total_slots>i.total_registrations:
+            if i.total_slots>i.total_registrations and i.last_date>date.today():
                 sub["completed_check"] = False
             else:
                 sub["completed_check"] = True
@@ -492,7 +493,7 @@ def subevents(request,event_id):
     for i in subevents:
         if t_views.event_over_check(False,i.subevent_id):
             sub = {}
-            if i.total_slots>i.total_registrations:
+            if i.total_slots>i.total_registrations and i.last_date>date.today():
                 sub["completed_check"] = False
             else:
                 sub["completed_check"] = True
@@ -533,6 +534,10 @@ def subevent(request,event_id,subevent_id):
         messages.warning(request,"Event '{}' Is Already Complete!".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
         return redirect('student-homepage')
     
+    if SubEvents.objects.get(pk=subevent_id).last_date<date.today():
+        messages.warning(request,"Registration Deadline for '{}' has passed.".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
+        return redirect('student-homepage')
+
     if event_finalized_check(event_id,subevent_id):
         messages.warning(request,"Decisions Regarding Event '{}' Is Already Finalized!".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
         return redirect('student-homepage')
