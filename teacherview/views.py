@@ -7,11 +7,9 @@ from studentview.models import Registrations
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from .forms import EventCreationForm, SingleEventInformationForm, SubEventCreationForm, LoginForm, ForgotPassword, ResetPassword
-from django.core.mail import EmailMessage
 from django.template import Context
 from django.template.loader import get_template
 from studentview.views import get_device
-import hashlib  
 from datetime import date
 from random import shuffle
 import os
