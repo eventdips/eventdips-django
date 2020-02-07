@@ -269,10 +269,10 @@ def finalized_file(event_id,subevent_id):
             else:
                 f.write("\n")
                 cur = 1      
-                while cur<=(sub.total_registrations/sub.group_size):
+                regs = list(Registrations.objects.filter(subevent_id=subevent_id))
+                while cur<=(len(regs)/sub.group_size):
                     f.write("Group {}:-".format(str(cur)))
                     f.write("\n")
-                    regs = list(Registrations.objects.filter(subevent_id=subevent_id))
                     temp = 1
                     for reg in regs:
                         print(reg)
@@ -1009,7 +1009,6 @@ def accept(request,pk,sub_pk,r_pk):
             partcipated_in.selected_students+=1
             partcipated_in.save()
         elif len(registration.reg_status)==0:
-            partcipated_in.total_registrations+=1 #CHANGE WHEN APPLICATION SUBMITTED, WHEN REGISTRATION FORM IS MADE
             registration.reg_status = "A"
             registration.save()
             partcipated_in.selected_students+=1  
@@ -1048,7 +1047,6 @@ def reject(request,pk,sub_pk,r_pk):
         partcipated_in.selected_students-=1
         partcipated_in.save()
     elif len(registration.reg_status)==0:
-        partcipated_in.total_registrations+=1 #CHANGE WHEN APPLICATION SUBMITTED, WHEN REGISTRATION FORM IS MADE
         registration.reg_status = "R"
         registration.save()
         partcipated_in.save()

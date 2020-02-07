@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'm*%76=j*mk3g--bh!jdmzjjs)j959=ck_1l)i#as)rnv$$(!q5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['eventdips.ml','localhost','192.168.29.48','127.0.0.1']
 

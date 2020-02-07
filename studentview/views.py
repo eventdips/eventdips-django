@@ -743,6 +743,8 @@ def group_registration(request,event_id,subevent_id,current_group_id):
             reg.event_type = "G"
             reg.reg_info = form.cleaned_data.get('additional_Information')
             reg.save()
+            subevent.total_registrations+=1
+            subevent.save()
 
             msg = "'{}' Has Been Successfully Registered For '{}'. Kindly Ensure that your Achievements are Updated.".format(reg.user.first_name+ " "+reg.user.last_name,SubEvents.objects.get(pk=subevent_id).subevent_name) 
             messages.success(request,msg)
@@ -807,55 +809,33 @@ def registration(request,event_id,subevent_id):
     except:
         pass
     
-    if subevent.subevent_type=="I":
-        if request.method=="POST":
-            form = RegistrationSingleForm(request.POST)
-            if form.is_valid():
-                reg = form.save(commit=False)
-                reg.user = User.objects.get(pk=int(request.COOKIES.get('id')))
-                reg.student_name = User.objects.get(pk=int(request.COOKIES.get('id'))).first_name + " " +  User.objects.get(pk=int(request.COOKIES.get('id'))).last_name
-                reg.student_class = form.cleaned_data.get('grade')
-                reg.student_section = form.cleaned_data.get('section')
-                reg.event_id = event_id
-                reg.subevent_id = subevent_id
-                reg.event_type = "I"
-                reg.reg_info = form.cleaned_data.get('additional_Information')
-                reg.group_id = 0
-                reg.save()
+    if request.method=="POST":
+        form = RegistrationSingleForm(request.POST)
+        if form.is_valid():
+            reg = form.save(commit=False)
+            reg.user = User.objects.get(pk=int(request.COOKIES.get('id')))
+            reg.student_name = User.objects.get(pk=int(request.COOKIES.get('id'))).first_name + " " +  User.objects.get(pk=int(request.COOKIES.get('id'))).last_name
+            reg.student_class = form.cleaned_data.get('grade')
+            reg.student_section = form.cleaned_data.get('section')
+            reg.event_id = event_id
+            reg.subevent_id = subevent_id
+            reg.event_type = "I"
+            reg.reg_info = form.cleaned_data.get('additional_Information')
+            reg.group_id = 0
+            reg.save()
+            subevent.total_registrations+=1
+            subevent.save()
 
-                msg = "Successfully Registered For '{}'. Kindly Ensure that your Achievements are Updated.".format("{}- {}".format(Events.objects.get(pk=event_id).event_name,SubEvents.objects.get(pk=subevent_id).subevent_name) if Events.objects.get(pk=event_id).event_name!=SubEvents.objects.get(pk=subevent_id).subevent_name else "{}".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
-                messages.success(request,msg)
-                return redirect('student-homepage')
-            else:
-                messages.warning(request,'Form Entry Error.')
-                return HttpResponseRedirect("{}{}/{}/registration".format(t_views.student_hash,str(event_id),str(subevent_id)))
-
+            msg = "Successfully Registered For '{}'. Kindly Ensure that your Achievements are Updated.".format("{}- {}".format(Events.objects.get(pk=event_id).event_name,SubEvents.objects.get(pk=subevent_id).subevent_name) if Events.objects.get(pk=event_id).event_name!=SubEvents.objects.get(pk=subevent_id).subevent_name else "{}".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
+            messages.success(request,msg)
+            return redirect('student-homepage')
         else:
-            form = RegistrationSingleForm()
+            messages.warning(request,'Form Entry Error.')
+            return HttpResponseRedirect("{}{}/{}/registration".format(t_views.student_hash,str(event_id),str(subevent_id)))
+
     else:
-        if request.method=="POST":
-            form = RegistrationsGroupForm(request.POST)
-            if form.is_valid():
-                reg = form.save(commit=False)
-                reg.user = User.objects.get(pk=int(form.cleaned_data.get('user')))
-                reg.student_name = reg.user.first_name + " " + reg.user.last_name
-                reg.student_class = form.cleaned_data.get('grade')
-                reg.student_section = form.cleaned_data.get('section')
-                reg.event_id = event_id
-                reg.subevent_id = subevent_id
-                reg.event_type = "G"
-                reg.reg_info = form.cleaned_data.get('additional_Information')
-                reg.save()
-
-                msg = "Successfully Registered For '{}'. Kindly Ensure that your Achievements are Updated.".format("{}- {}".format(Events.objects.get(pk=event_id).event_name,SubEvents.objects.get(pk=subevent_id).subevent_name) if Events.objects.get(pk=event_id).event_name!=SubEvents.objects.get(pk=subevent_id).subevent_name else "{}".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
-                messages.success(request,msg)
-                return redirect('student-homepage')
-            else:
-                messages.warning(request,'Form Entry Error.')
-                return HttpResponseRedirect("{}{}/{}/registration".format(t_views.student_hash,str(event_id),str(subevent_id)))
-
-        else:
-            form = RegistrationSingleForm()
+        form = RegistrationSingleForm()
+    
 
     context = {
         "title": SubEvents.objects.get(pk=subevent_id).subevent_name,
