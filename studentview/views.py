@@ -5,7 +5,7 @@ from teacherview.models import Events,SubEvents,Status
 from teacherview import views as t_views
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from .forms import RegistrationSingleForm, AchievementForm, RegistrationsGroupForm
+from .forms import RegistrationSingleForm, AchievementForm, RegistrationsGroupForm, UserSignUpStudentForm, UserSignUpTeacherForm
 from datetime import date
 from django_user_agents.utils import get_user_agent
 
@@ -24,6 +24,88 @@ def error_400(request,exception):
 def error_403(request,exception):
     data = {}
     return render(request,'error_templates/error_403.html',data)
+
+def user_registration_student(request):
+    if request.method=="POST":
+        form = UserSignUpStudentForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.first_name = form.cleaned_data.get('first_name')
+            user.last_name = form.cleaned_data.get('last_name')
+            user.username = user.first_name.lower()+"_"+user.last_name.lower()
+            user.email = form.cleaned_data.get('email')
+            if form.cleaned_data.get('password')==form.cleaned_data.get('confirm_password'):
+                user.set_password(form.cleaned_data.get('password'))
+            else:
+                messages.warning(request,'Passwords do not match.')
+                return redirect('user-registration-student')
+            
+            if form.cleaned_data.get('security_question_1')==form.cleaned_data.get('security_question_2') or form.cleaned_data.get('security_question_2')==form.cleaned_data.get('security_question_3') or form.cleaned_data.get('security_question_1')==form.cleaned_data.get('security_question_3'):
+                messages.warning(request,'Security Questions cannot be the same.')
+                return redirect('user-registration-student')
+            
+            stat = Status()
+            stat.status = "S"
+            stat.achievements = "None"
+            stat.department = "None"
+            sec = form.cleaned_data.get('security_question_1')+r"%%"+form.cleaned_data.get('security_question_2')+r"%%"+form.cleaned_data.get('security_question_3')
+            ans = t_views.encrypt(form.cleaned_data.get('response_1'),user.email)+r"%%"+t_views.encrypt(form.cleaned_data.get('response_2'),user.email)+r"%%"+t_views.encrypt(form.cleaned_data.get('response_3'),user.email)
+            stat.security_questions = sec
+            stat.security_answers = ans
+            user.save()
+            stat.user = user
+            stat.save()
+
+            messages.success(request,"User has been successfully registered!")
+            return redirect('login')
+    else:
+        form = UserSignUpStudentForm()
+
+    context = {
+        "form":form
+    }
+    return render(request,'studentview/desktop/user_register.html',context)
+
+def user_registration_teacher(request):
+    if request.method=="POST":
+        form = UserSignUpTeacherForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.first_name = form.cleaned_data.get('first_name')
+            user.last_name = form.cleaned_data.get('last_name')
+            user.username = user.first_name.lower()+"_"+user.last_name.lower()
+            user.email = form.cleaned_data.get('email')
+            if form.cleaned_data.get('password')==form.cleaned_data.get('confirm_password'):
+                user.set_password(form.cleaned_data.get('password'))
+            else:
+                messages.warning(request,'Passwords do not match.')
+                return redirect('user-registration-student')
+            
+            if form.cleaned_data.get('security_question_1')==form.cleaned_data.get('security_question_2') or form.cleaned_data.get('security_question_2')==form.cleaned_data.get('security_question_3') or form.cleaned_data.get('security_question_1')==form.cleaned_data.get('security_question_3'):
+                messages.warning(request,'Security Questions cannot be the same.')
+                return redirect('user-registration-student')
+            
+            stat = Status()
+            stat.status = "T"
+            stat.achievements = "None"
+            stat.department = form.cleaned_data.get('department')
+            sec = form.cleaned_data.get('security_question_1')+r"%%"+form.cleaned_data.get('security_question_2')+r"%%"+form.cleaned_data.get('security_question_3')
+            ans = t_views.encrypt(form.cleaned_data.get('response_1'),user.email)+r"%%"+t_views.encrypt(form.cleaned_data.get('response_2'),user.email)+r"%%"+t_views.encrypt(form.cleaned_data.get('response_3'),user.email)
+            stat.security_questions = sec
+            stat.security_answers = ans
+            user.save()
+            stat.user = user
+            stat.save()
+
+            messages.success(request,"User has been successfully registered!")
+            return redirect('login')
+    else:
+        form = UserSignUpTeacherForm()
+
+    context = {
+        "form":form
+    }
+    return render(request,'studentview/desktop/user_register.html',context)
 
 def event_finalized_check(event_id,subevent_id):
     sub = SubEvents.objects.get(pk=subevent_id)

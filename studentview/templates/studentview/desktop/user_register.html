@@ -1,0 +1,104 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="A state-of-the-art event communicator for school events creating a link between students and teachers to iron out wrinkles in the selection process.">
+  <meta name="author" content="EventDiPS">
+  <meta name="theme-color" content="#4caf50">
+  <link rel="shortcut icon" type="image/png" href="{% static 'teacherview/EventDipsMini.png' %}"/>
+
+  {% if title %}
+    <title>Teacher-{{title}}</title>
+  {% else %}
+    <title>Teacher-Events</title>
+  {% endif %}
+
+  <!-- Custom fonts for this template-->
+  <!--<link href="{% static "vendor/fontawesome-free/css/all.min.css" %}" rel="stylesheet" type="text/css">-->
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <!-- Material Design Bootstrap -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/css/mdb.min.css" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="{% static 'teacherview/css/sb-admin-2.css' %}" rel="stylesheet">
+</head>
+
+<body id="page-top" class="sidebar-toggled">
+  <nav class="navbar navbar-dark bg-success">
+	<p class="lead" style="color: green;">
+		RANDOM TEXT IDC
+	</p>
+  </nav>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+    <!-- Sidebar -->
+    <ul class="navbar-nav green sidebar sidebar-dark accordion toggled" id="accordionSidebar" style='position: relative'></ul>
+	
+	
+
+	<div id="content-wrapper" class="d-flex flex-column">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      
+      <!-- Begin Page Content -->
+    <br>
+    <div class="container-fluid">
+      <div class="lead">
+        <h2>&nbsp;Registration</h2> 
+        <hr />
+        <form method="POST">
+          {% csrf_token %}
+          <fieldset class="form-group">
+            {{ form|crispy }}
+          </fieldset>
+          <div class="form-group">
+            <center>
+              <button class="btn green darken-1" type="submit" style='border-radius: 20px 20px 20px 20px;width:90%; padding-top:12px;padding-bottom: 15px; color: white;'>Sign Up</button>	
+            </center>
+          </div>
+        </form>
+      </div>
+    </div>
+      <!-- End of Main Content -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top" href="#page-top" style="border-radius: 17px;">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src='{% static "teacherview/vendor/jquery/jquery.min.js" %}'></script>
+  <script src='{% static "teacherview/vendor/bootstrap/js/bootstrap.bundle.min.js" %}'></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src='{% static "teacherview/vendor/jquery-easing/jquery.easing.min.js" %}'></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src='{% static "teacherview/js/sb-admin-2.min.js" %}'></script>
+  
+  <!-- Page level plugins -->
+  <script src='{% static "teacherview/vendor/datatables/jquery.dataTables.min.js" %}'></script>
+  <script src='{% static "teacherview/vendor/datatables/dataTables.bootstrap4.min.js" %}'></script>
+
+  <!-- Page level custom scripts -->
+  <script src='{% static "teacherview/js/demo/datatables-demo.js" %}'></script>
+  </body>
+
+</html>

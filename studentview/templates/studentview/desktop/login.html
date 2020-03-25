@@ -51,11 +51,40 @@
 						<div class="form-group">
 							<center>
 								<button class="btn green darken-1" type="submit" style='border-radius: 20px 20px 20px 20px;width:90%; padding-top:12px;padding-bottom: 15px;'>Login</button>	
+								<a href="#" class="text-black-80" style="text-decoration: none; padding-top:10px; font-size: 80%;" data-toggle="modal" data-target="#centralModalDanger">Don't Have An Account Yet? Sign Up.</a><br>
 								<a href="{% url 'forgot-password' %}" style="text-decoration: none; padding-top:10px; font-size: 80%;">Forgot Password?</a>
 							</center>
 						</div>
 					</form>
 				</div>
+			</div>
+		</div>
+		<!-- Central Modal Medium Danger -->
+		<div class="modal fade" id="centralModalDanger" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true">
+			<div class="modal-dialog modal-notify modal-danger" role="document">
+				<!--Content-->
+				<div class="modal-content">
+					<!--Header-->
+					<div class="modal-header">
+						<p class="heading lead">Are you a...</p>
+
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true" class="white-text">&times;</span>
+						</button>
+					</div>
+
+					<!--Footer-->
+					<div class="modal-footer justify-content-center">
+						<div style="padding-left: 15%; padding-right: 15%;">
+							<a type="button" class="btn btn-outline-success waves-effect" data-dismiss="modal" href="{% url 'user-registration-teacher' %}">Teacher?</a>
+						</div>
+						<div style="padding-right: 15%;">
+							<a type="button" class="btn btn-outline-primary waves-effect" data-dismiss="modal" href="{% url 'user-registration-student' %}">Student?</a>
+						</div>
+					</div>
+				</div>
+				<!--/.Content-->
 			</div>
 		</div>
 		<div class="col-md align-self-center">
@@ -64,7 +93,7 @@
 				<div class="jumbotron w-100" style="border-radius: 3rem;">
 					<div class="container">
 						<h1>
-							<b>Built for students <br>By students.</b>
+							<b>Built for Students <br>By Students.</b>
 						</h1>
 						<br>
 						<p class="text-justify">
