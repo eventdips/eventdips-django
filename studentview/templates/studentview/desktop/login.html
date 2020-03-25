@@ -60,33 +60,32 @@
 			</div>
 		</div>
 		<!-- Central Modal Medium Danger -->
-		<div class="modal fade" id="centralModalDanger" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-		aria-hidden="true">
-			<div class="modal-dialog modal-notify modal-danger" role="document">
+		<div class="modal fade" id="centralModalDanger" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true">
+			<div class="modal-dialog modal-notify" role="document">
 				<!--Content-->
-				<div class="modal-content">
+				<div class="modal-content" style="border-radius:3rem;">
 					<!--Header-->
-					<div class="modal-header">
-						<p class="heading lead">Are you a...</p>
-
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true" class="white-text">&times;</span>
-						</button>
-					</div>
-
-					<!--Footer-->
-					<div class="modal-footer justify-content-center">
-						<div style="padding-left: 15%; padding-right: 15%;">
-							<a type="button" class="btn btn-outline-success waves-effect" data-dismiss="modal" href="{% url 'user-registration-teacher' %}">Teacher?</a>
-						</div>
-						<div style="padding-right: 15%;">
-							<a type="button" class="btn btn-outline-primary waves-effect" data-dismiss="modal" href="{% url 'user-registration-student' %}">Student?</a>
+					<div class="modal-header shadow-0 border-0" style="border-radius:3rem;">
+						<h2 class="heading text-secondary">Are you a...</h2>
+						<div class="d-flex align-items-center justify-content-right">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true" class="text-secondary">&times;</span>
+							</button>
 						</div>
 					</div>
 				</div>
 				<!--/.Content-->
 			</div>
+			<div class="modal-dialog" role="document">
+				<div class="modal-content bg-transparent shadow-0" style="border-radius: 2rem;">
+					<div class="btn-group" role="group" aria-label="User-Registration">
+						<a href="{% url 'user-registration-teacher' %}" class="btn btn-success btn-lg" role="button" style="border-radius: 2rem 0rem 0rem 2rem;">Teacher</a>
+						<a href="{% url 'user-registration-student' %}" class="btn btn-primary btn-lg" role="button" style="border-radius: 0rem 2rem 2rem 0rem;">Student</a>
+					</div>
+				</div>
+			</div>
 		</div>
+
 		<div class="col-md align-self-center">
 			<br>
 			<div class="container-fluid">
