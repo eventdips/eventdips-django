@@ -6,14 +6,14 @@ from django.forms.widgets import SelectDateWidget
 from django.contrib.auth.models import User
 
 class UserSignUpStudentForm(forms.ModelForm):
-    first_name = forms.CharField(help_text="First Name",widget=forms.TextInput())
-    last_name = forms.CharField(help_text="Last Name",widget=forms.TextInput())
-    email = forms.CharField(help_text="Email Address",widget=forms.TextInput())
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
     #status = S
     #achievements = None
     #Department = None
-    password = forms.CharField(help_text="Maintain a strong password for security purposes", widget=forms.PasswordInput())
-    confirm_password = forms.CharField(widget=forms.PasswordInput())
+    password = forms.CharField(help_text="Maintain a strong password for security purposes", widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
 
     security_questions = (
 		("What was your childhood nickname?","What was your childhood nickname?"),
@@ -25,25 +25,25 @@ class UserSignUpStudentForm(forms.ModelForm):
 	)
 
     security_question_1 = forms.CharField(help_text="Security Question 1",widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
-    response_1 = forms.CharField(help_text="Answer to Question 1",widget=forms.TextInput())
+    response_1 = forms.CharField(help_text="Answer to Question 1",widget=forms.TextInput(attrs={'class':'form-control'}))
     security_question_2 = forms.CharField(help_text="Security Question 2",widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
-    response_2 = forms.CharField(help_text="Answer to Question 2",widget=forms.TextInput())
+    response_2 = forms.CharField(help_text="Answer to Question 2",widget=forms.TextInput(attrs={'class':'form-control'}))
     security_question_3 = forms.CharField(help_text="Security Question 3",widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
-    response_3 = forms.CharField(help_text="Answer to Question 3",widget=forms.TextInput())
+    response_3 = forms.CharField(help_text="Answer to Question 3",widget=forms.TextInput(attrs={'class':'form-control'}))
 
     class Meta:
         model = User
         fields = ['first_name','last_name','email']
 
 class UserSignUpTeacherForm(forms.ModelForm):
-    first_name = forms.CharField(help_text="First Name",widget=forms.TextInput())
-    last_name = forms.CharField(help_text="Last Name",widget=forms.TextInput())
-    email = forms.CharField(help_text="Email Address",widget=forms.TextInput())
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
     #status = S
     #achievements = None
-    department = forms.CharField(help_text="Current Teaching Department. Eg: Head of Computer Science",widget=forms.TextInput())
-    password = forms.CharField(help_text="Maintain a strong password for security purposes", widget=forms.PasswordInput())
-    confirm_password = forms.CharField(widget=forms.PasswordInput())
+    department = forms.CharField(help_text="Eg: Computer Science",widget=forms.TextInput(attrs={'class':'form-control'}))
+    password = forms.CharField(help_text="Maintain a strong password for security purposes", widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
 
     security_questions = (
 		("What was your childhood nickname?","What was your childhood nickname?"),
@@ -54,12 +54,12 @@ class UserSignUpTeacherForm(forms.ModelForm):
         ("In what city does your nearest sibling live?","In what city does your nearest sibling live?")
 	)
 
-    security_question_1 = forms.CharField(help_text="Security Question 1",widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
-    response_1 = forms.CharField(help_text="Answer to Question 1",widget=forms.TextInput())
-    security_question_2 = forms.CharField(help_text="Security Question 2",widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
-    response_2 = forms.CharField(help_text="Answer to Question 2",widget=forms.TextInput())
-    security_question_3 = forms.CharField(help_text="Security Question 3",widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
-    response_3 = forms.CharField(help_text="Answer to Question 3",widget=forms.TextInput())
+    security_question_1 = forms.CharField(widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
+    response_1 = forms.CharField(help_text="Answer to Question 1",widget=forms.TextInput(attrs={'class':'form-control'}))
+    security_question_2 = forms.CharField(widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
+    response_2 = forms.CharField(help_text="Answer to Question 2",widget=forms.TextInput(attrs={'class':'form-control'}))
+    security_question_3 = forms.CharField(widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
+    response_3 = forms.CharField(help_text="Answer to Question 3",widget=forms.TextInput(attrs={'class':'form-control'}))
 
     class Meta:
         model = User
