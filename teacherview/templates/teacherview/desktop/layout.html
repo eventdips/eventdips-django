@@ -55,7 +55,7 @@
       <hr class="sidebar-divider my-0">
       <!-- Nav Item - User Information -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <a class="nav-link collapsed" href="'/teacher/profile'" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
           <i class="fas fa-user"></i>
           <span>My Profile</span>
         </a>
@@ -65,7 +65,7 @@
             <center><img class="collapse-item rounded-circle" src="https://source.unsplash.com/random/50x50"></center>
             {% load teach_tags %}
               <p class="collapse-header"> {% teacher_name request %}</p>
-            <a class="collapse-item" href='{% url "teacher-profile" %}'>View Profile</a>
+            <a class="collapse-item" href='/teacher/profile'>View Profile</a>
           </div>
         </div>
       </li>
@@ -74,15 +74,15 @@
       <hr class="sidebar-divider my-0">
       <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="/teacher/allevents" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-calendar-alt"></i>
           <span>Events</span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Events:</h6>
-            <a class="collapse-item" href='{% url "teacher-myevents" %}'>My Events</a>
-            <a class="collapse-item" href='{% url "teacher-allevents" %}'>View All</a>
+            <a class="collapse-item" href='/teacher/myevents'>My Events</a>
+            <a class="collapse-item" href='/teacher/allevents'>View All</a>
           </div>
         </div>
       </li>
