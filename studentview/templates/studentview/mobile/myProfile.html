@@ -29,7 +29,7 @@
         <div class="row">
             <div class="card-columns">
                 {% for event_data in MyEvents %}
-                    {% if not event_data.event_check %}
+                    {% if not event_data.completed_check %}
                         <div class="card shadow mb-4">
                             <div class="card-header py-3 border-left-primary">
                                 <a href={{ event_data.url_redirect }} style="text-decoration:none;">
@@ -54,7 +54,7 @@
                             </div>
                             <div class="card-body">
                                 <ul>
-                                    <li><b>Event Dates</b>: {{ event_data.event_dates }}<li></li>
+                                    <li><b>Event Dates</b>: {{ event_data.event_dates }}</li>
                                     {% if event_data.category %}
                                         <li><b>Category</b>: {{ event_data.category}}</li>
                                     {% endif %}

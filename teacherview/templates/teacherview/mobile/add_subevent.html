@@ -5,7 +5,7 @@
 
 <div class="container-fluid">
 	<div class="card shadow mb-4" style="border-radius: 25px;">
-		<div class="card-header border-left-success">
+		<div class="card-header border-0 bg-white">
 			<h4 class="m-0 font-weight-bold text-success">{{ title }}</h4>
 		</div>
 		<div class="card-body">
@@ -14,62 +14,62 @@
 				<fieldset class="form-group" id="EventForm">
 					<div class="row">
 						<div class="col">
-							<label for="event_type">Event Participation Type: </label>
+							<label for="event_type"><b>Event Participation Type: </b></label>
 							{{ form.event_type }}
 							<small class="text-disabled">Individual Event or Group Event</small>
 							<br><br>
-							<label for="category">Category: </label>
+							<label for="category"><b>Category: </b></label>
 							{{ form.category }}
 							<small class="text-disabled">Event Category</small>
 							<br><br>
-							<label for="teacher_incharge">Teacher Incharge: </label>
+							<label for="teacher_incharge"><b>Teacher Incharge: </b></label>
 							{{ form.teacher_incharge }}
 							<br>
-							<label for="maximum_applicants">Maximim applications: </label>
+							<label for="maximum_applicants"><b>Maximum Applications: </b></label>
 							{{ form.maximum_applicants }}
 							<small class="text-disabled">Maximum Number Of Applications</small>
 							<br><br>
-							<label for="maximum_participants">Maximum pariticipants: </label>
+							<label for="maximum_participants"><b>Maximum Pariticipants: </b></label>
 							{{ form.maximum_participants }}
 							<small class="text-disabled">Maximum Number Of Students/Teams Who Can Participate In An Event</small>
 							<br><br>
-							<label for="group_size">Group Size: </label>
+							<label for="group_size"><b>Group Size: </b></label>
 							{{ form.group_size }}
 							<small class="text-disabled">Number of People Per Group (Leave Empty if Individual Participation)</small>
 							<br>
 							<br>
-							<label for="allowed_grades">Allowed Grades: </label>
+							<label for="allowed_grades"><b>Allowed Grades: </b></label>
 							{{ form.allowed_grades }}
 							<small class="text-disabled">Grades Allowed. (Eg: 9th,10th)</small>
 							<br><br>
-							<label for="add_attachment">Attachment: </label>
+							<label for="add_attachment"><b>Attachment: </b></label>
 							{{ form.add_attachment }}
 							<br>
 							<small class="text-disabled"></small>
 						</div>
 						<div class="col">
 							<br>
-							<label for="requirements">Additional Requirements: </label>
+							<label for="requirements"><b>Additional Requirements: </b></label>
 							{{ form.requirements }}
 							<small class="text-disabled">Requirements or Selection Criteria.</small>
 							<br><br>
-							<label for="event_description">Event Description: </label>
+							<label for="event_description"><b>Event Description: </b></label>
 							{{ form.event_description }}
 							<small class="text-disabled">Information About the Event (eg: Website Links)</small>
 							<br><br>
-							<label for="registration_deadline">Last Date To Apply: </label>
+							<label for="registration_deadline"><b>Last Date To Apply: </b></label>
 							{{ form.registration_deadline }}
 							<small class="text-disabled">Last Date Of Registration (eg: 03/12/2019)</small>
 							<div class="row">
 								<div class="col">
 									<br>
-									<label for="start_date">Event Start Date: </label>
+									<label for="start_date"><b>Event Start Date: </b></label>
 									{{ form.start_date }}
 									<small class="text-disabled">Start Date Of The Event (eg: 01/01/2020)</small>
 								</div>
 								<div class="col">
 									<br>
-									<label for="last_date">Event End Date: </label>
+									<label for="last_date"><b>Event End Date: </b></label>
 									{{ form.last_date }}
 									<small class="text-disabled">Last Date Of The Event (eg: 03/01/2020)</small>
 								</div>

@@ -5,7 +5,7 @@ from teacherview.models import Events,SubEvents,Status
 from teacherview import views as t_views
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from .forms import RegistrationSingleForm, AchievementForm, RegistrationsGroupForm
+from .forms import RegistrationSingleForm, AchievementForm, RegistrationsGroupForm, UserSignUpStudentForm, UserSignUpTeacherForm
 from datetime import date
 from django_user_agents.utils import get_user_agent
 
@@ -24,6 +24,88 @@ def error_400(request,exception):
 def error_403(request,exception):
     data = {}
     return render(request,'error_templates/error_403.html',data)
+
+def user_registration_student(request):
+    if request.method=="POST":
+        form = UserSignUpStudentForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.first_name = form.cleaned_data.get('first_name')
+            user.last_name = form.cleaned_data.get('last_name')
+            user.username = user.first_name.lower()+"_"+user.last_name.lower()
+            user.email = form.cleaned_data.get('email')
+            if form.cleaned_data.get('password')==form.cleaned_data.get('confirm_password'):
+                user.set_password(form.cleaned_data.get('password'))
+            else:
+                messages.warning(request,'Passwords do not match.')
+                return redirect('user-registration-student')
+            
+            if form.cleaned_data.get('security_question_1')==form.cleaned_data.get('security_question_2') or form.cleaned_data.get('security_question_2')==form.cleaned_data.get('security_question_3') or form.cleaned_data.get('security_question_1')==form.cleaned_data.get('security_question_3'):
+                messages.warning(request,'Security Questions cannot be the same.')
+                return redirect('user-registration-student')
+            
+            stat = Status()
+            stat.status = "S"
+            stat.achievements = "None"
+            stat.department = "None"
+            sec = form.cleaned_data.get('security_question_1')+r"%%"+form.cleaned_data.get('security_question_2')+r"%%"+form.cleaned_data.get('security_question_3')
+            ans = t_views.encrypt(form.cleaned_data.get('response_1'),user.email)+r"%%"+t_views.encrypt(form.cleaned_data.get('response_2'),user.email)+r"%%"+t_views.encrypt(form.cleaned_data.get('response_3'),user.email)
+            stat.security_questions = sec
+            stat.security_answers = ans
+            user.save()
+            stat.user = user
+            stat.save()
+
+            messages.success(request,"User has been successfully registered!")
+            return redirect('login')
+    else:
+        form = UserSignUpStudentForm()
+
+    context = {
+        "form":form
+    }
+    return render(request,'studentview/desktop/user_register.html',context)
+
+def user_registration_teacher(request):
+    if request.method=="POST":
+        form = UserSignUpTeacherForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.first_name = form.cleaned_data.get('first_name')
+            user.last_name = form.cleaned_data.get('last_name')
+            user.username = user.first_name.lower()+"_"+user.last_name.lower()
+            user.email = form.cleaned_data.get('email')
+            if form.cleaned_data.get('password')==form.cleaned_data.get('confirm_password'):
+                user.set_password(form.cleaned_data.get('password'))
+            else:
+                messages.warning(request,'Passwords do not match.')
+                return redirect('user-registration-student')
+            
+            if form.cleaned_data.get('security_question_1')==form.cleaned_data.get('security_question_2') or form.cleaned_data.get('security_question_2')==form.cleaned_data.get('security_question_3') or form.cleaned_data.get('security_question_1')==form.cleaned_data.get('security_question_3'):
+                messages.warning(request,'Security Questions cannot be the same.')
+                return redirect('user-registration-student')
+            
+            stat = Status()
+            stat.status = "T"
+            stat.achievements = "None"
+            stat.department = form.cleaned_data.get('department')
+            sec = form.cleaned_data.get('security_question_1')+r"%%"+form.cleaned_data.get('security_question_2')+r"%%"+form.cleaned_data.get('security_question_3')
+            ans = t_views.encrypt(form.cleaned_data.get('response_1'),user.email)+r"%%"+t_views.encrypt(form.cleaned_data.get('response_2'),user.email)+r"%%"+t_views.encrypt(form.cleaned_data.get('response_3'),user.email)
+            stat.security_questions = sec
+            stat.security_answers = ans
+            user.save()
+            stat.user = user
+            stat.save()
+
+            messages.success(request,"User has been successfully registered!")
+            return redirect('login')
+    else:
+        form = UserSignUpTeacherForm()
+
+    context = {
+        "form":form
+    }
+    return render(request,'studentview/desktop/user_register.html',context)
 
 def event_finalized_check(event_id,subevent_id):
     sub = SubEvents.objects.get(pk=subevent_id)
@@ -69,7 +151,8 @@ def home(request):
                 sub["url_redirect"] = "/{}{}/{}".format(t_views.student_hash,str(i.event_id),str(subevent_id))
                 sub["registration_deadline"] = t_views.date_conversion(sub_event.first().last_date)
                 #sub["valid"] = t_views.event_over_check(i.event_id,False)
-                if sub_event.first().total_slots==sub_event.first().total_registrations:
+
+                if sub_event.first().total_slots==sub_event.first().total_registrations or sub_event.first().last_date<date.today():
                     sub["completed_check"] = True
                 else:
                     sub["completed_check"] = False
@@ -96,7 +179,7 @@ def home(request):
             r = list(Registrations.objects.filter(subevent_id=s_event.subevent_id))
             for i in r:
                 if i.user==user:
-                    if s_event.total_slots>s_event.total_registrations:
+                    if s_event.total_slots>s_event.total_registrations and s_event.last_date>date.today():
                         sub = {}
                         sub["url_redirect"] = "/{}{}/{}".format(t_views.student_hash,str(s_event.event_id),str(s_event.subevent_id))
                         sub["name"] = s_event.subevent_name
@@ -109,9 +192,9 @@ def home(request):
                         sub["finalized"] = True if s_event.confirmation_status == "Y" else False
                         if sub["finalized"]:
                             try:
-                                sub["event_attachment_url"] = s_event.subevent_attachment
+                                sub["attachment"] = s_event.subevent_attachment
                             except:
-                                sub["event_attachment_url"] = False
+                                sub["attachment"] = False
                         final.append(sub)
                     else:
                         sub = {}
@@ -126,9 +209,9 @@ def home(request):
                         sub["finalized"] = True if s_event.confirmation_status == "Y" else False
                         if sub["finalized"]:
                             try:
-                                sub["event_attachment_url"] = s_event.subevent_attachment
+                                sub["attachment"] = s_event.subevent_attachment
                             except:
-                                sub["event_attachment_url"] = False
+                                sub["attachment"] = False
                         final.append(sub)
             
     context = {
@@ -162,7 +245,7 @@ def profile(request):
             registrations = list(Registrations.objects.filter(subevent_id=s_event.subevent_id))
             if user in [reg.user for reg in registrations]:
                 sub = {}
-                if s_event.total_slots>s_event.total_registrations:
+                if s_event.total_slots>s_event.total_registrations and s_event.last_date>date.today():
                     sub = {}
                     sub["url_redirect"] = "/{}{}/{}".format(t_views.student_hash,str(s_event.event_id),str(s_event.subevent_id))
                     sub["name"] = s_event.subevent_name
@@ -406,7 +489,7 @@ def event_by_category(request,category):
     for i in events:
         if t_views.event_over_check(i.event_id,False):
             sub = {}
-            if i.total_slots>i.total_registrations:
+            if i.total_slots>i.total_registrations and i.last_date>date.today():
                 sub["completed_check"] = False
             else:
                 sub["completed_check"] = True
@@ -492,7 +575,7 @@ def subevents(request,event_id):
     for i in subevents:
         if t_views.event_over_check(False,i.subevent_id):
             sub = {}
-            if i.total_slots>i.total_registrations:
+            if i.total_slots>i.total_registrations and i.last_date>date.today():
                 sub["completed_check"] = False
             else:
                 sub["completed_check"] = True
@@ -533,6 +616,10 @@ def subevent(request,event_id,subevent_id):
         messages.warning(request,"Event '{}' Is Already Complete!".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
         return redirect('student-homepage')
     
+    if SubEvents.objects.get(pk=subevent_id).last_date<date.today():
+        messages.warning(request,"Registration Deadline for '{}' has passed.".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
+        return redirect('student-homepage')
+
     if event_finalized_check(event_id,subevent_id):
         messages.warning(request,"Decisions Regarding Event '{}' Is Already Finalized!".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
         return redirect('student-homepage')
@@ -738,8 +825,10 @@ def group_registration(request,event_id,subevent_id,current_group_id):
             reg.event_type = "G"
             reg.reg_info = form.cleaned_data.get('additional_Information')
             reg.save()
+            subevent.total_registrations+=1
+            subevent.save()
 
-            msg = "'{}' Has Been Successfully Registered For '{}'".format(reg.user.first_name+ " "+reg.user.last_name,SubEvents.objects.get(pk=subevent_id).subevent_name) 
+            msg = "'{}' Has Been Successfully Registered For '{}'. Kindly Ensure that your Achievements are Updated.".format(reg.user.first_name+ " "+reg.user.last_name,SubEvents.objects.get(pk=subevent_id).subevent_name) 
             messages.success(request,msg)
             return HttpResponseRedirect("/{}{}/{}/add-group/{}".format(t_views.student_hash,event_id,subevent_id,current_group_id))
         else:
@@ -802,55 +891,33 @@ def registration(request,event_id,subevent_id):
     except:
         pass
     
-    if subevent.subevent_type=="I":
-        if request.method=="POST":
-            form = RegistrationSingleForm(request.POST)
-            if form.is_valid():
-                reg = form.save(commit=False)
-                reg.user = User.objects.get(pk=int(request.COOKIES.get('id')))
-                reg.student_name = User.objects.get(pk=int(request.COOKIES.get('id'))).first_name + " " +  User.objects.get(pk=int(request.COOKIES.get('id'))).last_name
-                reg.student_class = form.cleaned_data.get('grade')
-                reg.student_section = form.cleaned_data.get('section')
-                reg.event_id = event_id
-                reg.subevent_id = subevent_id
-                reg.event_type = "I"
-                reg.reg_info = form.cleaned_data.get('additional_Information')
-                reg.group_id = 0
-                reg.save()
+    if request.method=="POST":
+        form = RegistrationSingleForm(request.POST)
+        if form.is_valid():
+            reg = form.save(commit=False)
+            reg.user = User.objects.get(pk=int(request.COOKIES.get('id')))
+            reg.student_name = User.objects.get(pk=int(request.COOKIES.get('id'))).first_name + " " +  User.objects.get(pk=int(request.COOKIES.get('id'))).last_name
+            reg.student_class = form.cleaned_data.get('grade')
+            reg.student_section = form.cleaned_data.get('section')
+            reg.event_id = event_id
+            reg.subevent_id = subevent_id
+            reg.event_type = "I"
+            reg.reg_info = form.cleaned_data.get('additional_Information')
+            reg.group_id = 0
+            reg.save()
+            subevent.total_registrations+=1
+            subevent.save()
 
-                msg = "Successfully Registered For '{}'".format("{}- {}".format(Events.objects.get(pk=event_id).event_name,SubEvents.objects.get(pk=subevent_id).subevent_name) if Events.objects.get(pk=event_id).event_name!=SubEvents.objects.get(pk=subevent_id).subevent_name else "{}".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
-                messages.success(request,msg)
-                return redirect('student-homepage')
-            else:
-                messages.warning(request,'Form Entry Error.')
-                return HttpResponseRedirect("{}{}/{}/registration".format(t_views.student_hash,str(event_id),str(subevent_id)))
-
+            msg = "Successfully Registered For '{}'. Kindly Ensure that your Achievements are Updated.".format("{}- {}".format(Events.objects.get(pk=event_id).event_name,SubEvents.objects.get(pk=subevent_id).subevent_name) if Events.objects.get(pk=event_id).event_name!=SubEvents.objects.get(pk=subevent_id).subevent_name else "{}".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
+            messages.success(request,msg)
+            return redirect('student-homepage')
         else:
-            form = RegistrationSingleForm()
+            messages.warning(request,'Form Entry Error.')
+            return HttpResponseRedirect("{}{}/{}/registration".format(t_views.student_hash,str(event_id),str(subevent_id)))
+
     else:
-        if request.method=="POST":
-            form = RegistrationsGroupForm(request.POST)
-            if form.is_valid():
-                reg = form.save(commit=False)
-                reg.user = User.objects.get(pk=int(form.cleaned_data.get('user')))
-                reg.student_name = reg.user.first_name + " " + reg.user.last_name
-                reg.student_class = form.cleaned_data.get('grade')
-                reg.student_section = form.cleaned_data.get('section')
-                reg.event_id = event_id
-                reg.subevent_id = subevent_id
-                reg.event_type = "G"
-                reg.reg_info = form.cleaned_data.get('additional_Information')
-                reg.save()
-
-                msg = "Successfully Registered For '{}'".format("{}- {}".format(Events.objects.get(pk=event_id).event_name,SubEvents.objects.get(pk=subevent_id).subevent_name) if Events.objects.get(pk=event_id).event_name!=SubEvents.objects.get(pk=subevent_id).subevent_name else "{}".format(SubEvents.objects.get(pk=subevent_id).subevent_name))
-                messages.success(request,msg)
-                return redirect('student-homepage')
-            else:
-                messages.warning(request,'Form Entry Error.')
-                return HttpResponseRedirect("{}{}/{}/registration".format(t_views.student_hash,str(event_id),str(subevent_id)))
-
-        else:
-            form = RegistrationSingleForm()
+        form = RegistrationSingleForm()
+    
 
     context = {
         "title": SubEvents.objects.get(pk=subevent_id).subevent_name,
@@ -922,18 +989,18 @@ def get_current_notifications_students(request,typ):
 
     for reg in regs:
         if t_views.event_over_check(reg.event_id,reg.subevent_id):
+            s_event = SubEvents.objects.get(pk=reg.subevent_id)
             if s_event.confirmation_status=="Y":
-                s_event = SubEvents.objects.get(pk=reg.subevent_id)
+                print(s_event)
                 sub={}
 
                 sub["decision"] = "- Accepted" if reg.reg_status=="A" else "- Rejected"
                 sub["notification_header"] = "Final Decision"
-                sub["reason"] = reg.rej_reason if reg.reg_status=="R" else ""
+                sub["reason"] = reg.rej_reason if reg.reg_status=="R" else False
                 sub["event_name"] = s_event.subevent_name
                 sub["teacher_incharge"] = s_event.subevent_teacher_incharge
         
                 final2.append(sub)
-    
 
     return len(final)+len(final2),final,final2
 

@@ -8,7 +8,8 @@
     <!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="theme-color" content="#4caf50">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 	<!--MDBootstrap css-->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/css/mdb.min.css" rel="stylesheet">
     <!-- Bootstrap CSS -->
@@ -17,48 +18,133 @@
 	<title>LOGIN - Eventdips</title>
 	<style>
 		body {
-		background: linear-gradient(to left, #2193f0, #1cc88a 75%);
+		background: linear-gradient(205deg, #2193f0, #1cc88a 75%);
+		font-family: 'Montserrat', sans-serif;
+		overflow-x: hidden;
 		}
 	</style>
   </head>
-  <body class="green lighten-1">
-
-	<div class="container-fluid">
-		<div class="row d-flex justify-content-center">
-			<div class="col-12 col-md-4">
-				<br><br class="d-none d-xs-block">
-				<div class="jumbotron green accent-1 m-0"  style='border-radius:50px 50px 50px 50px;'>
-					<div class="display-1">
-						<img src="{% static 'teacherview/EventDipsMedium.png' %}" width="100%" alt="EventDips">
-					</div>
-					<br>
-					{% if messages %}
-						{% for message in messages %}
-							<div class="alert alert-{{ message.tags }}">
-								{{ message }}
-							</div>
-						{% endfor %}
-					{% endif %}
+  <body>
+	<div class="row" style="padding-bottom:4rem;"> 
+		<div class="col-md-4 align-self-center">
+			<br>
+			<nav class="navbar" style="border-radius: 0rem 3rem 3rem 0rem; background: #eee;">
+				<center><img src="{% static 'teacherview/EventDipsLarge.webp' %}" width="90%" alt="EventDips" style="filter: drop-shadow(0 0 8px #FFFFFF);"></center>
+			</nav>
+			<br>
+			<div class="container">
+				<div class="jumbotron shadow-lg" style="border-radius: 3rem;">
+					<h2><b>Login</b></h2>
+						{% if messages %}
+						<br>
+							{% for message in messages %}
+								<div class="alert alert-{{ message.tags }}">
+									{{ message }}
+								</div>
+							{% endfor %}
+						{% endif %}
 					<hr>
-					<div class="lead">
-						<h2>Login</h2>
-						<form method="POST">
-							{% csrf_token %}
-							<fieldset class="form-group">
-								{{ form|crispy }}
-							</fieldset>
-							<div class="form-group">
-								<center>
-									<button class="btn green darken-1" type="submit" style='border-radius: 20px 20px 20px 20px;width:90%; padding-top:12px;padding-bottom: 15px;'>Login</button>	
-									<a href="{% url 'forgot-password' %}" class="text-black-80" style="text-decoration: none; padding-top:10px; font-size: 80%;">Forgot Password?</a>
-								</center>
-							</div>
-						</form>
+					<form method="POST">
+						{% csrf_token %}
+						<fieldset class="form-group">
+							{{ form|crispy }}
+						</fieldset>
+						<div class="form-group">
+							<center>
+								<button class="btn green darken-1" type="submit" style='border-radius: 20px 20px 20px 20px;width:90%; padding-top:12px;padding-bottom: 15px;'>Login</button>	
+								<a href="#" class="text-black-80" style="text-decoration: none; padding-top:10px; font-size: 80%;" data-toggle="modal" data-target="#centralModalDanger">Don't Have An Account Yet? Sign Up.</a><br>
+								<a href="{% url 'forgot-password' %}" style="text-decoration: none; padding-top:10px; font-size: 80%;">Forgot Password?</a>
+							</center>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- Central Modal Medium Danger -->
+		<div class="modal fade" id="centralModalDanger" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"aria-hidden="true">
+			<div class="modal-dialog modal-notify" role="document">
+				<!--Content-->
+				<div class="modal-content" style="border-radius:3rem;">
+					<!--Header-->
+					<div class="modal-header shadow-0 border-0" style="border-radius:3rem;">
+						<h2 class="heading text-secondary">Are you a...</h2>
+						<div class="d-flex align-items-center justify-content-right">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true" class="text-secondary">&times;</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<!--/.Content-->
+			</div>
+			<div class="modal-dialog" role="document">
+				<div class="modal-content bg-transparent shadow-0" style="border-radius: 2rem;">
+					<div class="btn-group" role="group" aria-label="User-Registration">
+						<a href="{% url 'user-registration-teacher' %}" class="btn btn-success btn-lg" role="button" style="border-radius: 2rem 0rem 0rem 2rem;">Teacher</a>
+						<a href="{% url 'user-registration-student' %}" class="btn btn-primary btn-lg" role="button" style="border-radius: 0rem 2rem 2rem 0rem;">Student</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md align-self-center">
+			<br>
+			<div class="container-fluid">
+				<div class="jumbotron w-100" style="border-radius: 3rem;">
+					<div class="container">
+						<h1>
+							<b>Built for Students, <br>By Students.</b>
+						</h1>
+						<br>
+						<p class="text-justify">
+							A platform to connect students to teachers for the selection process of competitions and events and making the process easier and accessible by every student.
+						</p>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<div class="row">
+		<div class="container-fluid">
+			<div class="jumbotron jumbotron-fluid">
+				<div class="container">
+					<h2><b>Note:</b></h2>
+					<p class="text-justify">
+						This is a demo of the project and should not be used as intended in the actual project. This deployment will automatically be wiped every 30 minutes. All the data generated will be reverted back.
+					</p>
+					<hr>
+					<h4><b>Demo Login Information:</b></h4>
+					<br>
+					<ul style="list-style-type:none;">
+						<li>
+							<h5><b>Student View:</b></h5>
+							<ul style="list-style-type: none;">
+								<li>
+									<b>Username:</b> SampleStudent
+								</li>
+								<li>
+									<b>Password:</b> SamplePassStudent
+								</li>
+							</ul>
+						</li>
+						<br>
+						<li>
+							<h5><b>Teacher View:</b></h5>
+							<ul style="list-style-type: none;">
+								<li>
+									<b>Username:</b> SampleTeacher
+								</li>
+								<li>
+									<b>Password:</b> SamplePassTeacher
+								</li>
+							</ul>
+						</li>
+					  </ul>  
+				</div>
+			</div>
+		</div>
+	</div>
+	<!------------------------------------------------------------>
 
     <!-- Optional JavaScript -->
 	<!-- jQuery first, then Popper.js, then Bootstrap JS -->

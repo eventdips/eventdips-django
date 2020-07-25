@@ -3,9 +3,12 @@
 {% block ContentView %}
 
 <div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
+        <h2 class="text-secondary"><b>All Notifications</b></h2>
+    </div>
     <div class="card shadow" style="border-radius: 3rem;">
-        <div class="card-header" style="border-radius: 3rem;">
-            <h3><b>Days Left</b></h3>
+        <div class="card-header bg-white border-0" style="border-radius: 3rem;">
+            <h3 class="text-primary"><b>Days Left</b></h3>
         </div>
         <div class="card-body">
             <ul class="list-group">
@@ -17,7 +20,7 @@
     </div>
     <br>
     <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
-        <h1>Decisions Received</h1>
+        <h2 class="text-secondary"><b>Decisions Received</b></h2>
     </div>
     {% for notification in Decisions_Received %}
         <div class="card shadow" style="border-radius: 2rem;">

@@ -14,7 +14,7 @@
 	<link rel="shortcut icon" type="image/png" href="{% static 'teacherview/EventDipsMini.png' %}"/>
 
   {% if page_title %}
-    <title>{{page_title}}</title>
+    <title>{{ page_title }}</title>
   {% else %}
     <title>EventDiPS</title>
   {% endif %}
@@ -200,7 +200,7 @@
                   
                 {% if notifications_decisions %}
                   {% for notification_data in notifications_decisions %}
-                    {% if notification_data.decision %}
+                    {% if notification_data.decision %} 
                       <a class="dropdown-item d-flex align-items-center" href="#">
                         <div class="mr-3">
                           <div class="icon-circle bg-success">

@@ -130,6 +130,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, '/teacherview/static')
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
@@ -143,10 +144,10 @@ LOGIN_URL = 'login'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
 
-EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'eventdips-support@sandbox02b68f27438347fcb2366dc39e56f4cf.mailgun.org'
-EMAIL_HOST_PASSWORD = 'a36b9630b5cc601f3a2f2f10a54b859b-713d4f73-6986e3cf'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = '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'
 EMAIL_USE_TLS = True
 
 USER_AGENTS_CACHE = 'default'

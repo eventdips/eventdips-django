@@ -3,7 +3,7 @@
 
 {% block ContentView %}
 <div class="container-fluid">
-	<div class="card-header border-left-success">
+	<div class="card-header border-left-success text-success" style="size: 200%;">
 		{{ title }}
 	</div>
 	<div class="card-body">
@@ -13,7 +13,7 @@
 				{{ form|crispy }}
 			</fieldset>
 			<div class="form-group">
-				<button class="btn btn-outline-info" type="submit" name="attachment" style="width:90%;">Submit</button>
+				<button class="btn green darken-1" type="submit" name="attachment" style="width:100%; color: black;">Submit</button>
 			</div>
 		</form>
 	</div>

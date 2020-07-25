@@ -30,12 +30,10 @@ class EventCreationForm(forms.ModelForm):
 	users = User.objects.all()
 	c=0
 	for user in users:
-		try:
-			if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
-				teacher_options.append((c,user.first_name + " " +user.last_name))
-				c+=1
-		except:
-			pass
+		if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+			teacher_options.append((c,user.first_name + " " +user.last_name))
+			c+=1
+		
 
 	#teacher_options = name_sort(teacher_options)
 
@@ -109,15 +107,10 @@ class SubEventCreationForm(forms.ModelForm):
 	users = User.objects.all()
 	c=0
 	for user in users:
-		try:
-			if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
-				teacher_options.append((c,user.first_name + " " +user.last_name))
-				c+=1
-		except:
-			pass
-
-	teacher_options = name_sort(teacher_options)
-
+		if Status.objects.get(user=user).status=="T" or Status.objects.get(user=user).status=="M":
+			teacher_options.append((c,user.first_name + " " +user.last_name))
+			c+=1
+			
 	teacher_incharge = forms.CharField(widget=forms.Select(choices=teacher_options,attrs={'class':'form-control'}))	
 	registration_deadline = forms.DateField(help_text="Last Date Of Registration (eg: 03/12/2019)",widget=forms.TextInput(attrs={'class':'form-control','type':'date'}))
 	allowed_grades = forms.CharField(help_text='Grades Allowed. (Eg: 9th,10th)',widget=forms.TextInput(attrs={'placeholder': '9th,10th,11th','class':'form-control'}))

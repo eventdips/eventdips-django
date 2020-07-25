@@ -3,6 +3,68 @@ from .models import Registrations
 from teacherview.models import SubEvents as S
 from teacherview.models import Status 
 from django.forms.widgets import SelectDateWidget
+from django.contrib.auth.models import User
+
+class UserSignUpStudentForm(forms.ModelForm):
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    #status = S
+    #achievements = None
+    #Department = None
+    password = forms.CharField(help_text="Maintain a strong password for security purposes", widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
+
+    security_questions = (
+		("What was your childhood nickname?","What was your childhood nickname?"),
+        ("What is the name of your favorite childhood friend?","What is the name of your favorite childhood friend?"),
+        ("What street did you live on in third grade?","What street did you live on in third grade?"),
+        ("What is your oldest sibling's middle name?","What is your oldest sibling's middle name?"),
+        ("What school did you attend for sixth grade?","What school did you attend for sixth grade?"),
+        ("In what city does your nearest sibling live?","In what city does your nearest sibling live?")
+	)
+
+    security_question_1 = forms.CharField(help_text="Security Question 1",widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
+    response_1 = forms.CharField(help_text="Answer to Question 1",widget=forms.TextInput(attrs={'class':'form-control'}))
+    security_question_2 = forms.CharField(help_text="Security Question 2",widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
+    response_2 = forms.CharField(help_text="Answer to Question 2",widget=forms.TextInput(attrs={'class':'form-control'}))
+    security_question_3 = forms.CharField(help_text="Security Question 3",widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
+    response_3 = forms.CharField(help_text="Answer to Question 3",widget=forms.TextInput(attrs={'class':'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','email']
+
+class UserSignUpTeacherForm(forms.ModelForm):
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    #status = S
+    #achievements = None
+    department = forms.CharField(help_text="Eg: Computer Science",widget=forms.TextInput(attrs={'class':'form-control'}))
+    password = forms.CharField(help_text="Maintain a strong password for security purposes", widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
+
+    security_questions = (
+		("What was your childhood nickname?","What was your childhood nickname?"),
+        ("What is the name of your favorite childhood friend?","What is the name of your favorite childhood friend?"),
+        ("What street did you live on in third grade?","What street did you live on in third grade?"),
+        ("What is your oldest sibling's middle name?","What is your oldest sibling's middle name?"),
+        ("What school did you attend for sixth grade?","What school did you attend for sixth grade?"),
+        ("In what city does your nearest sibling live?","In what city does your nearest sibling live?")
+	)
+
+    security_question_1 = forms.CharField(widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
+    response_1 = forms.CharField(help_text="Answer to Question 1",widget=forms.TextInput(attrs={'class':'form-control'}))
+    security_question_2 = forms.CharField(widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
+    response_2 = forms.CharField(help_text="Answer to Question 2",widget=forms.TextInput(attrs={'class':'form-control'}))
+    security_question_3 = forms.CharField(widget=forms.Select(choices=security_questions,attrs={'class':'form-control'}))
+    response_3 = forms.CharField(help_text="Answer to Question 3",widget=forms.TextInput(attrs={'class':'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','email']
+
 
 class RegistrationSingleForm(forms.ModelForm):
     #user = current_user
@@ -29,39 +91,6 @@ class RegistrationsGroupForm(forms.ModelForm):
     class Meta:
         model = Registrations
         fields = ['grade','section','additional_Information']
-    
-'''
-fields = { 'name': forms.CharField(max_length=50),
-            'email': forms.EmailField(),
-            'message': forms.CharField(widget=forms.Textarea) }
-if not user.is_authenticated():
-    fields['captcha'] = CaptchaField()
-return type('RegistrationsGroupForm', (forms.BaseForm,), { 'base_fields': fields })
-'''
-
-'''
-class RegistrationsGroupForm(forms.ModelForm,subevent_id):
-    sub = SubEvents.objects.get(subevent_id=subevent_id)
-    l=[]
-    for i in range(sub.group_size):
-        student = forms.CharField(help_text="Name of Student {}".format(str(i+1)),widget=forms.TextInput())
-        grade = forms.IntegerField(help_text="Grade Of Student {} (Eg:11)".format(str(i+1)),widget=forms.NumberInput(attrs={'size': '20'}))
-        section = forms.CharField(help_text="Section of Student {} (Eg:A)".format(str(i+1)),widget=forms.TextInput())
-        l.append([student,grade,section])
-    additional_Information = forms.CharField(help_text="Reason For Desire To Participate, Relevant Experience, etc..",widget=forms.Textarea(attrs={'rows':10, 'cols':50, 'placeholder':'Enter The Information Here...'}))
-    #event_id = event_id
-    #subevent_id = subevent_id
-    
-    class Meta:
-        model = Registrations
-        f = []
-        for i in l:
-            f.append(i[0])
-            f.append(i[1])
-            f.append(i[2])
-
-        fields = [f,'additional_Information']
-'''
 
 class AchievementForm(forms.ModelForm):
     achievement_title = forms.CharField(help_text="Title For Achievement (Eg:Cisco Internship)",widget=forms.TextInput(attrs={'placeholder':'Name of Achievement...','class':'form-control'}))
